@@ -1,0 +1,160 @@
+/**
+ * @file
+ * Motion: cards rising into place, page swaps as view transitions, toasts.
+ *
+ * Everything here is off for people who ask for reduced motion.
+ */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* The content rises in; the sidebar stays put. */
+  .app-main {
+    view-transition-name: main;
+  }
+
+  .app-sidebar {
+    view-transition-name: sidebar;
+  }
+
+  ::view-transition-old(main) {
+    animation: fade-out 160ms var(--ease-in-out) both;
+  }
+
+  ::view-transition-new(main) {
+    animation: rise-in var(--duration-slow) var(--ease-out) both;
+  }
+
+  ::view-transition-group(sidebar) {
+    animation: none;
+  }
+
+  /* Switching between light and dark: everything cross-fades. */
+  :root.is-switching-theme::view-transition-old(main),
+  :root.is-switching-theme::view-transition-old(sidebar) {
+    animation: fade-out var(--duration-base) ease both;
+  }
+
+  :root.is-switching-theme::view-transition-new(main),
+  :root.is-switching-theme::view-transition-new(sidebar) {
+    animation: fade-in var(--duration-base) ease both;
+  }
+
+  /* Cards, the stat card and the page's first parts rise in one by one. */
+  .page-title,
+  .page-actions,
+  .view-filters,
+  .tabs,
+  .card-grid > *,
+  .card-grid > .views-element-container > *,
+  .stable-results > .card,
+  .node--view-mode-full {
+    animation: rise-in var(--duration-slow) var(--ease-out) both;
+    animation-delay: calc(var(--stagger, 0) * 70ms);
+  }
+
+  .page-actions {
+    --stagger: 1;
+  }
+
+  .view-filters,
+  .tabs {
+    --stagger: 1;
+  }
+
+  .stable-results > .card,
+  .node--view-mode-full {
+    --stagger: 2;
+  }
+
+  .card-grid > :nth-child(1) {
+    --stagger: 1;
+  }
+
+  .card-grid > :nth-child(2),
+  .card-grid > .views-element-container:nth-child(2) > * {
+    --stagger: 2;
+  }
+
+  .card-grid > :nth-child(3),
+  .card-grid > .views-element-container:nth-child(3) > * {
+    --stagger: 3;
+  }
+
+  .card-grid > :nth-child(4),
+  .card-grid > .views-element-container:nth-child(4) > * {
+    --stagger: 4;
+  }
+
+  .card-grid > :nth-child(n + 5),
+  .card-grid > .views-element-container:nth-child(n + 5) > * {
+    --stagger: 5;
+  }
+
+  /* Rows of a table fade in after their card. */
+  .card tbody tr {
+    animation: fade-in var(--duration-slow) ease both;
+    animation-delay: calc(var(--stagger, 0) * 70ms + 160ms);
+  }
+
+  .card:hover {
+    translate: 0 -2px;
+  }
+
+  /* Toasts slide in, and out when they're closed. */
+  .messages {
+    animation: toast-in var(--duration-slow) var(--ease-out) both;
+  }
+
+  .messages.is-leaving {
+    animation: toast-out 260ms var(--ease-in-out) both;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    translate: 0 12px;
+  }
+
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    translate: 0 16px;
+    scale: 0.96;
+  }
+}
+
+@keyframes toast-out {
+  to {
+    opacity: 0;
+    translate: 24px 0;
+  }
+}

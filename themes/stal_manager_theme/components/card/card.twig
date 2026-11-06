@@ -1,0 +1,10 @@
+{% set attributes = attributes.addClass('card', variant ? 'card--' ~ variant) %}
+<section{{ attributes }}>
+  {% if block('header') is not empty %}
+    <header class="card__header">{% block header %}{% endblock %}</header>
+  {% endif %}
+  <div class="card__content">{% block content %}{% endblock %}</div>
+  {% if block('footer') is not empty %}
+    <footer class="card__footer">{% block footer %}{% endblock %}</footer>
+  {% endif %}
+</section>

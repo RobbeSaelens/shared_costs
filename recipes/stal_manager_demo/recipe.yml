@@ -1,17 +1,24 @@
 name: 'Stal Manager demo'
-description: 'Stal Manager on a new site, to try it out: Olivero and Claro, two horses and a year of example costs.'
+description: 'Stal Manager on a new site, to try it out: the Stal Manager theme, Gin for the admin pages, two horses and a year of example costs.'
 type: 'Site'
 recipes:
-  - core/recipes/core_recommended_front_end_theme
-  - core/recipes/core_recommended_admin_theme
   - stal_manager
 install:
+  - block
   - toolbar
+  - gin_toolbar
+  - gin
+  # Admin menus open on hover, with quick links (flush caches...).
+  - admin_toolbar
+  - admin_toolbar_tools
+  - stal_manager_theme
 config:
   strict: false
   import:
     node:
       - views.view.content
+    # The theme's blocks: branding, menus, title, tabs and content.
+    stal_manager_theme: '*'
   actions:
     system.site:
       simpleConfigUpdate:
@@ -19,9 +26,26 @@ config:
         page.front: /stable
         # The dashboard is for the stable's managers: show the login form.
         page.403: /user/login
+    system.theme:
+      simpleConfigUpdate:
+        default: stal_manager_theme
+        admin: gin
+    # Gin in the theme's saddle brown, light or dark like the system.
+    gin.settings:
+      simpleConfigUpdate:
+        preset_accent_color: custom
+        accent_color: '#6f4520'
+        preset_focus_color: gin
+        enable_darkmode: auto
+        # A bar at the top, so it doesn't sit next to the theme's sidebar.
+        classic_toolbar: horizontal
     node.settings:
       simpleConfigUpdate:
         use_admin_theme: true
+    # Stable managers add and edit expenses in Gin, like the admin pages.
+    user.role.stable_manager:
+      grantPermissions:
+        - 'view the administration theme'
     # Costs are private: visitors that aren't logged in see nothing.
     user.role.anonymous:
       setProperties:

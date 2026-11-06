@@ -7,3 +7,6 @@ Saelens
 stal
 xaxis
 yaxis
+darkmode
+unboost
+unboosts

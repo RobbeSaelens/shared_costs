@@ -1,0 +1,44 @@
+/**
+ * @file
+ * Local tasks (View, Edit, Delete...): a segmented control.
+ */
+
+.tabs {
+  display: inline-flex;
+  flex-wrap: wrap;
+  margin: 0 0 var(--space-6);
+  padding: var(--space-1);
+  list-style: none;
+  border-radius: var(--radius);
+  background: var(--color-muted);
+  gap: var(--space-1);
+}
+
+.tabs__tab {
+  margin: 0;
+}
+
+.tabs__link,
+.tabs a {
+  display: block;
+  padding: var(--space-2) var(--space-4);
+  transition:
+    background-color var(--duration-fast) ease,
+    color var(--duration-fast) ease;
+  text-decoration: none;
+  color: var(--color-muted-foreground);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+}
+
+.tabs a:hover {
+  color: var(--color-foreground);
+}
+
+.tabs .is-active > a,
+.tabs a.is-active {
+  color: var(--color-foreground);
+  background: var(--color-card);
+  box-shadow: var(--shadow-sm);
+}

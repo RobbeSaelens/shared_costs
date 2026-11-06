@@ -153,18 +153,21 @@ final class AllocationItemTest extends KernelTestBase {
    *   Shares, expected messages, whether the first sharer is listed twice.
    */
   public static function providerValidation(): array {
+    $too_much = static fn (string $sum): string => "The shares add up to $sum %, which is more than 100 %.";
+    $not_whole = static fn (string $sum): string => "The shares add up to $sum %. Make them add up to 100 %, or leave a share empty to give that sharer the rest.";
+    $out_of_range = 'Shared with: a share must be from 0 to 100 %.';
     return [
       'all equal' => [[NULL, NULL], []],
       'adds up to 100' => [['70', '30'], []],
       'with decimals' => [['33.33', '33.33', '33.34'], []],
       'given and open' => [['60', NULL], []],
       'given with nothing left for the open one' => [['100', NULL], []],
-      'more than 100' => [['60', '50'], ['The shares add up to 110 %, which is more than 100 %.']],
-      'more than 100 with an open one' => [['60', '50', NULL], ['The shares add up to 110 %, which is more than 100 %.']],
-      'not whole' => [['60', '30'], ['The shares add up to 90 %. Make them add up to 100 %, or leave a share empty to give that sharer the rest.']],
-      'not whole with decimals' => [['33.33', '33.33'], ['The shares add up to 66.66 %. Make them add up to 100 %, or leave a share empty to give that sharer the rest.']],
-      'share out of range' => [['120', NULL], ['Shared with: a share must be from 0 to 100 %.', 'The shares add up to 120 %, which is more than 100 %.']],
-      'negative share' => [['-5', NULL], ['Shared with: a share must be from 0 to 100 %.']],
+      'more than 100' => [['60', '50'], [$too_much('110')]],
+      'more than 100 with an open one' => [['60', '50', NULL], [$too_much('110')]],
+      'not whole' => [['60', '30'], [$not_whole('90')]],
+      'not whole with decimals' => [['33.33', '33.33'], [$not_whole('66.66')]],
+      'share out of range' => [['120', NULL], [$out_of_range, $too_much('120')]],
+      'negative share' => [['-5', NULL], [$out_of_range]],
       'listed twice' => [[NULL, NULL], ['Sharer 0 is listed more than once.'], TRUE],
     ];
   }

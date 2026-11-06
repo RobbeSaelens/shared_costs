@@ -1,5 +1,5 @@
 name: 'Stal Manager'
-description: 'Keeps track of the costs of a stable and splits them over the horses: expenses, the inventory you buy from, a dashboard with charts and an overview per month.'
+description: 'Keeps track of the costs of a stable and splits them over the horses: expenses with their receipts, the inventory you buy from, a dashboard with charts, an overview per month and a statement per horse.'
 type: 'Site'
 install:
   - shared_costs
@@ -9,6 +9,13 @@ install:
   - views
   - charts
   - charts_chartjs
+  # Receipts, in the private file system.
+  - file
+  # "Add as expense" on the inventory: the expense form, filled in.
+  - prepopulate
+  # The expenses as CSV, with the filters that are set.
+  - views_data_export
+  - csv_serialization
 config:
   # Applying the recipe again (or on a site that changed its config) keeps what
   # is there, and only adds what is missing.

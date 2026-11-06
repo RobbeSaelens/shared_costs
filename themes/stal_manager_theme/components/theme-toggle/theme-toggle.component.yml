@@ -1,0 +1,11 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: 'Theme toggle'
+status: stable
+description: 'Switches between the light and the dark theme, and remembers the choice in this browser.'
+props:
+  type: object
+  properties: {}
+libraryOverrides:
+  dependencies:
+    - core/drupal
+    - core/once

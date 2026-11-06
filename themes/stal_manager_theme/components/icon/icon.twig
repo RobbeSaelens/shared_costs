@@ -1,0 +1,11 @@
+{%
+  set attributes = attributes
+    .addClass('icon', 'icon--' ~ name)
+    .setAttribute('focusable', 'false')
+%}
+{% if label %}
+  {% set attributes = attributes.setAttribute('role', 'img').setAttribute('aria-label', label) %}
+{% else %}
+  {% set attributes = attributes.setAttribute('aria-hidden', 'true') %}
+{% endif %}
+<svg{{ attributes }}><use href="#icon-{{ name }}"></use></svg>

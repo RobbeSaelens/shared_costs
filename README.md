@@ -5,10 +5,13 @@ percentage, and stores each part in cents that always add up to the total.
 Views can then add the parts up per sharer and per month.
 
 It comes with **Stal Manager**: three recipes that turn a Drupal site into a
-cost tracker for a horse stable (expenses, inventory, a dashboard with charts
-and a monthly overview), in English or Dutch. Stal Manager started as a
+cost tracker for a horse stable (expenses with receipts, inventory, a
+dashboard with charts, a monthly overview, a statement per horse and CSV
+exports), in English or Dutch. Stal Manager started as a
 Next.js app; the recipes rebuild it with configuration only, on top of this one
-small module.
+small module. Its front-end theme, in [`themes/stal_manager_theme`](themes/stal_manager_theme),
+makes it an app: HTMX navigation, live filters, view transitions and dark
+mode. Forms and admin pages use Gin.
 
 - [Features](#features)
 - [Requirements](#requirements)
@@ -16,6 +19,7 @@ small module.
 - [Using the field](#using-the-field)
 - [Views](#views)
 - [The Stal Manager recipes](#the-stal-manager-recipes)
+- [The Stal Manager theme](#the-stal-manager-theme)
 - [Development](#development)
 - [Known issues](#known-issues)
 
@@ -54,8 +58,18 @@ permissions, translations) is configuration in the recipes.
 
 - Drupal 11.4 or later, or Drupal 12 (see [Known issues](#known-issues)).
 - PHP 8.3 or later (Drupal 12: PHP 8.5).
-- For the recipes: [Charts](https://www.drupal.org/project/charts) 5.2.4 or
-  later, with its Chart.js submodule.
+- For the recipes:
+  - [Charts](https://www.drupal.org/project/charts) 5.2.4 or later, with its
+    Chart.js submodule;
+  - [Prepopulate](https://www.drupal.org/project/prepopulate) 2.5, for "Add as
+    expense" on the inventory;
+  - [Views Data Export](https://www.drupal.org/project/views_data_export) 1.10,
+    for the CSV download;
+  - a [private file system](https://www.drupal.org/docs/8/core/modules/file/overview#content-accessing-private-files)
+    for receipts: set `$settings['file_private_path']` in `settings.php`.
+- For the demo recipe: [Gin](https://www.drupal.org/project/gin) 5,
+  [Gin Toolbar](https://www.drupal.org/project/gin_toolbar) 3 and
+  [Admin Toolbar](https://www.drupal.org/project/admin_toolbar) 3.
 
 ## Installation
 
@@ -68,7 +82,8 @@ The module isn't on drupal.org yet: until it is, add this repository to your
 project's `composer.json` first:
 
 ```bash
-composer config repositories.shared_costs vcs https://github.com/RobbeSaelens/shared_costs
+composer config repositories.shared_costs \
+  vcs https://github.com/RobbeSaelens/shared_costs
 ```
 
 ## Using the field
@@ -105,8 +120,8 @@ Three recipes, in [`recipes/`](recipes):
 
 | Recipe | What it does |
 |---|---|
-| `stal_manager` | Horses, inventory items and expenses (content types and fields), eight cost categories, the views below, and a _Stable manager_ role. Doesn't touch themes or site settings, so it can go on an existing site. |
-| `stal_manager_demo` | `stal_manager` on a new site to try it: Olivero and Claro, the dashboard as front page, the site private (visitors get the login form), and two horses with a year of example costs. |
+| `stal_manager` | Horses, inventory items and expenses with their receipts (content types and fields), eight cost categories, the views below, and a _Stable manager_ role. Doesn't touch themes or site settings, so it can go on an existing site. |
+| `stal_manager_demo` | `stal_manager` on a new site to try it: the Stal Manager theme, Gin (in Stal Manager's brown) for forms and admin pages with Admin Toolbar's dropdown menus, the dashboard as front page, the site private (visitors get the login form), and two horses with a year of example costs. |
 | `stal_manager_nl` | `stal_manager` in Dutch: Dutch as the default language, with Dutch labels, categories and number formats (€ 1.234,56). |
 
 The pages, all for the _Stable manager_ role (and the main menu):
@@ -114,10 +129,18 @@ The pages, all for the _Stable manager_ role (and the main menu):
 - `/stable`: the dashboard. This month's costs, the latest expenses, and charts
   of the costs per horse and per month this year.
 - `/stable/expenses`: all expenses by month, with who shares them, filtered by
-  category or description.
+  category or description. _Download CSV_ downloads what the filters show,
+  with plain numbers for a spreadsheet (in Dutch: `;` and a decimal comma).
 - `/stable/overview`: one month's costs per category and per horse, with the
-  months to pick from.
-- `/stable/horses` and `/stable/inventory`.
+  months to pick from. A horse links to its statement.
+- `/stable/statement/{horse}/{month}`: a horse's statement, to print or send
+  to its owner: its total, and its part of each expense of the month.
+- `/stable/horses`, with each horse's statement of this month.
+- `/stable/inventory`: what you buy regularly. _Add as expense_ opens the
+  expense form filled in with the item, its category and price.
+
+An expense can have a receipt (a photo or PDF). Receipts are private files:
+only people who can see the expense can open them.
 
 Horses are never deleted (the role can't): a horse that leaves the stable is
 unpublished, so its share of past costs stays.
@@ -125,8 +148,12 @@ unpublished, so its share of past costs stays.
 To try it on a new site:
 
 ```bash
-composer require drupal/shared_costs drupal/charts
+composer require drupal/shared_costs drupal/charts \
+  drupal/prepopulate drupal/views_data_export \
+  drupal/gin drupal/gin_toolbar drupal/admin_toolbar
 drush site:install minimal
+# Receipts are private files: in settings.php, set a folder outside the web
+# root, such as $settings['file_private_path'] = '../private';
 drush recipe modules/contrib/shared_costs/recipes/stal_manager_demo
 # Optional: in Dutch.
 drush recipe modules/contrib/shared_costs/recipes/stal_manager_nl
@@ -141,6 +168,21 @@ by default; see the Charts module to serve it yourself.
 Not ported from the Next.js app: working offline (a PWA), and an expense that
 counts in full for every horse (add one expense per horse instead).
 
+## The Stal Manager theme
+
+A Starterkit-generated theme, without a base theme. See its
+[README](themes/stal_manager_theme/README.md):
+
+- an app shell with a collapsible sidebar, and a tab bar on phones;
+- HTMX navigation and live filters with core's HTMX;
+- cards and a stat card that counts up;
+- charts in its colors, and dark mode;
+- view transitions, which respect reduced motion;
+- single-directory components and OOP hooks.
+
+Drupal finds it in this repository (it scans module folders for themes too).
+The demo recipe installs it and imports its blocks.
+
 ## Development
 
 The repository is a [DDEV](https://ddev.com) project with
@@ -153,19 +195,45 @@ ddev symlink-project    # the module into web/modules/custom
 ddev phpcs              # Drupal and DrupalPractice coding standards
 ddev phpstan            # level 8, no baseline
 ddev cspell             # spelling, with core's dictionaries
+ddev stylelint          # the theme's CSS, with core's config
+ddev eslint             # the theme's JavaScript, with core's config
 ddev phpunit            # Unit, Kernel and Functional tests
+ddev phpunit --testsuite functional-javascript   # in Chrome (Selenium)
 ```
 
+The JavaScript tests run in the Selenium container of
+[ddev-selenium-standalone-chrome](https://github.com/ddev/ddev-selenium-standalone-chrome).
+Their accessibility check uses axe-core from core's JavaScript tools: run
+`yarn install` in `web/core` once (`ddev cspell` and the linters do that too).
+
 The Kernel tests also run on PostgreSQL and SQLite in CI (set `SIMPLETEST_DB`).
-Coverage of `src/` by the Unit and Kernel tests is kept above 90 %:
+Coverage of `src/` and the theme's `src/` by the Unit and Kernel tests is kept
+above 90 %:
 
 ```bash
-ddev exec php -d pcov.enabled=1 vendor/bin/phpunit --testsuite unit,kernel --coverage-text
+ddev exec php -d pcov.enabled=1 -d pcov.directory=. vendor/bin/phpunit \
+  --testsuite unit,kernel --coverage-text
 ```
 
 The recipe tests apply each recipe twice (it must be idempotent), check the
 dashboard's numbers on costs dated relative to today, check the role, and check
 that the Dutch recipe leaves no English label behind.
+
+Visual regression tests take screenshots of the demo site (each page, on a
+laptop in light and dark, and on a phone) and compare them with the approved
+ones in [`tests/visual/screenshots`](tests/visual/screenshots). They run in
+Playwright's Linux image, in Docker, so they match CI's:
+
+```bash
+ddev drush site:install minimal --yes
+ddev drush recipe /var/www/html/recipes/stal_manager_demo
+tests/visual/run.sh                       # compare
+tests/visual/run.sh --update-snapshots    # approve a change
+```
+
+The pages name their month, so they don't change with today's date; the
+dashboard's numbers and charts (this month, this year) are masked. In CI, the
+screenshots that differ are kept as the `visual-differences` artifact.
 
 ## Known issues
 
@@ -174,10 +242,14 @@ that the Dutch recipe leaves no English label behind.
   items by position, so default sharers beyond the imported ones remain. This
   affects every multi-value field with a default value; that's why the demo
   recipe doesn't set one. Set it yourself after importing.
-- **Drupal 12.** On 12.0.0-beta2 (PHP 8.5) the module and its tests pass, and
-  so do the `stal_manager` and `stal_manager_nl` recipes, except that Charts
-  5.2.4 renders its charts empty there. The demo recipe needs Drupal 11 for now:
-  it uses Olivero and the Toolbar, which Drupal 12 no longer has in core.
+- **Drupal 12.** On 12.0.0-beta2 (PHP 8.5) the module and its tests pass.
+  The recipes need contrib modules that don't declare Drupal 12 support yet:
+  Prepopulate and Views Data Export (CI tries them on Drupal 12 anyway), and
+  Charts 5.2.4 renders its charts empty there (its preprocess function isn't
+  found on Drupal 12; it needs core's `initial preprocess`). The demo recipe
+  needs Drupal 11 for now: it uses contrib Gin, which extends Claro, and the
+  Toolbar. Drupal 12 has Gin in core instead (Default Admin), and no Claro or
+  Toolbar.
 - **Charts and config schema.** Charts 5.2.4 has no schema for its views
   style's `path` and `library_type_options` options; the recipe's views leave
   them out, so they validate. Saving a chart view in the Views UI adds them

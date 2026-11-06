@@ -171,7 +171,10 @@ final class ViewsIntegrationTest extends ViewsKernelTestBase {
     $view = Views::getView('test_shared_costs_per_month');
     $this->assertInstanceOf(ViewExecutable::class, $view);
     $view->setDisplay();
-    $view->displayHandlers->get('default')->overrideOption('fields', ['field_date_year_month' => ['format' => 'Y-m', 'order' => 'DESC'] + $view->displayHandlers->get('default')->getOption('fields')['field_date_year_month']] + $view->displayHandlers->get('default')->getOption('fields'));
+    $display = $view->displayHandlers->get('default');
+    $fields = $display->getOption('fields');
+    $fields['field_date_year_month'] = ['format' => 'Y-m', 'order' => 'DESC'] + $fields['field_date_year_month'];
+    $display->overrideOption('fields', $fields);
     $this->runView($view);
     $this->assertSame(['2026-11', '2026-10', '2026-09'], $this->renderedMonths($view));
 

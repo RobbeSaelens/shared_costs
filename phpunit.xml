@@ -34,10 +34,15 @@
     <testsuite name="functional">
       <directory>web/modules/custom/shared_costs/tests/src/Functional</directory>
     </testsuite>
+    <!-- In a real browser: Selenium (ddev-selenium-standalone-chrome). -->
+    <testsuite name="functional-javascript">
+      <directory>web/modules/custom/shared_costs/tests/src/FunctionalJavascript</directory>
+    </testsuite>
   </testsuites>
   <source>
     <include>
       <directory>web/modules/custom/shared_costs/src</directory>
+      <directory>web/modules/custom/shared_costs/themes/stal_manager_theme/src</directory>
     </include>
   </source>
 </phpunit>

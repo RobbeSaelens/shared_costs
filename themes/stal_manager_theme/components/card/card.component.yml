@@ -1,0 +1,19 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: Card
+status: stable
+description: 'A surface for one piece of content: a table, a chart, a list. Its header holds the heading.'
+props:
+  type: object
+  properties:
+    variant:
+      type: string
+      title: Variant
+      enum: ['', wide, flush]
+      description: 'wide: spans the whole grid. flush: content to the edges (tables).'
+slots:
+  header:
+    title: Header
+  content:
+    title: Content
+  footer:
+    title: Footer

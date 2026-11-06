@@ -53,7 +53,12 @@ final class AllocationWidgetFormatterTest extends KernelTestBase {
   public function testWidgetForm(): void {
     $field = $this->createSharedCostsFields();
     $field->setSetting('handler_settings', ['target_bundles' => ['entity_test' => 'entity_test']])->save();
-    EntityFormDisplay::create(['targetEntityType' => 'entity_test', 'bundle' => 'entity_test', 'mode' => 'default', 'status' => TRUE])
+    EntityFormDisplay::create([
+      'targetEntityType' => 'entity_test',
+      'bundle' => 'entity_test',
+      'mode' => 'default',
+      'status' => TRUE,
+    ])
       ->setComponent('field_shared_with', ['type' => 'shared_costs_allocation_table'])
       ->save();
 
@@ -102,6 +107,33 @@ final class AllocationWidgetFormatterTest extends KernelTestBase {
       'decimal' => '.',
       'locked' => json_encode([(string) $old->id() => NULL]),
     ], $vals);
+  }
+
+  /**
+   * Tests that sharers with an equal part (no share) are ticked when editing.
+   */
+  public function testWidgetEqualParts(): void {
+    $field = $this->createSharedCostsFields();
+    $field->setSetting('handler_settings', ['target_bundles' => ['entity_test' => 'entity_test']])->save();
+    EntityFormDisplay::create([
+      'targetEntityType' => 'entity_test',
+      'bundle' => 'entity_test',
+      'mode' => 'default',
+      'status' => TRUE,
+    ])
+      ->setComponent('field_shared_with', ['type' => 'shared_costs_allocation_table'])
+      ->save();
+    $luna = $this->createSharer('Luna');
+    $bella = $this->createSharer('Bella');
+    $costs = $this->createCosts('30', [[$luna], [$bella]]);
+    $costs->save();
+
+    $table = \Drupal::service('entity.form_builder')->getForm($costs)['field_shared_with']['widget'];
+    foreach ([$luna, $bella] as $sharer) {
+      $this->assertTrue($table[$sharer->id()]['selected']['#default_value'], $sharer->label() . ' is ticked.');
+      $this->assertNull($table[$sharer->id()]['share']['#default_value']);
+      $this->assertSame('15.00', $table[$sharer->id()]['amount']['#value']);
+    }
   }
 
   /**
@@ -188,7 +220,12 @@ final class AllocationWidgetFormatterTest extends KernelTestBase {
 
     $big = $this->createCosts('12345.67', [[$luna]]);
     $big->save();
-    $this->assertSame(['Luna · 12.345,67 EUR'], $this->formatted($big, ['show_share' => FALSE, 'decimal_separator' => ',', 'thousand_separator' => '.', 'suffix' => ' EUR']));
+    $this->assertSame(['Luna · 12.345,67 EUR'], $this->formatted($big, [
+      'show_share' => FALSE,
+      'decimal_separator' => ',',
+      'thousand_separator' => '.',
+      'suffix' => ' EUR',
+    ]));
     $this->assertSame(['Luna · 100 %'], $this->formatted($big, ['show_amount' => FALSE]));
     $this->assertSame(['Luna'], $this->formatted($big, ['show_share' => FALSE, 'show_amount' => FALSE]));
 
@@ -226,7 +263,10 @@ final class AllocationWidgetFormatterTest extends KernelTestBase {
     $form = [];
     $settings = $formatter->settingsForm($form, new FormState());
     // The entity reference label formatter's own setting, then these.
-    $this->assertSame(['link', 'show_share', 'show_amount', 'decimal_separator', 'thousand_separator', 'prefix', 'suffix'], array_values(array_intersect(array_keys($settings), array_keys(AllocationFormatter::defaultSettings()))));
+    $this->assertSame(
+      ['link', 'show_share', 'show_amount', 'decimal_separator', 'thousand_separator', 'prefix', 'suffix'],
+      array_values(array_intersect(array_keys($settings), array_keys(AllocationFormatter::defaultSettings()))),
+    );
   }
 
   /**

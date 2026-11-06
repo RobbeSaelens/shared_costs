@@ -113,7 +113,10 @@ final class SharedCostsHooks {
           'relationship field' => $field_name . '_target_id',
         ];
         $data[$target_table]['reverse__' . $entity_type_id . '__' . $field_name]['relationship'] = [
-          'title' => $this->t('@entity sharing costs through @field_name', ['@entity' => $entity_type->getLabel(), '@field_name' => $field_name]),
+          'title' => $this->t('@entity sharing costs through @field_name', [
+            '@entity' => $entity_type->getLabel(),
+            '@field_name' => $field_name,
+          ]),
           'label' => $this->t('@field_name', ['@field_name' => $field_name]),
           'group' => $target_type->getLabel(),
           'help' => $this->t('The @entity whose @field_name includes this @label.', [

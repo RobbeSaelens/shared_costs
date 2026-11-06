@@ -1,0 +1,100 @@
+/**
+ * @file
+ * Status messages, as toasts in a corner of the screen.
+ */
+
+.app-toasts {
+  position: fixed;
+  z-index: 50;
+  inset-block-end: var(--space-6);
+  inset-inline-end: var(--space-6);
+  display: grid;
+  width: min(26rem, calc(100vw - 2 * var(--space-4)));
+  pointer-events: none;
+  gap: var(--space-3);
+}
+
+.app-toasts [data-drupal-messages] {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.messages {
+  display: flex;
+  align-items: flex-start;
+  padding: var(--space-4) var(--space-3) var(--space-4) var(--space-5);
+  pointer-events: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-card);
+  box-shadow: var(--shadow-lg);
+  font-size: var(--font-size-sm);
+  gap: var(--space-3);
+  overflow-wrap: anywhere;
+}
+
+.messages::before {
+  flex: none;
+  width: 0.6rem;
+  height: 0.6rem;
+  margin-block-start: 0.45rem;
+  content: "";
+  border-radius: var(--radius-full);
+  background: var(--message-color, var(--color-primary));
+  box-shadow: 0 0 0 4px color-mix(in oklch, var(--message-color, var(--color-primary)) 20%, transparent);
+}
+
+.messages--status {
+  --message-color: var(--color-success);
+}
+
+.messages--warning {
+  --message-color: var(--color-chart-4);
+}
+
+.messages--error {
+  --message-color: var(--color-destructive);
+}
+
+.messages__content {
+  flex: 1;
+}
+
+.messages__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.messages__item + .messages__item {
+  margin-block-start: var(--space-2);
+}
+
+.messages__close {
+  --icon-size: 1rem;
+
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  cursor: pointer;
+  color: var(--color-muted-foreground);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+}
+
+.messages__close:hover {
+  color: var(--color-foreground);
+  background: var(--color-secondary);
+}
+
+@media (max-width: 47.99rem) {
+  .app-toasts {
+    inset-block: var(--space-4) auto;
+    inset-inline: var(--space-4);
+    width: auto;
+  }
+}

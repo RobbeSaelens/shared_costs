@@ -1,0 +1,57 @@
+/**
+ * @file
+ * On paper: the page itself, without the app around it.
+ *
+ * Made for a horse's statement, which its owner gets on paper or as a PDF,
+ * but any page prints this way.
+ */
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  color: #000;
+  background: #fff;
+}
+
+.app,
+:root[data-sidebar] .app {
+  display: block;
+  min-height: 0;
+}
+
+.app-sidebar,
+.app-toasts,
+.app-progress,
+.page-actions,
+.tabs,
+.views-summary,
+.view-stable-statement .view-display-id-attachment_2 {
+  display: none;
+}
+
+.app-main,
+.app-main__inner {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+.card,
+.stat-card {
+  border: 1px solid #999;
+  background: #fff;
+  box-shadow: none;
+  break-inside: avoid;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+* {
+  transition: none;
+  animation: none;
+}

@@ -50,7 +50,10 @@ trait StalManagerTestTrait {
       'field_expense_date' => $date,
       'field_cost_category' => $category,
       'field_total' => $total,
-      'field_shared_with' => array_map(static fn (array $sharer): array => ['target_id' => $sharer[0]->id(), 'share' => $sharer[1] ?? NULL], $sharers),
+      'field_shared_with' => array_map(static fn (array $sharer): array => [
+        'target_id' => $sharer[0]->id(),
+        'share' => $sharer[1] ?? NULL,
+      ], $sharers),
     ]);
     $expense->save();
     return $expense;
@@ -79,6 +82,20 @@ trait StalManagerTestTrait {
       ];
     }
     return $charts;
+  }
+
+  /**
+   * Returns the rows of the CSV file that was downloaded.
+   *
+   * @return list<list<string>>
+   *   The cells of each row, the header first.
+   */
+  protected function csv(): array {
+    $content = $this->getSession()->getPage()->getContent();
+    // Spreadsheets need the byte order mark to read UTF-8.
+    $this->assertStringStartsWith("\xEF\xBB\xBF", $content);
+    $lines = preg_split('/\R/', trim(substr($content, 3))) ?: [];
+    return array_map(static fn (string $line): array => array_map('strval', str_getcsv($line, escape: '')), $lines);
   }
 
   /**
