@@ -179,6 +179,33 @@ final class StalManagerThemeTest extends WebDriverTestBase {
   }
 
   /**
+   * Tests that the dashboard fits a desktop screen, and scrolls on a phone.
+   */
+  public function testDashboardFitsScreen(): void {
+    // The window, not the page: the browser's own bars take some height.
+    $this->getSession()->resizeWindow(1440, 1050);
+    $this->drupalGet('stable');
+    $this->assertGreaterThanOrEqual(768, $this->getSession()->evaluateScript('window.innerHeight'));
+    $this->waitFor('window.Chart && Object.keys(window.Chart.instances).length === 2');
+    $this->waitFor('document.documentElement.scrollHeight <= window.innerHeight');
+    // The charts take the room the first row leaves.
+    $heights = $this->getSession()->evaluateScript("[...document.querySelectorAll('.chart-box')].map((box) => box.getBoundingClientRect().height)");
+    $this->assertCount(2, $heights);
+    foreach ($heights as $height) {
+      $this->assertGreaterThan(180, $height);
+    }
+    // Chart.js fills the box.
+    $this->waitFor("[...document.querySelectorAll('.chart-box')].every((box) => Math.abs(box.querySelector('canvas').getBoundingClientRect().height - box.getBoundingClientRect().height) < 2)");
+
+    // A phone: the page scrolls, the charts keep their height.
+    $this->getSession()->resizeWindow(390, 844);
+    $this->drupalGet('stable');
+    $this->waitFor('window.Chart && Object.keys(window.Chart.instances).length === 2');
+    $this->assertTrue($this->getSession()->evaluateScript('document.documentElement.scrollHeight > window.innerHeight'));
+    $this->assertEqualsWithDelta(288, $this->getSession()->evaluateScript("document.querySelector('.chart-box').getBoundingClientRect().height"), 1);
+  }
+
+  /**
    * Tests the sidebar: it collapses to its icons, and stays collapsed.
    */
   public function testSidebar(): void {

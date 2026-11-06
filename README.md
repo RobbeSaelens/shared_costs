@@ -59,8 +59,9 @@ permissions, translations) is configuration in the recipes.
 - PHP 8.3 or later (Drupal 12: PHP 8.5).
 - For the recipes: [Charts](https://www.drupal.org/project/charts) 5.2.4 or
   later, with its Chart.js submodule.
-- For the demo recipe: [Gin](https://www.drupal.org/project/gin) 5 and
-  [Gin Toolbar](https://www.drupal.org/project/gin_toolbar) 3.
+- For the demo recipe: [Gin](https://www.drupal.org/project/gin) 5,
+  [Gin Toolbar](https://www.drupal.org/project/gin_toolbar) 3 and
+  [Admin Toolbar](https://www.drupal.org/project/admin_toolbar) 3.
 
 ## Installation
 
@@ -112,7 +113,7 @@ Three recipes, in [`recipes/`](recipes):
 | Recipe | What it does |
 |---|---|
 | `stal_manager` | Horses, inventory items and expenses (content types and fields), eight cost categories, the views below, and a _Stable manager_ role. Doesn't touch themes or site settings, so it can go on an existing site. |
-| `stal_manager_demo` | `stal_manager` on a new site to try it: the Stal Manager theme, Gin (in Stal Manager's brown) for forms and admin pages, the dashboard as front page, the site private (visitors get the login form), and two horses with a year of example costs. |
+| `stal_manager_demo` | `stal_manager` on a new site to try it: the Stal Manager theme, Gin (in Stal Manager's brown) for forms and admin pages with Admin Toolbar's dropdown menus, the dashboard as front page, the site private (visitors get the login form), and two horses with a year of example costs. |
 | `stal_manager_nl` | `stal_manager` in Dutch: Dutch as the default language, with Dutch labels, categories and number formats (€ 1.234,56). |
 
 The pages, all for the _Stable manager_ role (and the main menu):
@@ -131,7 +132,8 @@ unpublished, so its share of past costs stays.
 To try it on a new site:
 
 ```bash
-composer require drupal/shared_costs drupal/charts drupal/gin drupal/gin_toolbar
+composer require drupal/shared_costs drupal/charts \
+  drupal/gin drupal/gin_toolbar drupal/admin_toolbar
 drush site:install minimal
 drush recipe modules/contrib/shared_costs/recipes/stal_manager_demo
 # Optional: in Dutch.

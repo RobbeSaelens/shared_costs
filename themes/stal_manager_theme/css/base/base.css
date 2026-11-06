@@ -60,6 +60,15 @@ a:hover {
   background: color-mix(in oklch, var(--color-accent) 60%, transparent);
 }
 
+/*
+ * Visually hidden helpers right in the body (Drupal's live announcements):
+ * at the top, so they never add a pixel of height below a page that fits.
+ */
+body > .visually-hidden:not(:focus) {
+  inset-block-start: 0;
+  inset-inline-start: 0;
+}
+
 .skip-link:focus {
   position: fixed;
   z-index: 100;

@@ -106,7 +106,14 @@
       }
       once('stal-manager-charts', 'html').forEach(() => {
         Chart.defaults.font.family = palette().font;
-        Chart.register({ id: 'stalManagerTheme', beforeUpdate: restyle });
+        Chart.register({
+          id: 'stalManagerTheme',
+          // The chart fills its box (see ChartsHooks), whatever its width.
+          beforeInit: (chart) => {
+            chart.options.maintainAspectRatio = false;
+          },
+          beforeUpdate: restyle,
+        });
         root.addEventListener('stal:themechange', () => {
           Object.values(Chart.instances).forEach((chart) => chart.update());
         });

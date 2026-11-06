@@ -3,8 +3,13 @@
  * Charts in cards, and their table of numbers.
  */
 
-.card .charts-chartjs,
-.card canvas {
+/* The chart's own box: Chart.js fills it (see ChartsHooks). */
+.chart-box {
+  position: relative;
+  height: 18rem;
+}
+
+.chart-box canvas {
   max-width: 100%;
 }
 

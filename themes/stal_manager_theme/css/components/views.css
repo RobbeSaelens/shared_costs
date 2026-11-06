@@ -56,6 +56,57 @@
   }
 }
 
+/*
+ * The dashboard fits the screen, where there is room: no scrolling. The page
+ * becomes a column as high as the screen; the cards' second row (the charts)
+ * gets what the first row leaves, and the charts fill their cards.
+ */
+@media (min-width: 72rem) and (min-height: 48rem) {
+  /* Minus Drupal's toolbars (for admins), which Drupal measures. */
+  .app-main:has(.view-stable-dashboard.stable-view--summary) {
+    display: flex;
+    flex-direction: column;
+    height: calc(100dvh - var(--drupal-displace-offset-top, 0px));
+  }
+
+  .app-main:has(.view-stable-dashboard.stable-view--summary) :is(.app-main__inner, .app-main__inner :has(.stable-view--summary)),
+  .view-stable-dashboard.stable-view--summary {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    width: 100%;
+    min-height: 0;
+  }
+
+  .view-stable-dashboard .card-grid {
+    flex: 1;
+    grid-template-rows: auto minmax(0, 1fr);
+    min-height: 0;
+  }
+
+  .view-stable-dashboard .card:has(.chart-box) {
+    min-height: 0;
+  }
+
+  /* An opened table of numbers scrolls inside its card. */
+  .view-stable-dashboard .card:has(.chart-box) .card__content {
+    overflow: auto;
+  }
+
+  .view-stable-dashboard .card:has(.chart-box) :is(.card__content, .view-content, .charts-figure) {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .view-stable-dashboard .chart-box {
+    flex: 1;
+    height: auto;
+    min-height: 8rem;
+  }
+}
+
 /* The list of months: pills. */
 .views-summary {
   display: flex;

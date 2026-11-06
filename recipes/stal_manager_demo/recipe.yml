@@ -8,6 +8,9 @@ install:
   - toolbar
   - gin_toolbar
   - gin
+  # Admin menus open on hover, with quick links (flush caches...).
+  - admin_toolbar
+  - admin_toolbar_tools
   - stal_manager_theme
 config:
   strict: false

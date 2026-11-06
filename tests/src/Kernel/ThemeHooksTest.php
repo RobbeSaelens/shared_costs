@@ -11,6 +11,7 @@ use Drupal\Core\Url;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\node\Entity\Node;
 use Drupal\node\NodeInterface;
+use Drupal\stal_manager_theme\Hook\ChartsHooks;
 use Drupal\stal_manager_theme\Hook\NavigationHooks;
 use Drupal\stal_manager_theme\Hook\PageHooks;
 use Drupal\stal_manager_theme\Hook\StalManagerThemeHooks;
@@ -25,6 +26,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Tests the Stal Manager theme's hooks: HTMX navigation, cards, stat cards.
  */
+#[CoversClass(ChartsHooks::class)]
 #[CoversClass(NavigationHooks::class)]
 #[CoversClass(PageHooks::class)]
 #[CoversClass(ViewsHooks::class)]
@@ -142,6 +144,8 @@ final class ThemeHooksTest extends KernelTestBase {
     $this->assertStringContainsString('card card--flush', $html);
     $this->assertStringContainsString('<h2>Recently added</h2>', $html);
     $this->assertStringContainsString('<h2>Costs per horse this year</h2>', $html);
+    // Each chart in a box of its own, which the theme sizes.
+    $this->assertSame(2, preg_match_all('#<div class="chart-box"><div[^>]* class="charts-chartjs#', $html));
   }
 
   /**

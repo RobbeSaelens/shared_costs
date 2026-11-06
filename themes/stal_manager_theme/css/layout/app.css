@@ -7,7 +7,8 @@
 .app {
   display: grid;
   grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
-  min-height: 100dvh;
+  /* Below Drupal's toolbars (for admins). */
+  min-height: calc(100dvh - var(--drupal-displace-offset-top, 0px));
   transition: grid-template-columns var(--duration-slow) var(--ease-out);
 }
 
@@ -22,11 +23,12 @@
   display: flex;
   overflow: hidden auto;
   flex-direction: column;
-  height: 100dvh;
+  /* Below Drupal's toolbars (for admins), which Drupal measures. */
+  height: calc(100dvh - var(--drupal-displace-offset-top, 0px));
   padding: var(--space-4) var(--space-3);
   border-inline-end: 1px solid var(--color-border);
   background: var(--color-sidebar);
-  inset-block-start: 0;
+  inset-block-start: var(--drupal-displace-offset-top, 0);
   gap: var(--space-4);
 }
 

@@ -27,6 +27,7 @@
         "drupal/core": "^11.4 || ^12"
     },
     "require-dev": {
+        "drupal/admin_toolbar": "^3.6.3",
         "drupal/charts": "^5.2.4",
         "drupal/gin": "^5.0.16",
         "drupal/gin_toolbar": "^3.0.3",

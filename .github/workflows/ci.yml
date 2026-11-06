@@ -94,9 +94,10 @@ jobs:
         run: |
           composer config minimum-stability beta
           composer config prefer-stable true
-          # Drush 13 and contrib Gin don't support Drupal 12 (it has Gin in
-          # core). Only the demo recipe's tests need Gin.
-          composer remove --dev --no-update drush/drush drupal/gin drupal/gin_toolbar
+          # Drush 13, contrib Gin and Admin Toolbar don't support Drupal 12 (it
+          # has Gin in core). Only the demo recipe's tests need Gin and Admin
+          # Toolbar.
+          composer remove --dev --no-update drush/drush drupal/gin drupal/gin_toolbar drupal/admin_toolbar
       - uses: ddev/github-action-setup-ddev@v1
       - run: ddev poser
       - run: ddev symlink-project

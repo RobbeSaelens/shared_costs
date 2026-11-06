@@ -34,6 +34,9 @@ final class StalManagerDemoRecipeTest extends GenericRecipeTestBase {
     $this->assertSame('stal_manager_theme', $this->config('system.theme')->get('default'));
     $this->assertSame('gin', $this->config('system.theme')->get('admin'));
     $this->assertSame('#6f4520', $this->config('gin.settings')->get('accent_color'));
+    $modules = $this->config('core.extension')->get('module');
+    $this->assertArrayHasKey('admin_toolbar', $modules);
+    $this->assertArrayHasKey('admin_toolbar_tools', $modules);
 
     // Visitors get the login form, and nothing of the costs.
     $this->drupalGet('<front>');
@@ -61,6 +64,12 @@ final class StalManagerDemoRecipeTest extends GenericRecipeTestBase {
     $this->clickLink('Add an expense');
     $this->assertSession()->responseContains('/themes/contrib/gin/');
     $this->assertSession()->fieldExists('title[0][value]');
+
+    // Admins get the admin menu with its submenus, which open on hover.
+    $this->drupalLogin($this->rootUser);
+    $this->drupalGet('admin/content');
+    $this->assertSession()->responseContains('/modules/contrib/admin_toolbar/');
+    $this->assertSession()->elementExists('css', '#toolbar-item-administration-tray li.menu-item--expanded.menu-item__system-admin_structure > ul.toolbar-menu a[href$="/admin/structure/block"]');
   }
 
   /**
