@@ -376,11 +376,82 @@ what was left out), and reading one item or changing anything gives 403.
 JSON:API offers every entity type, as far as entity access allows: so
 visitors do see what core treats as public, such as user names (only
 `display_name`, at `/jsonapi/user/user`), blocks, date formats and menu
-names. To close `/jsonapi` to visitors altogether, refuse it in front of
-Drupal, or in a site module.
+names. And `meta.omitted` gives the ids of what a visitor may not see, even
+in an empty list.
 
-Links in the answers point at Drupal's own address: behind a proxy, build the
-app's requests from the ids, not from those links.
+The recipe can't close that with configuration: JSON:API has no setting for
+it, and core lets everyone see a user's label. A site that wants it closed
+requires a logged-in user on every JSON:API route, with a route subscriber in
+a site module (the Stable Manager site does this). The services file:
+
+```yaml
+services:
+  Drupal\my_module\Routing\JsonApiRouteSubscriber:
+    tags:
+      - { name: event_subscriber }
+```
+
+And `src/Routing/JsonApiRouteSubscriber.php`:
+
+```php
+final class JsonApiRouteSubscriber extends RouteSubscriberBase {
+
+  protected function alterRoutes(RouteCollection $collection): void {
+    foreach ($collection as $route) {
+      // JSON:API flags all of its routes (`_is_jsonapi`), under any base path.
+      if ($route->getDefault(Routes::JSON_API_ROUTE_FLAG_KEY)) {
+        $route->setRequirement('_user_is_logged_in', 'TRUE');
+      }
+    }
+  }
+
+}
+```
+
+(`use Drupal\Core\Routing\RouteSubscriberBase`, `Drupal\jsonapi\Routing\Routes`
+and `Symfony\Component\Routing\RouteCollection`.) Visitors then get 403 on
+every JSON:API route, `/jsonapi` itself included. Logging in isn't a JSON:API
+route, so `/user/login`, `/user/login_status` and `/session/token` stay open.
+
+### Behind a proxy: the session cookie
+
+An app can reach Drupal through a proxy on its own domain, such as Stable
+Manager's PWA on Vercel, which proxies `/drupal/*` to Drupal: no CORS, but
+the login seems to work and doesn't stay. `POST /user/login` answers 200, and
+the next request is anonymous.
+
+The cause is the session cookie's domain. Drupal sets it as `Domain=.<the host
+it was asked for>` (`SessionConfiguration::getCookieDomain()`), and a proxy
+asks for Drupal's own host. So the browser gets a cookie for Drupal's domain
+from the app's domain, and rejects it. Two fixes; one is enough:
+
+- **A host-only cookie**, in the Drupal site's `services.yml`:
+
+  ```yaml
+  parameters:
+    session.storage.options:
+      cookie_domain: ''
+  ```
+
+  The cookie then has no `Domain`: it belongs to whatever host the browser
+  asked, the app's domain through the proxy and Drupal's own for its pages.
+  The proxy forwards `Set-Cookie` and `Cookie` unchanged, and asks Drupal's own
+  `Host`. The cookie's name no longer depends on the host name, so don't set
+  this on several Drupal sites that are reached through one host name.
+- **A proxy that rewrites the cookie**: without `Domain`, with `Path` set to
+  the proxy's prefix (`/drupal`), and `Secure` on https. That's what the PWA's
+  route handler does, and Drupal needs no change.
+
+More about such a proxy:
+
+- Drupal's `reverse_proxy` settings aren't needed when only the app's server
+  calls Drupal: logging in, the cookie and the CSRF token don't depend on them.
+  Without them, Drupal sees the proxy's address as the visitor's.
+- So the login flood limits (`user.flood`: 50 failed logins an hour per IP
+  address, 5 per account) are per proxy address, shared by all of the app's
+  users.
+- Links in JSON:API answers point at Drupal's own host, not at the proxy's:
+  build the requests from the ids.
 
 ## The Stable Manager theme
 
