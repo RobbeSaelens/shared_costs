@@ -241,19 +241,22 @@ screenshots that differ are kept as the `visual-differences` artifact.
   entity (which fills in the field's default value) and then sets the imported
   items by position, so default sharers beyond the imported ones remain. This
   affects every multi-value field with a default value; that's why the demo
-  recipe doesn't set one. Set it yourself after importing.
+  recipe doesn't set one. Set it yourself after importing. Reported as
+  [#3635887](https://www.drupal.org/project/drupal/issues/3635887).
 - **Drupal 12.** On 12.0.0-beta2 (PHP 8.5) the module and its tests pass.
   The recipes need contrib modules that don't declare Drupal 12 support yet:
   Prepopulate and Views Data Export (CI tries them on Drupal 12 anyway), and
   Charts 5.2.4 renders its charts empty there (its preprocess function isn't
-  found on Drupal 12; it needs core's `initial preprocess`). The demo recipe
+  found on Drupal 12; it needs core's `initial preprocess`, reported as
+  [#3635886](https://www.drupal.org/project/charts/issues/3635886)). The demo recipe
   needs Drupal 11 for now: it uses contrib Gin, which extends Claro, and the
   Toolbar. Drupal 12 has Gin in core instead (Default Admin), and no Claro or
   Toolbar.
 - **Charts and config schema.** Charts 5.2.4 has no schema for its views
   style's `path` and `library_type_options` options; the recipe's views leave
   them out, so they validate. Saving a chart view in the Views UI adds them
-  again, which only matters for strict schema checks (tests).
+  again, which only matters for strict schema checks (tests). Reported as
+  [#3635885](https://www.drupal.org/project/charts/issues/3635885).
 
 ## Maintainers
 
