@@ -86,7 +86,9 @@ final class StalManagerThemeTest extends WebDriverTestBase {
     $this->assertSession()->waitForElement('css', 'h1.page-title:not(:empty)');
     $this->waitFor(sprintf("document.querySelector('h1.page-title').textContent.trim() === %s", json_encode($last->format('F Y'))));
     $this->assertStringEndsWith('/stable/overview/' . $last->format('Ym'), $this->getUrl());
-    $this->assertSession()->elementTextContains('css', '.stat-card__value', '€ 12.35');
+    // The stat card counts up to the month's total.
+    $this->assertSession()->elementAttributeContains('css', '.stat-card__value', 'data-count-up', '12.35');
+    $this->waitFor("document.querySelector('.stat-card__value').textContent.trim() === '€ 12.35'");
     $this->assertPageNotReloaded();
 
     // Back: HTMX restores the previous page.

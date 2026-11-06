@@ -118,7 +118,7 @@ final class NavigationHooks {
         continue;
       }
       $route = $url->isRouted() ? $url->getRouteName() : NULL;
-      $item['icon'] = self::ICONS[$route] ?? 'dot';
+      $item['icon'] = $route !== NULL ? self::ICONS[$route] ?? 'dot' : 'dot';
       $attributes = $url->getOption('attributes') ?? [];
       if (!empty($item['in_active_trail']) || ($route !== NULL && $route === $this->routeMatch->getRouteName())) {
         $attributes['aria-current'] = 'page';
