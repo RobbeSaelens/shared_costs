@@ -22,8 +22,10 @@ export BASE_URL="http://$site"
 
 # amd64 everywhere: CI runs on it, and fonts render a little differently on
 # arm64.
+# On DDEV's network, the site's host name leads to its router, on macOS and
+# Linux alike.
 docker run --rm --platform linux/amd64 --ipc=host \
-  --add-host "$site:host-gateway" \
+  --network ddev_default \
   -e LOGIN_URL -e BASE_URL -e CI \
   -v "$PWD":/work -w /work \
   "mcr.microsoft.com/playwright:v$version-noble" \

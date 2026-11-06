@@ -62,10 +62,13 @@ final class StalManagerRecipeTest extends GenericRecipeTestBase {
     if ($same_year) {
       $per_month = [$last_month->format('M') => 12.35] + $per_month;
     }
-    $this->assertEquals([
-      ['labels' => ['Bella', 'Luna'], 'values' => $same_year ? [56.17, 86.18] : [50.0, 80.0]],
-      ['labels' => array_keys($per_month), 'values' => array_values($per_month)],
-    ], $this->charts());
+    $charts = [
+      'expected' => [
+        ['labels' => ['Bella', 'Luna'], 'values' => $same_year ? [56.17, 86.18] : [50.0, 80.0]],
+        ['labels' => array_keys($per_month), 'values' => array_values($per_month)],
+      ],
+      'actual' => $this->charts(),
+    ];
 
     // Overview of this month: per category and per horse.
     $this->drupalGet('stable/overview');
@@ -130,6 +133,10 @@ final class StalManagerRecipeTest extends GenericRecipeTestBase {
     ], $this->tableRows('.stable-horses'));
     $this->clickLink('Statement');
     $this->assertSession()->elementTextEquals('css', 'h1', 'Bella: ' . $this_month->format('F Y'));
+
+    // The dashboard's charts, checked last: Charts 5.2.4 draws none on
+    // Drupal 12 yet, and the rest is worth checking there.
+    $this->assertEquals($charts['expected'], $charts['actual']);
     $this->drupalGet('stable/inventory');
     $this->assertSession()->pageTextContains('Nothing in the inventory yet.');
   }

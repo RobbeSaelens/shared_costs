@@ -1,0 +1,21 @@
+# Weekly updates, as pull requests to develop (where CI runs on every push).
+version: 2
+updates:
+  - package-ecosystem: composer
+    directory: /
+    target-branch: develop
+    schedule:
+      interval: weekly
+  - package-ecosystem: github-actions
+    directory: /
+    target-branch: develop
+    schedule:
+      interval: weekly
+  # Playwright, for the visual tests. Its Docker image follows the version, and
+  # a new browser can change the screenshots: run tests/visual/run.sh
+  # --update-snapshots on the update's branch when they differ.
+  - package-ecosystem: npm
+    directory: /tests/visual
+    target-branch: develop
+    schedule:
+      interval: weekly
