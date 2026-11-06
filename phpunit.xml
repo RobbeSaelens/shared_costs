@@ -42,7 +42,7 @@
   <source>
     <include>
       <directory>web/modules/custom/shared_costs/src</directory>
-      <directory>web/modules/custom/shared_costs/themes/stal_manager_theme/src</directory>
+      <directory>web/modules/custom/shared_costs/themes/stable_manager_theme/src</directory>
     </include>
   </source>
 </phpunit>

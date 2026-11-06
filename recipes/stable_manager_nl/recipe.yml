@@ -1,0 +1,279 @@
+name: 'Stable Manager (Nederlands)'
+description: 'Stable Manager in Dutch: Dutch as the default language, with Dutch labels, categories and number formats.'
+type: Site
+recipes:
+  - stable_manager
+install:
+  - language
+  - locale
+config:
+  strict: false
+  actions:
+    system.site:
+      simpleConfigUpdate:
+        default_langcode: nl
+    language.negotiation:
+      simpleConfigUpdate:
+        url.prefixes:
+          en: en
+          nl: ''
+    core.base_field_override.node.expense.title:
+      setProperties:
+        langcode: nl
+        label: Omschrijving
+    core.base_field_override.node.horse.title:
+      setProperties:
+        langcode: nl
+        label: Naam
+    core.base_field_override.node.inventory_item.title:
+      setProperties:
+        langcode: nl
+        label: Naam
+    core.entity_form_display.node.expense.default:
+      setProperties:
+        langcode: nl
+        content.field_shared_with.settings.decimal_separator: ','
+    core.entity_view_display.node.expense.default:
+      setProperties:
+        langcode: nl
+        content.field_quantity.settings.thousand_separator: .
+        content.field_quantity.settings.decimal_separator: ','
+        content.field_shared_with.settings.decimal_separator: ','
+        content.field_shared_with.settings.thousand_separator: .
+        content.field_total.settings.thousand_separator: .
+        content.field_total.settings.decimal_separator: ','
+        content.field_unit_price.settings.thousand_separator: .
+        content.field_unit_price.settings.decimal_separator: ','
+    core.entity_view_display.node.inventory_item.default:
+      setProperties:
+        langcode: nl
+        content.field_default_price.settings.thousand_separator: .
+        content.field_default_price.settings.decimal_separator: ','
+    field.field.node.expense.field_cost_category:
+      setProperties:
+        langcode: nl
+        label: Categorie
+    field.field.node.expense.field_expense_date:
+      setProperties:
+        langcode: nl
+        label: Datum
+    field.field.node.expense.field_inventory_item:
+      setProperties:
+        langcode: nl
+        label: 'Uit de inventaris'
+    field.field.node.expense.field_quantity:
+      setProperties:
+        langcode: nl
+        label: Aantal
+    field.field.node.expense.field_shared_with:
+      setProperties:
+        langcode: nl
+        label: 'Gedeeld door'
+    field.field.node.expense.field_total:
+      setProperties:
+        langcode: nl
+        label: Totaal
+    field.field.node.expense.field_receipt:
+      setProperties:
+        langcode: nl
+        label: Bonnetje
+        description: 'Een foto of pdf van het kasticket of de factuur. Alleen wie de uitgave kan zien, kan het openen.'
+    field.field.node.expense.field_unit_price:
+      setProperties:
+        langcode: nl
+        label: 'Prijs per eenheid'
+    field.field.node.horse.field_horse_type:
+      setProperties:
+        langcode: nl
+        label: Soort
+    field.field.node.inventory_item.field_cost_category:
+      setProperties:
+        langcode: nl
+        label: Categorie
+    field.field.node.inventory_item.field_default_price:
+      setProperties:
+        langcode: nl
+        label: Prijs
+    field.field.node.inventory_item.field_quick_add:
+      setProperties:
+        langcode: nl
+        label: 'Snel toevoegen'
+        description: 'Toon het in de app als knop die het met één tik als uitgave toevoegt.'
+        settings.on_label: Ja
+        settings.off_label: Nee
+    field.field.node.inventory_item.field_unit:
+      setProperties:
+        langcode: nl
+        label: Eenheid
+    field.storage.node.field_cost_category:
+      setProperties:
+        langcode: nl
+        settings.allowed_values.vet: Dierenarts
+        settings.allowed_values.lesson: Les
+        settings.allowed_values.transport: Transport
+        settings.allowed_values.farrier: Hoefsmid
+        settings.allowed_values.feed: Voeding
+        settings.allowed_values.bedding: Bodembedekking
+        settings.allowed_values.supplements: Supplementen
+        settings.allowed_values.inventory: Inventaris
+        settings.allowed_values.other: Overig
+    field.storage.node.field_horse_type:
+      setProperties:
+        langcode: nl
+        settings.allowed_values.own: 'Eigen paard'
+        settings.allowed_values.livery: Pensionpaard
+    node.type.expense:
+      setProperties:
+        langcode: nl
+        name: Uitgave
+        description: 'Een kost, verdeeld over de paarden.'
+    node.type.horse:
+      setProperties:
+        langcode: nl
+        name: Paard
+        description: 'Een paard in de stal: de kosten worden over de paarden verdeeld.'
+    node.type.inventory_item:
+      setProperties:
+        langcode: nl
+        name: Artikel
+        description: 'Iets dat je regelmatig koopt (hooi, strooisel, ...), met de gewone prijs.'
+    user.role.stable_manager:
+      setProperties:
+        langcode: nl
+        label: Stalbeheerder
+    views.view.stable_dashboard:
+      setProperties:
+        langcode: nl
+        label: 'Stal: dashboard'
+        description: 'De kosten van deze maand, de laatste uitgaven en de kosten per paard en per maand.'
+        display.default.display_options.title: Dashboard
+        display.default.display_options.header.area_text_custom_1.content: '<p><a href="[site:base-path]/node/add/expense" class="button button--primary">Uitgave toevoegen</a></p>'
+        display.default.display_options.header.area_text_custom.content: '<h2>Kosten deze maand</h2>'
+        display.attachment_1.display_options.fields.title.label: Uitgave
+        display.attachment_1.display_options.fields.field_expense_date.label: Datum
+        display.attachment_1.display_options.fields.field_total.label: Totaal
+        display.attachment_1.display_options.fields.field_total.settings.thousand_separator: .
+        display.attachment_1.display_options.fields.field_total.settings.decimal_separator: ','
+        display.attachment_1.display_options.empty.area_text_custom.content: '<p>Nog geen uitgaven.</p>'
+        display.attachment_1.display_options.header.area_text_custom.content: '<h2>Laatst toegevoegd</h2>'
+        display.attachment_2.display_options.fields.title.label: Paard
+        display.attachment_2.display_options.fields.field_shared_with_amount.label: Kosten
+        display.attachment_2.display_options.style.options.chart_settings.display.accessible_table_button_text: 'Toon de cijfers'
+        display.attachment_2.display_options.header.area_text_custom.content: '<h2>Kosten per paard dit jaar</h2>'
+        display.attachment_3.display_options.fields.field_expense_date_year_month.label: Maand
+        display.attachment_3.display_options.fields.field_total_value.label: Kosten
+        display.attachment_3.display_options.style.options.chart_settings.display.accessible_table_button_text: 'Toon de cijfers'
+        display.attachment_3.display_options.header.area_text_custom.content: '<h2>Kosten per maand dit jaar</h2>'
+        display.page_1.display_options.menu.title: Dashboard
+        display.default.display_options.fields.field_total_value.decimal: ','
+        display.default.display_options.fields.field_total_value.separator: .
+    views.view.stable_expenses:
+      setProperties:
+        langcode: nl
+        label: 'Stal: uitgaven'
+        description: 'Alle uitgaven per maand, de nieuwste eerst, met wie ze deelt.'
+        display.default.display_options.title: Uitgaven
+        display.default.display_options.fields.field_expense_date.label: Datum
+        display.default.display_options.fields.title.label: Uitgave
+        display.default.display_options.fields.field_cost_category.label: Categorie
+        display.default.display_options.fields.field_shared_with.label: 'Gedeeld door'
+        display.default.display_options.fields.field_shared_with.settings.decimal_separator: ','
+        display.default.display_options.fields.field_shared_with.settings.thousand_separator: .
+        display.default.display_options.fields.field_total.label: Totaal
+        display.default.display_options.fields.field_total.settings.thousand_separator: .
+        display.default.display_options.fields.field_total.settings.decimal_separator: ','
+        display.default.display_options.fields.edit_node.text: Bewerken
+        display.default.display_options.empty.area_text_custom.content: '<p>Geen uitgaven gevonden.</p>'
+        display.default.display_options.filters.field_cost_category_value.expose.label: Categorie
+        display.default.display_options.filters.title.expose.label: Omschrijving
+        display.default.display_options.header.area_text_custom_1.content: '<p><a href="[site:base-path]/node/add/expense" class="button button--primary">Uitgave toevoegen</a></p>'
+        display.page_1.display_options.menu.title: Uitgaven
+        display.data_export_1.display_options.fields.field_expense_date.label: Datum
+        display.data_export_1.display_options.fields.title.label: Uitgave
+        display.data_export_1.display_options.fields.field_cost_category.label: Categorie
+        display.data_export_1.display_options.fields.field_total.label: Totaal
+        display.data_export_1.display_options.fields.field_total.settings.decimal_separator: ','
+        display.data_export_1.display_options.fields.field_shared_with.label: 'Gedeeld door'
+        display.data_export_1.display_options.fields.field_shared_with.settings.decimal_separator: ','
+        display.data_export_1.display_options.style.options.csv_settings.delimiter: ;
+        display.data_export_1.display_options.filename: 'uitgaven-[date:custom:Y-m-d].csv'
+    views.view.stable_horses:
+      setProperties:
+        langcode: nl
+        label: 'Stal: paarden'
+        description: 'De paarden die de kosten delen. Een paard dat vertrekt, wordt gedepubliceerd: zo blijven zijn kosten bewaard.'
+        display.default.display_options.title: Paarden
+        display.default.display_options.fields.title.label: Paard
+        display.default.display_options.fields.field_horse_type.label: Soort
+        display.default.display_options.fields.status.label: Status
+        display.default.display_options.fields.status.settings.format_custom_false: Vertrokken
+        display.default.display_options.fields.status.settings.format_custom_true: 'In de stal'
+        display.default.display_options.fields.edit_node.text: Bewerken
+        display.default.display_options.empty.area_text_custom.content: '<p>Nog geen paarden.</p>'
+        display.default.display_options.header.area_text_custom_1.content: '<p><a href="[site:base-path]/node/add/horse" class="button button--primary">Paard toevoegen</a></p>'
+        display.page_1.display_options.menu.title: Paarden
+        display.default.display_options.fields.statement.alter.text: Afrekening
+    views.view.stable_inventory:
+      setProperties:
+        langcode: nl
+        label: 'Stal: inventaris'
+        description: 'Wat je regelmatig koopt (hooi, strooisel, ...), met de gewone prijs.'
+        display.default.display_options.title: Inventaris
+        display.default.display_options.fields.title.label: Artikel
+        display.default.display_options.fields.field_cost_category.label: Categorie
+        display.default.display_options.fields.field_default_price.label: Prijs
+        display.default.display_options.fields.field_default_price.settings.thousand_separator: .
+        display.default.display_options.fields.field_default_price.settings.decimal_separator: ','
+        display.default.display_options.fields.field_unit.label: Eenheid
+        display.default.display_options.fields.field_quick_add.label: 'Snel toevoegen'
+        display.default.display_options.fields.field_quick_add.settings.format_custom_true: Ja
+        display.default.display_options.fields.edit_node.text: Bewerken
+        display.default.display_options.empty.area_text_custom.content: '<p>Nog niets in de inventaris.</p>'
+        display.default.display_options.header.area_text_custom_1.content: '<p><a href="[site:base-path]/node/add/inventory_item" class="button button--primary">Artikel toevoegen</a></p>'
+        display.page_1.display_options.menu.title: Inventaris
+        display.default.display_options.fields.add_expense.alter.text: 'Als uitgave toevoegen'
+    views.view.stable_overview:
+      setProperties:
+        langcode: nl
+        label: 'Stal: overzicht'
+        description: 'De kosten van een maand, per categorie en per paard, met de maanden om uit te kiezen.'
+        display.default.display_options.title: Overzicht
+        display.default.display_options.fields.field_total_value.label: Totaal
+        display.attachment_2.display_options.fields.field_cost_category.label: Categorie
+        display.attachment_2.display_options.fields.nid.label: Uitgaven
+        display.attachment_2.display_options.fields.field_total_value.label: Totaal
+        display.attachment_2.display_options.empty.area_text_custom.content: '<p>Geen kosten in deze maand.</p>'
+        display.attachment_2.display_options.header.area_text_custom.content: '<h2>Per categorie</h2>'
+        display.attachment_3.display_options.fields.title.label: Paard
+        display.attachment_3.display_options.fields.field_shared_with_amount.label: Kosten
+        display.attachment_3.display_options.header.area_text_custom.content: '<h2>Per paard</h2>'
+        display.attachment_4.display_options.header.area_text_custom.content: '<h2>Andere maanden</h2>'
+        display.page_1.display_options.menu.title: Overzicht
+        display.default.display_options.fields.field_total_value.decimal: ','
+        display.default.display_options.fields.field_total_value.separator: .
+        display.attachment_2.display_options.fields.field_total_value.decimal: ','
+        display.attachment_2.display_options.fields.field_total_value.separator: .
+        display.attachment_3.display_options.fields.field_shared_with_amount.decimal: ','
+        display.attachment_3.display_options.fields.field_shared_with_amount.separator: .
+    views.view.stable_statement:
+      setProperties:
+        langcode: nl
+        label: 'Stal: afrekening per paard'
+        description: 'Wat een paard in een maand kostte: het totaal, en elke uitgave met zijn deel. Om af te drukken, of aan de eigenaar te bezorgen.'
+        display.default.display_options.title: Afrekening
+        display.default.display_options.fields.field_shared_with_amount.label: Totaal
+        display.default.display_options.fields.field_shared_with_amount.decimal: ','
+        display.default.display_options.fields.field_shared_with_amount.separator: .
+        display.default.display_options.header.area_text_custom_1.content: '<p><a href="#print" class="button" role="button" data-stable-print>Afdrukken</a></p>'
+        display.attachment_1.display_options.fields.field_expense_date.label: Datum
+        display.attachment_1.display_options.fields.title.label: Uitgave
+        display.attachment_1.display_options.fields.field_cost_category.label: Categorie
+        display.attachment_1.display_options.fields.field_total.label: 'Totaal uitgave'
+        display.attachment_1.display_options.fields.field_total.settings.thousand_separator: .
+        display.attachment_1.display_options.fields.field_total.settings.decimal_separator: ','
+        display.attachment_1.display_options.fields.field_shared_with_amount.label: Aandeel
+        display.attachment_1.display_options.fields.field_shared_with_amount.decimal: ','
+        display.attachment_1.display_options.fields.field_shared_with_amount.separator: .
+        display.attachment_1.display_options.header.area_text_custom.content: '<h2>Uitgaven</h2>'
+        display.attachment_1.display_options.empty.area_text_custom.content: '<p>Geen kosten voor dit paard in deze maand.</p>'
+        display.attachment_2.display_options.header.area_text_custom.content: '<h2>Andere maanden</h2>'

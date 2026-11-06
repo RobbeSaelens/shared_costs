@@ -1,0 +1,5 @@
+<button{{ attributes.addClass('theme-toggle').setAttribute('type', 'button').setAttribute('aria-pressed', 'false').setAttribute('data-theme-toggle', '') }}>
+  {{ include('stable_manager_theme:icon', {name: 'moon', attributes: create_attribute({'class': ['theme-toggle__moon']})}, with_context = false) }}
+  {{ include('stable_manager_theme:icon', {name: 'sun', attributes: create_attribute({'class': ['theme-toggle__sun']})}, with_context = false) }}
+  <span class="nav-label">{{ 'Dark mode'|t }}</span>
+</button>

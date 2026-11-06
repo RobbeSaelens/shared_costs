@@ -145,8 +145,8 @@ jobs:
       - run: ddev drush site:install minimal --yes
       - name: Apply the demo recipe, twice
         run: |
-          ddev drush recipe /var/www/html/recipes/stal_manager_demo
-          ddev drush recipe /var/www/html/recipes/stal_manager_demo
+          ddev drush recipe /var/www/html/recipes/stable_manager_demo
+          ddev drush recipe /var/www/html/recipes/stable_manager_demo
       - name: Visitors get the login form, not the costs
         run: |
           test "$(ddev exec curl -s -o /dev/null -w '%{http_code}' http://web/stable)" = 403
@@ -164,7 +164,7 @@ jobs:
           retention-days: 14
       - name: Apply the Dutch recipe, and import the translations
         run: |
-          ddev drush recipe /var/www/html/recipes/stal_manager_nl
+          ddev drush recipe /var/www/html/recipes/stable_manager_nl
           ddev drush locale:check
           ddev drush locale:update
           ddev drush cache:rebuild

@@ -1,0 +1,173 @@
+{#
+/**
+ * @file
+ * Theme override for a main view template.
+ *
+ * Available variables:
+ * - attributes: Remaining HTML attributes for the element.
+ * - css_name: A CSS-safe version of the view name.
+ * - css_class: The user-specified classes names, if any.
+ * - header: The optional header.
+ * - footer: The optional footer.
+ * - rows: The results of the view query, if any.
+ * - empty: The content to display if there are no rows.
+ * - pager: The optional pager next/prev links to display.
+ * - exposed: Exposed widget form/info to display.
+ * - feed_icons: Optional feed icons to display.
+ * - more: An optional link to the next page of results.
+ * - title: Title of the view, only used when displaying in the admin preview.
+ * - title_prefix: Additional output populated by modules, intended to be
+ *   displayed in front of the view title.
+ * - title_suffix: Additional output populated by modules, intended to be
+ *   displayed after the view title.
+ * - attachment_before: An optional attachment view to be displayed before the
+ *   view content.
+ * - attachment_after: An optional attachment view to be displayed after the
+ *   view content.
+ * - dom_id: Unique id for every view being printed to give unique class for
+ *   JavaScript.
+ *
+ * - stable: For the Stable Manager views (stable_*), their layout:
+ *   - layout: 'summary' (stat card and a grid of cards), 'list' (actions,
+ *     downloads and a card) or 'card' (the whole view in a card).
+ *   - flush: Whether the results run to the card's edges (tables).
+ *   - stat: The stat card's label, value and amount, for a summary.
+ *   - results_id: The ID of the results, which live filters swap.
+ *
+ * @see template_preprocess_views_view()
+ * @see \Drupal\stable_manager_theme\Hook\ViewsHooks::preprocessViewsView()
+ */
+#}
+{%
+  set classes = [
+    'view',
+    'view-' ~ id|clean_class,
+    'view-id-' ~ id,
+    'view-display-id-' ~ display_id,
+    dom_id ? 'js-view-dom-id-' ~ dom_id,
+    stable.layout ? 'stable-view stable-view--' ~ stable.layout,
+  ]
+%}
+{% set results %}
+  {% if rows %}
+    <div class="view-content">
+      {{ rows }}
+    </div>
+  {% elseif empty %}
+    <div class="view-empty">
+      {{ empty }}
+    </div>
+  {% endif %}
+  {{ pager }}
+{% endset %}
+
+{% if stable.layout == 'summary' %}
+  {# The dashboard and the overview: actions, a stat card and cards. #}
+  <div{{ attributes.addClass(classes) }}>
+    {{ title_prefix }}
+    {{ title_suffix }}
+    {% if header.area_text_custom_1 %}
+      <div class="page-actions">{{ header.area_text_custom_1 }}</div>
+    {% endif %}
+    {{ attachment_before }}
+    <div class="card-grid">
+      {% embed 'stable_manager_theme:stat-card' with {
+        label: stable.stat.label ?: header.area_text_custom,
+        value: stable.stat.value,
+        amount: stable.stat.amount,
+        decimals: stable.stat.decimals,
+        decimal_mark: stable.stat.decimal_mark,
+        thousands_mark: stable.stat.thousands_mark,
+        prefix: stable.stat.prefix,
+        suffix: stable.stat.suffix,
+      } only %}
+        {% block label %}{{ label }}{% endblock %}
+        {% block value %}{{ value }}{% endblock %}
+      {% endembed %}
+      {{ attachment_after }}
+    </div>
+  </div>
+
+{% elseif stable.layout == 'list' %}
+  {# The other pages: actions and filters, then the results in a card. #}
+  <div{{ attributes.addClass(classes) }}>
+    {{ title_prefix }}
+    {{ title_suffix }}
+    {% if header %}
+      <div class="page-actions">{{ header }}</div>
+    {% endif %}
+    {% if exposed %}
+      <div class="view-filters">{{ exposed }}</div>
+    {% endif %}
+    {% set results_attributes = create_attribute({'class': ['stable-results']}) %}
+    {% if stable.results_id %}
+      {% set results_attributes = results_attributes.setAttribute('id', stable.results_id) %}
+    {% endif %}
+    <div{{ results_attributes }}>
+      {# Downloads (CSV) carry the filters, so live filters swap them too. #}
+      {% if feed_icons %}
+        <div class="stable-downloads">{{ feed_icons }}</div>
+      {% endif %}
+      {% embed 'stable_manager_theme:card' with { variant: stable.flush ? 'flush' : '', results: results } only %}
+        {% block content %}{{ results }}{% endblock %}
+      {% endembed %}
+    </div>
+  </div>
+
+{% elseif stable.layout == 'card' %}
+  {# An attachment: the whole view is one card. #}
+  {% embed 'stable_manager_theme:card' with {
+    attributes: attributes.addClass(classes),
+    variant: stable.flush ? 'flush' : '',
+    header: header,
+    results: results,
+    title_prefix: title_prefix,
+    title_suffix: title_suffix,
+  } only %}
+    {% block header %}{{ title_prefix }}{{ header }}{{ title_suffix }}{% endblock %}
+    {% block content %}{{ results }}{% endblock %}
+  {% endembed %}
+
+{% else %}
+<div{{ attributes.addClass(classes) }}>
+  {{ title_prefix }}
+  {% if title %}
+    {{ title }}
+  {% endif %}
+  {{ title_suffix }}
+  {% if header %}
+    <div class="view-header">
+      {{ header }}
+    </div>
+  {% endif %}
+  {% if exposed %}
+    <div class="view-filters">
+      {{ exposed }}
+    </div>
+  {% endif %}
+  {% if attachment_before %}
+    <div class="attachment attachment-before">
+      {{ attachment_before }}
+    </div>
+  {% endif %}
+  {{ results }}
+  {% if attachment_after %}
+    <div class="attachment attachment-after">
+      {{ attachment_after }}
+    </div>
+  {% endif %}
+  {% if more %}
+    {{ more }}
+  {% endif %}
+  {% if footer %}
+    <div class="view-footer">
+      {{ footer }}
+    </div>
+  {% endif %}
+  {% if feed_icons %}
+    <div class="feed-icons">
+      {{ feed_icons }}
+    </div>
+  {% endif %}
+</div>
+{% endif %}

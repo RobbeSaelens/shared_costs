@@ -4,23 +4,24 @@ A Drupal field that splits an amount over other entities, equally or by
 percentage, and stores each part in cents that always add up to the total.
 Views can then add the parts up per sharer and per month.
 
-It comes with **Stal Manager**: recipes that turn a Drupal site into a
+It comes with **Stable Manager**: recipes that turn a Drupal site into a
 cost tracker for a horse stable (expenses with receipts, inventory, a
 dashboard with charts, a monthly overview, a statement per horse and CSV
-exports), in English or Dutch, with a JSON:API for apps. Stal Manager started
+exports), in English or Dutch, with a JSON:API for apps. Stable Manager started
 as a Next.js app; the recipes rebuild it with configuration only, on top of
-this one small module. Its front-end theme, in [`themes/stal_manager_theme`](themes/stal_manager_theme),
+this one small module. Its front-end theme, in [`themes/stable_manager_theme`](themes/stable_manager_theme),
 makes it an app: HTMX navigation, live filters, view transitions and dark
 mode. Forms and admin pages use Gin.
 
 - [Features](#features)
 - [Requirements](#requirements)
 - [Installation](#installation)
+- [Upgrading from 1.0](#upgrading-from-10)
 - [Using the field](#using-the-field)
 - [Views](#views)
-- [The Stal Manager recipes](#the-stal-manager-recipes)
+- [The Stable Manager recipes](#the-stable-manager-recipes)
 - [JSON:API (for apps)](#jsonapi-for-apps)
-- [The Stal Manager theme](#the-stal-manager-theme)
+- [The Stable Manager theme](#the-stable-manager-theme)
 - [Development](#development)
 - [Known issues](#known-issues)
 
@@ -87,6 +88,31 @@ composer config repositories.shared_costs \
   vcs https://github.com/RobbeSaelens/shared_costs
 ```
 
+## Upgrading from 1.0
+
+Stal Manager is now called Stable Manager, and its recipes and theme have new
+machine names:
+
+| 1.0 | Now |
+|---|---|
+| `stal_manager` | `stable_manager` |
+| `stal_manager_demo` | `stable_manager_demo` |
+| `stal_manager_nl` | `stable_manager_nl` |
+| `stal_manager_theme` | `stable_manager_theme` |
+
+A site that uses the old theme (the demo recipe installed it) enables the new
+one, which brings its own blocks, and uninstalls the old one:
+
+```bash
+drush theme:install stable_manager_theme
+drush config:set system.theme default stable_manager_theme
+drush theme:uninstall stal_manager_theme
+```
+
+Browsers forget the light or dark choice and the collapsed sidebar once: the
+theme keeps them under new names. Recipes are applied once, so nothing else
+changes on a site that applied them.
+
 ## Using the field
 
 1. On the entity that holds the costs (say an _Expense_ content type), add a
@@ -115,16 +141,16 @@ same on MySQL/MariaDB, PostgreSQL and SQLite. The _year and month_ field sorts
 by its own column, because sorting by the date itself is refused under GROUP BY
 by MySQL and PostgreSQL.
 
-## The Stal Manager recipes
+## The Stable Manager recipes
 
 Four recipes, in [`recipes/`](recipes):
 
 | Recipe | What it does |
 |---|---|
-| `stal_manager` | Horses, inventory items and expenses with their receipts (content types and fields), nine cost categories, the views below, and a _Stable manager_ role. Doesn't touch themes or site settings, so it can go on an existing site. |
-| `stal_manager_demo` | `stal_manager` on a new site to try it: the Stal Manager theme, Gin (in Stal Manager's brown) for forms and admin pages with Admin Toolbar's dropdown menus, the dashboard as front page, the site private (visitors get the login form), and two horses with a year of example costs. |
-| `stal_manager_nl` | `stal_manager` in Dutch: Dutch as the default language, with Dutch labels, categories and number formats (€ 1.234,56). |
-| `stal_manager_api` | `stal_manager` for apps: JSON:API, for stable managers logged in with a normal session. See [JSON:API (for apps)](#jsonapi-for-apps). |
+| `stable_manager` | Horses, inventory items and expenses with their receipts (content types and fields), nine cost categories, the views below, and a _Stable manager_ role. Doesn't touch themes or site settings, so it can go on an existing site. |
+| `stable_manager_demo` | `stable_manager` on a new site to try it: the Stable Manager theme, Gin (in Stable Manager's brown) for forms and admin pages with Admin Toolbar's dropdown menus, the dashboard as front page, the site private (visitors get the login form), and two horses with a year of example costs. |
+| `stable_manager_nl` | `stable_manager` in Dutch: Dutch as the default language, with Dutch labels, categories and number formats (€ 1.234,56). |
+| `stable_manager_api` | `stable_manager` for apps: JSON:API, for stable managers logged in with a normal session. See [JSON:API (for apps)](#jsonapi-for-apps). |
 
 The pages, all for the _Stable manager_ role (and the main menu):
 
@@ -157,33 +183,33 @@ composer require drupal/shared_costs drupal/charts \
 drush site:install minimal
 # Receipts are private files: in settings.php, set a folder outside the web
 # root, such as $settings['file_private_path'] = '../private';
-drush recipe modules/contrib/shared_costs/recipes/stal_manager_demo
+drush recipe modules/contrib/shared_costs/recipes/stable_manager_demo
 # Optional: in Dutch.
-drush recipe modules/contrib/shared_costs/recipes/stal_manager_nl
+drush recipe modules/contrib/shared_costs/recipes/stable_manager_nl
 drush locale:check && drush locale:update
 # Optional: the JSON:API for apps.
-drush recipe modules/contrib/shared_costs/recipes/stal_manager_api
+drush recipe modules/contrib/shared_costs/recipes/stable_manager_api
 ```
 
-Recipes can't import interface translations, so `stal_manager_nl` ends with a
+Recipes can't import interface translations, so `stable_manager_nl` ends with a
 `locale:update`: it loads this module's `translations/nl.po` and core's Dutch
 translation from localize.drupal.org. The Chart.js library is loaded from a CDN
 by default; see the Charts module to serve it yourself.
 
 Not ported from the Next.js app: an expense that counts in full for every
 horse (add one expense per horse instead). Working offline is left to the app
-itself (a PWA), with this site as its backend: see `stal_manager_api`.
+itself (a PWA), with this site as its backend: see `stable_manager_api`.
 
 ## JSON:API (for apps)
 
-`stal_manager_api` opens Stal Manager to apps, such as its own mobile app (a
+`stable_manager_api` opens Stable Manager to apps, such as its own mobile app (a
 PWA that works offline), through core's
 [JSON:API](https://www.drupal.org/docs/core-modules-and-themes/core-modules/jsonapi-module).
 Apps log in as people do, with Drupal's session cookie rather than OAuth: so
 an app reaches Drupal on its own site, for example through a proxy at
 `/drupal/*`, without CORS. The recipe:
 
-- applies `stal_manager`, installs JSON:API and lets it write (`read_only:
+- applies `stable_manager`, installs JSON:API and lets it write (`read_only:
   false`);
 - lets the _Stable manager_ role see the horses, inventory items and expenses,
   add, change and delete expenses and inventory items, and change horses,
@@ -193,7 +219,7 @@ an app reaches Drupal on its own site, for example through a proxy at
   does: JSON:API lists all they may see, and costs are private.
 
 The tests in
-[`StalManagerApiRecipeTest`](tests/src/Functional/Recipe/StalManagerApiRecipeTest.php)
+[`StableManagerApiRecipeTest`](tests/src/Functional/Recipe/StableManagerApiRecipeTest.php)
 make the requests below, as an app does.
 
 ### Logging in
@@ -338,10 +364,10 @@ Drupal, or in a site module.
 Links in the answers point at Drupal's own address: behind a proxy, build the
 app's requests from the ids, not from those links.
 
-## The Stal Manager theme
+## The Stable Manager theme
 
 A Starterkit-generated theme, without a base theme. See its
-[README](themes/stal_manager_theme/README.md):
+[README](themes/stable_manager_theme/README.md):
 
 - an app shell with a collapsible sidebar, and a tab bar on phones;
 - HTMX navigation and live filters with core's HTMX;
@@ -396,7 +422,7 @@ Playwright's Linux image, in Docker, so they match CI's:
 
 ```bash
 ddev drush site:install minimal --yes
-ddev drush recipe /var/www/html/recipes/stal_manager_demo
+ddev drush recipe /var/www/html/recipes/stable_manager_demo
 tests/visual/run.sh                       # compare
 tests/visual/run.sh --update-snapshots    # approve a change
 ```

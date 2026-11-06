@@ -1,7 +1,7 @@
 {
-  "name": "stal-manager-visual-tests",
+  "name": "stable-manager-visual-tests",
   "private": true,
-  "description": "Screenshots of the Stal Manager demo, compared with the approved ones. Run with ./run.sh.",
+  "description": "Screenshots of the Stable Manager demo, compared with the approved ones. Run with ./run.sh.",
   "scripts": {
     "test": "playwright test"
   },
