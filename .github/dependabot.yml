@@ -1,11 +1,9 @@
 # Weekly updates, as pull requests to develop (where CI runs on every push).
+# Not Composer: there is no lock file, and CI always installs the latest
+# versions that composer.json allows (Drupal's packages aren't on Packagist,
+# which Dependabot can't resolve without a lock file anyway).
 version: 2
 updates:
-  - package-ecosystem: composer
-    directory: /
-    target-branch: develop
-    schedule:
-      interval: weekly
   - package-ecosystem: github-actions
     directory: /
     target-branch: develop

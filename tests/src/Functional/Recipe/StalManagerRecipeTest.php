@@ -206,6 +206,9 @@ final class StalManagerRecipeTest extends GenericRecipeTestBase {
     $this->assertSession()->pageTextContains('Bella · 40 % · € 18.00');
 
     // Horses that leave are unpublished, never deleted: their costs stay.
+    $this->drupalGet($bella->toUrl('edit-form'));
+    $this->submitForm(['status[value]' => FALSE], 'Save');
+    $this->assertFalse(Node::load((int) $bella->id())?->isPublished());
     $this->drupalGet($luna->toUrl('edit-form'));
     $this->assertSession()->statusCodeEquals(200);
     $this->drupalGet($luna->toUrl('delete-form'));
