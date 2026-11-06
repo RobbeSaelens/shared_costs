@@ -1,0 +1,11 @@
+{
+  "name": "stal-manager-visual-tests",
+  "private": true,
+  "description": "Screenshots of the Stal Manager demo, compared with the approved ones. Run with ./run.sh.",
+  "scripts": {
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1"
+  }
+}

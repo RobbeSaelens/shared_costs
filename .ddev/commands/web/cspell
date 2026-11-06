@@ -23,7 +23,7 @@ cat > "$CONFIG" <<JSON
     { "name": "project-words", "path": "$PWD/.cspell-project-words.txt" }
   ],
   "dictionaries": ["project-words"],
-  "ignorePaths": ["vendor", "web", ".ddev", "node_modules", "composer.lock", "*.po", "recipes/stal_manager_nl/recipe.yml"]
+  "ignorePaths": ["vendor", "web", ".ddev", "node_modules", "composer.lock", "package-lock.json", "tests/visual/test-results", "tests/visual/report", "*.po", "recipes/stal_manager_nl/recipe.yml"]
 }
 JSON
 

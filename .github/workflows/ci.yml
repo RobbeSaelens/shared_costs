@@ -151,6 +151,17 @@ jobs:
         run: |
           test "$(ddev exec curl -s -o /dev/null -w '%{http_code}' http://web/stable)" = 403
           ddev exec curl -s http://web/ | grep -q 'name="name"'
+      - name: Screenshots of the demo, compared with the approved ones
+        run: tests/visual/run.sh
+      - name: Keep the screenshots that differ
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-differences
+          path: |
+            tests/visual/test-results
+            tests/visual/report
+          retention-days: 14
       - name: Apply the Dutch recipe, and import the translations
         run: |
           ddev drush recipe /var/www/html/recipes/stal_manager_nl

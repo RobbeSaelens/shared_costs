@@ -219,6 +219,22 @@ The recipe tests apply each recipe twice (it must be idempotent), check the
 dashboard's numbers on costs dated relative to today, check the role, and check
 that the Dutch recipe leaves no English label behind.
 
+Visual regression tests take screenshots of the demo site (each page, on a
+laptop in light and dark, and on a phone) and compare them with the approved
+ones in [`tests/visual/screenshots`](tests/visual/screenshots). They run in
+Playwright's Linux image, in Docker, so they match CI's:
+
+```bash
+ddev drush site:install minimal --yes
+ddev drush recipe /var/www/html/recipes/stal_manager_demo
+tests/visual/run.sh                       # compare
+tests/visual/run.sh --update-snapshots    # approve a change
+```
+
+The pages name their month, so they don't change with today's date; the
+dashboard's numbers and charts (this month, this year) are masked. In CI, the
+screenshots that differ are kept as the `visual-differences` artifact.
+
 ## Known issues
 
 - **Default content and default values.** Core's content importer creates the

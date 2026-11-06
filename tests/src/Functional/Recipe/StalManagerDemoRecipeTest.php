@@ -67,7 +67,9 @@ final class StalManagerDemoRecipeTest extends GenericRecipeTestBase {
 
     // Admins get the admin menu with its submenus, which open on hover.
     $this->drupalLogin($this->rootUser);
-    $this->drupalGet('admin/content');
+    // Not admin/content: on PHP 8.5, core's content view triggers a
+    // deprecation (a NULL langcode in ContentEntityBase::hasTranslation()).
+    $this->drupalGet('admin/structure');
     $this->assertSession()->responseContains('/modules/contrib/admin_toolbar/');
     $this->assertSession()->elementExists('css', '#toolbar-item-administration-tray li.menu-item--expanded.menu-item__system-admin_structure > ul.toolbar-menu a[href$="/admin/structure/block"]');
   }
