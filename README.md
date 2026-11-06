@@ -5,8 +5,9 @@ percentage, and stores each part in cents that always add up to the total.
 Views can then add the parts up per sharer and per month.
 
 It comes with **Stal Manager**: three recipes that turn a Drupal site into a
-cost tracker for a horse stable (expenses, inventory, a dashboard with charts
-and a monthly overview), in English or Dutch. Stal Manager started as a
+cost tracker for a horse stable (expenses with receipts, inventory, a
+dashboard with charts, a monthly overview, a statement per horse and CSV
+exports), in English or Dutch. Stal Manager started as a
 Next.js app; the recipes rebuild it with configuration only, on top of this one
 small module. Its front-end theme, in [`themes/stal_manager_theme`](themes/stal_manager_theme),
 makes it an app: HTMX navigation, live filters, view transitions and dark
@@ -57,8 +58,15 @@ permissions, translations) is configuration in the recipes.
 
 - Drupal 11.4 or later, or Drupal 12 (see [Known issues](#known-issues)).
 - PHP 8.3 or later (Drupal 12: PHP 8.5).
-- For the recipes: [Charts](https://www.drupal.org/project/charts) 5.2.4 or
-  later, with its Chart.js submodule.
+- For the recipes:
+  - [Charts](https://www.drupal.org/project/charts) 5.2.4 or later, with its
+    Chart.js submodule;
+  - [Prepopulate](https://www.drupal.org/project/prepopulate) 2.5, for "Add as
+    expense" on the inventory;
+  - [Views Data Export](https://www.drupal.org/project/views_data_export) 1.10,
+    for the CSV download;
+  - a [private file system](https://www.drupal.org/docs/8/core/modules/file/overview#content-accessing-private-files)
+    for receipts: set `$settings['file_private_path']` in `settings.php`.
 - For the demo recipe: [Gin](https://www.drupal.org/project/gin) 5,
   [Gin Toolbar](https://www.drupal.org/project/gin_toolbar) 3 and
   [Admin Toolbar](https://www.drupal.org/project/admin_toolbar) 3.
@@ -112,7 +120,7 @@ Three recipes, in [`recipes/`](recipes):
 
 | Recipe | What it does |
 |---|---|
-| `stal_manager` | Horses, inventory items and expenses (content types and fields), eight cost categories, the views below, and a _Stable manager_ role. Doesn't touch themes or site settings, so it can go on an existing site. |
+| `stal_manager` | Horses, inventory items and expenses with their receipts (content types and fields), eight cost categories, the views below, and a _Stable manager_ role. Doesn't touch themes or site settings, so it can go on an existing site. |
 | `stal_manager_demo` | `stal_manager` on a new site to try it: the Stal Manager theme, Gin (in Stal Manager's brown) for forms and admin pages with Admin Toolbar's dropdown menus, the dashboard as front page, the site private (visitors get the login form), and two horses with a year of example costs. |
 | `stal_manager_nl` | `stal_manager` in Dutch: Dutch as the default language, with Dutch labels, categories and number formats (€ 1.234,56). |
 
@@ -121,10 +129,18 @@ The pages, all for the _Stable manager_ role (and the main menu):
 - `/stable`: the dashboard. This month's costs, the latest expenses, and charts
   of the costs per horse and per month this year.
 - `/stable/expenses`: all expenses by month, with who shares them, filtered by
-  category or description.
+  category or description. _Download CSV_ downloads what the filters show,
+  with plain numbers for a spreadsheet (in Dutch: `;` and a decimal comma).
 - `/stable/overview`: one month's costs per category and per horse, with the
-  months to pick from.
-- `/stable/horses` and `/stable/inventory`.
+  months to pick from. A horse links to its statement.
+- `/stable/statement/{horse}/{month}`: a horse's statement, to print or send
+  to its owner: its total, and its part of each expense of the month.
+- `/stable/horses`, with each horse's statement of this month.
+- `/stable/inventory`: what you buy regularly. _Add as expense_ opens the
+  expense form filled in with the item, its category and price.
+
+An expense can have a receipt (a photo or PDF). Receipts are private files:
+only people who can see the expense can open them.
 
 Horses are never deleted (the role can't): a horse that leaves the stable is
 unpublished, so its share of past costs stays.
@@ -133,8 +149,11 @@ To try it on a new site:
 
 ```bash
 composer require drupal/shared_costs drupal/charts \
+  drupal/prepopulate drupal/views_data_export \
   drupal/gin drupal/gin_toolbar drupal/admin_toolbar
 drush site:install minimal
+# Receipts are private files: in settings.php, set a folder outside the web
+# root, such as $settings['file_private_path'] = '../private';
 drush recipe modules/contrib/shared_costs/recipes/stal_manager_demo
 # Optional: in Dutch.
 drush recipe modules/contrib/shared_costs/recipes/stal_manager_nl
@@ -207,11 +226,14 @@ that the Dutch recipe leaves no English label behind.
   items by position, so default sharers beyond the imported ones remain. This
   affects every multi-value field with a default value; that's why the demo
   recipe doesn't set one. Set it yourself after importing.
-- **Drupal 12.** On 12.0.0-beta2 (PHP 8.5) the module and its tests pass, and
-  so do the `stal_manager` and `stal_manager_nl` recipes, except that Charts
-  5.2.4 renders its charts empty there. The demo recipe needs Drupal 11 for now:
-  it uses contrib Gin, which extends Claro, and the Toolbar. Drupal 12 has Gin
-  in core instead (Default Admin), and no Claro or Toolbar.
+- **Drupal 12.** On 12.0.0-beta2 (PHP 8.5) the module and its tests pass.
+  The recipes need contrib modules that don't declare Drupal 12 support yet:
+  Prepopulate and Views Data Export (CI tries them on Drupal 12 anyway), and
+  Charts 5.2.4 renders its charts empty there (its preprocess function isn't
+  found on Drupal 12; it needs core's `initial preprocess`). The demo recipe
+  needs Drupal 11 for now: it uses contrib Gin, which extends Claro, and the
+  Toolbar. Drupal 12 has Gin in core instead (Default Admin), and no Claro or
+  Toolbar.
 - **Charts and config schema.** Charts 5.2.4 has no schema for its views
   style's `path` and `library_type_options` options; the recipe's views leave
   them out, so they validate. Saving a chart view in the Views UI adds them

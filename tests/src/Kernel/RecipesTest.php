@@ -31,8 +31,11 @@ final class RecipesTest extends KernelTestBase {
 
   /**
    * {@inheritdoc}
+   *
+   * The modules that every site has (path_alias is required, and the
+   * statement's months use it).
    */
-  protected static $modules = ['system', 'user'];
+  protected static $modules = ['system', 'user', 'path_alias'];
 
   /**
    * {@inheritdoc}
@@ -133,8 +136,9 @@ final class RecipesTest extends KernelTestBase {
     }
     $value = $element->getValue();
     // Not shown, or not words: admin-only names, separators, currency signs,
-    // date formats, plural formulas and titles of argument exceptions.
-    $hidden = '/(^|\.)(display_title|separator|prefix|format_plural_string|date_format)$|\.exception\.title$|\.arguments\.[a-z_]+\.title$/';
+    // date formats, plural formulas, titles of argument exceptions and the
+    // paths of links.
+    $hidden = '/(^|\.)(display_title|separator|prefix|format_plural_string|date_format)$|\.exception\.title$|\.arguments\.[a-z_]+\.title$|\.alter\.path$/';
     $definition = $element->getDataDefinition();
     if (!$definition instanceof \ArrayAccess || empty($definition['translatable']) || !is_string($value) || trim($value) === '' || preg_match($hidden, $path)) {
       return [];

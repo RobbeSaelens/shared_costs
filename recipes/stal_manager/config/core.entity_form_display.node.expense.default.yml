@@ -6,12 +6,14 @@ dependencies:
     - field.field.node.expense.field_expense_date
     - field.field.node.expense.field_inventory_item
     - field.field.node.expense.field_quantity
+    - field.field.node.expense.field_receipt
     - field.field.node.expense.field_shared_with
     - field.field.node.expense.field_total
     - field.field.node.expense.field_unit_price
     - node.type.expense
   module:
     - datetime
+    - file
     - shared_costs
 id: node.expense.default
 targetEntityType: node
@@ -42,6 +44,13 @@ content:
     region: content
     settings:
       placeholder: ''
+    third_party_settings: {  }
+  field_receipt:
+    type: file_generic
+    weight: 8
+    region: content
+    settings:
+      progress_indicator: throbber
     third_party_settings: {  }
   field_shared_with:
     type: shared_costs_allocation_table

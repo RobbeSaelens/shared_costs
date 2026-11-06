@@ -98,8 +98,22 @@ jobs:
           # has Gin in core). Only the demo recipe's tests need Gin and Admin
           # Toolbar.
           composer remove --dev --no-update drush/drush drupal/gin drupal/gin_toolbar drupal/admin_toolbar
+          # Prepopulate and Views Data Export (with CSV Serialization) don't
+          # declare Drupal 12 support yet: try them anyway, with the lenient
+          # plugin (installed globally below, so it runs before the solve).
+          composer config --json extra.drupal-lenient.allowed-list '["drupal/prepopulate", "drupal/views_data_export", "drupal/csv_serialization"]'
       - uses: ddev/github-action-setup-ddev@v1
+      - name: The lenient Composer plugin, for a pre-release of Drupal core
+        if: contains(matrix.core, '@')
+        run: |
+          ddev exec composer global config --no-plugins allow-plugins.mglaman/composer-drupal-lenient true
+          ddev exec composer global require --no-interaction mglaman/composer-drupal-lenient
       - run: ddev poser
+      - name: Let Drupal 12 install the modules that the lenient plugin allowed
+        if: contains(matrix.core, '@')
+        run: |
+          ddev exec "sed -i -E 's/^(core_version_requirement: .*)$/\\1 || ^12/' web/modules/contrib/{prepopulate,views_data_export,csv_serialization}/*.info.yml"
+          ddev exec "grep -H core_version_requirement web/modules/contrib/{prepopulate,views_data_export,csv_serialization}/*.info.yml"
       - run: ddev symlink-project
       - name: Enable pg_trgm (required by Drupal 11 on PostgreSQL)
         if: matrix.database == 'postgres'

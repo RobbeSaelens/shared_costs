@@ -28,8 +28,8 @@
  *   JavaScript.
  *
  * - stable: For the Stal Manager views (stable_*), their layout:
- *   - layout: 'summary' (stat card and a grid of cards), 'list' (actions and
- *     a card) or 'card' (the whole view in a card).
+ *   - layout: 'summary' (stat card and a grid of cards), 'list' (actions,
+ *     downloads and a card) or 'card' (the whole view in a card).
  *   - flush: Whether the results run to the card's edges (tables).
  *   - stat: The stat card's label, value and amount, for a summary.
  *   - results_id: The ID of the results, which live filters swap.
@@ -104,6 +104,10 @@
       {% set results_attributes = results_attributes.setAttribute('id', stable.results_id) %}
     {% endif %}
     <div{{ results_attributes }}>
+      {# Downloads (CSV) carry the filters, so live filters swap them too. #}
+      {% if feed_icons %}
+        <div class="stable-downloads">{{ feed_icons }}</div>
+      {% endif %}
       {% embed 'stal_manager_theme:card' with { variant: stable.flush ? 'flush' : '', results: results } only %}
         {% block content %}{{ results }}{% endblock %}
       {% endembed %}

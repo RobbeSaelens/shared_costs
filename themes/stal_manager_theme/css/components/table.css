@@ -85,14 +85,21 @@
   color: var(--color-primary);
 }
 
-.card td.views-field-edit-node {
+/* Row actions, at the end of the row: edit, add as expense, statement. */
+.card td:is(.views-field-edit-node, .views-field-add-expense, .views-field-statement) {
   width: 1%;
   text-align: end;
+  white-space: nowrap;
 }
 
 .card td.views-field-edit-node a {
   color: var(--color-muted-foreground);
   font-weight: 500;
+}
+
+.card td:is(.views-field-add-expense, .views-field-statement) a {
+  color: var(--color-primary);
+  font-weight: 600;
 }
 
 /* Who shares an expense: a compact list. */

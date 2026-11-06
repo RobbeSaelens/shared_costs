@@ -53,6 +53,8 @@ base:
       css/components/login.css: {}
     theme:
       css/theme/animations.css: {}
+      css/theme/print.css:
+        media: print
 dialog:
   version: VERSION
   css:

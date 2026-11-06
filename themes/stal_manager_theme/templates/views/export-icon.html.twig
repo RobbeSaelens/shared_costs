@@ -1,0 +1,18 @@
+{#
+/**
+ * @file
+ * Theme override for a link that downloads a view's results (Views Data Export).
+ *
+ * A button with words, not core's feed icon: it downloads a file, such as the
+ * expenses as CSV, with the filters that are set.
+ *
+ * Available variables:
+ * - url: The URL of the export, with the filters.
+ * - format: The format, such as CSV.
+ * - title: The title of the view.
+ * - attributes: HTML attributes for the link.
+ */
+#}
+<a href="{{ url }}"{{ attributes.addClass('button') }} download>
+  {{ 'Download @format'|t({'@format': format}) }}
+</a>

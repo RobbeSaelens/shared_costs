@@ -10,6 +10,13 @@
   gap: var(--space-5);
 }
 
+/* Downloads of the results (CSV), above them on the right. */
+.stable-downloads {
+  display: flex;
+  justify-content: flex-end;
+  margin-block-end: var(--space-3);
+}
+
 /* Attachments join the grid as cards. */
 .card-grid > .views-element-container,
 .card-grid > .attachment {
@@ -53,6 +60,22 @@
 
   .view-stable-overview .view-display-id-attachment_4 {
     grid-column: 1 / -1;
+  }
+
+  /* A horse's statement: its total and the months, next to its expenses. */
+  .view-stable-statement .card-grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    align-items: start;
+  }
+
+  .view-stable-statement .stat-card,
+  .view-stable-statement .view-display-id-attachment_2 {
+    grid-column: span 4;
+  }
+
+  .view-stable-statement .view-display-id-attachment_1 {
+    grid-row: span 2;
+    grid-column: span 8;
   }
 }
 

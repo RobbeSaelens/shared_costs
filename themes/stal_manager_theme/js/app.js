@@ -1,6 +1,7 @@
 /**
  * @file
- * The app shell: moving around with HTMX, the sidebar and the messages.
+ * The app shell: moving around with HTMX, the sidebar, the messages and
+ * printing.
  */
 
 (function (Drupal, once) {
@@ -90,6 +91,14 @@
           });
         },
       );
+
+      // A page to print, such as a horse's statement, has a print button.
+      once('print', '[data-stable-print]', context).forEach((button) => {
+        button.addEventListener('click', (event) => {
+          event.preventDefault();
+          window.print();
+        });
+      });
 
       once('message', '.messages', context).forEach((message) => {
         message

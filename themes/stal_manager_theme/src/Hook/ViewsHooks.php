@@ -24,12 +24,17 @@ final class ViewsHooks {
   public const RESULTS_ID = 'stable-results';
 
   /**
+   * The views whose page is a summary: a number, and cards around it.
+   */
+  private const SUMMARY_VIEWS = ['stable_dashboard', 'stable_overview', 'stable_statement'];
+
+  /**
    * Implements hook_preprocess_views_view().
    *
    * Gives the Stal Manager views (stable_*) a layout:
-   * - summary: the page of the dashboard and the overview. Its number (this
-   *   month's costs, the month's total) becomes a stat card, its attachments
-   *   a grid of cards.
+   * - summary: the page of the dashboard, the overview and a horse's
+   *   statement. Its number (this month's costs, the month's total, the
+   *   horse's total) becomes a stat card, its attachments a grid of cards.
    * - list: the other pages. Actions above, the results in a card.
    * - card: attachments. The whole view is one card.
    *
@@ -44,7 +49,7 @@ final class ViewsHooks {
     }
     $is_page = $view->display_handler->getPluginId() === 'page';
     $layout = match (TRUE) {
-      $is_page && in_array($view->id(), ['stable_dashboard', 'stable_overview'], TRUE) => 'summary',
+      $is_page && in_array($view->id(), self::SUMMARY_VIEWS, TRUE) => 'summary',
       $is_page => 'list',
       default => 'card',
     };

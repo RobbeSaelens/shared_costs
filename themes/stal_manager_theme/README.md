@@ -20,14 +20,17 @@ Generated from core's Starterkit, so it doesn't depend on a base theme.
   links.
 - **Live filters.** The expenses' filters update the results as you type or
   pick, keep the filters in the URL and leave the focus where it is. Without
-  JavaScript, "Apply" still works.
+  JavaScript, "Apply" still works. The _Download CSV_ button goes with the
+  results, so it always downloads what the filters show.
 - **Cards.** The Stal Manager views (`stable_*`) get a layout:
-  - On the dashboard and the overview, the main number (this month's costs,
-    the month's total) is a stat card that counts up to its value, next to a
-    grid of cards.
+  - On the dashboard, the overview and a horse's statement, the main number
+    (this month's costs, the month's total, the horse's total) is a stat card
+    that counts up to its value, next to a grid of cards.
   - On the other pages, the actions come first, then the results in a card.
 - **Charts** in the theme's colors: a Chart.js plugin restyles the Charts
   module's charts, and redraws them when the theme changes.
+- **Printing.** A page prints without the app around it: no sidebar, buttons
+  or toasts, in black on white. A horse's statement has a _Print_ button.
 - **Dark mode** that follows the system, or the toggle. A small inline script
   sets it before the page paints, so it doesn't flash.
 - **Motion.** Cards rise in one by one, pages swap with view transitions and
@@ -59,4 +62,5 @@ In the module's tests:
   - live filters;
   - the theme toggle and the charts' colors;
   - the sidebar, the count-up and the messages;
+  - printing a statement;
   - an axe scan of every page in light and dark (WCAG 2.1 A and AA).

@@ -1,0 +1,26 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_receipt
+    - node.type.expense
+  module:
+    - file
+id: node.expense.field_receipt
+field_name: field_receipt
+entity_type: node
+bundle: expense
+label: Receipt
+description: 'A photo or PDF of the receipt or invoice. Only people who can see the expense can open it.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:file'
+  handler_settings: {  }
+  file_directory: 'receipts/[date:custom:Y]-[date:custom:m]'
+  file_extensions: 'jpg jpeg png pdf'
+  max_filesize: '10 MB'
+  description_field: false
+field_type: file

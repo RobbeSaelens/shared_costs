@@ -21,3 +21,6 @@
 /recipes/README.txt
 # Linked from core by ddev eslint and stylelint.
 /.prettierrc.json
+
+# Private files of the dev site (receipts).
+/private/

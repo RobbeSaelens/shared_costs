@@ -45,6 +45,11 @@ final class StalManagerThemeTest extends WebDriverTestBase {
   private NodeInterface $expense;
 
   /**
+   * A horse, with costs this month.
+   */
+  private NodeInterface $horse;
+
+  /**
    * {@inheritdoc}
    */
   protected function setUp(): void {
@@ -59,6 +64,14 @@ final class StalManagerThemeTest extends WebDriverTestBase {
     $this->createExpense($this->months['this']->format('Y-m-d'), 'Hay', 'feed', '100.00', [[$luna], [$bella]]);
     $date = $this->months['this']->format('Y-m-d');
     $this->expense = $this->createExpense($date, 'Riding lesson', 'lesson', '30.00', [[$luna]]);
+    $this->horse = $luna;
+    $this->drupalCreateNode([
+      'type' => 'inventory_item',
+      'title' => 'Straw',
+      'field_cost_category' => 'bedding',
+      'field_default_price' => '6.50',
+      'field_unit' => 'bale',
+    ]);
     $this->drupalLogin($this->createStableManager());
   }
 
@@ -247,6 +260,29 @@ final class StalManagerThemeTest extends WebDriverTestBase {
   }
 
   /**
+   * Tests a horse's statement: its print button prints it, without the app.
+   */
+  public function testStatement(): void {
+    $path = 'stable/statement/' . $this->horse->id();
+    $this->drupalGet($path);
+    $this->assertSession()->elementTextEquals('css', 'h1', 'Luna: ' . $this->months['this']->format('F Y'));
+    $this->getSession()->executeScript('window.printed = 0; window.print = () => { window.printed += 1; };');
+    $this->getSession()->getPage()->clickLink('Print');
+    $this->assertSame(1, $this->getSession()->evaluateScript('window.printed'));
+    $this->assertStringEndsWith($path, $this->getUrl());
+    // On paper, the sidebar and the buttons stay off.
+    $hidden = $this->getSession()->evaluateScript(<<<'JS'
+      [...document.styleSheets]
+        .filter((sheet) => sheet.media.mediaText === 'print')
+        .flatMap((sheet) => [...sheet.cssRules])
+        .filter((rule) => rule.style?.display === 'none')
+        .flatMap((rule) => rule.selectorText.split(/,\s*/))
+    JS);
+    $this->assertContains('.app-sidebar', $hidden);
+    $this->assertContains('.page-actions', $hidden);
+  }
+
+  /**
    * Tests every page with axe: no serious WCAG 2.1 A/AA issues, in both themes.
    */
   public function testAccessibility(): void {
@@ -258,6 +294,7 @@ final class StalManagerThemeTest extends WebDriverTestBase {
       'stable/overview',
       'stable/horses',
       'stable/inventory',
+      'stable/statement/' . $this->horse->id(),
       $this->expense->toUrl()->getInternalPath(),
     ];
     $problems = [];

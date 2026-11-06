@@ -40,8 +40,10 @@ final class ThemeHooksTest extends KernelTestBase {
 
   /**
    * {@inheritdoc}
+   *
+   * The modules that every site has (path_alias is required).
    */
-  protected static $modules = ['system', 'user'];
+  protected static $modules = ['system', 'user', 'path_alias'];
 
   /**
    * The horses.
@@ -57,6 +59,7 @@ final class ThemeHooksTest extends KernelTestBase {
     parent::setUp();
     $this->installConfig(['system', 'user']);
     $this->installEntitySchema('user');
+    $this->installEntitySchema('path_alias');
     RecipeRunner::processRecipe(Recipe::createFromDirectory(dirname(__DIR__, 3) . '/recipes/stal_manager'));
     \Drupal::service('module_installer')->install(['block']);
     \Drupal::service('theme_installer')->install(['stal_manager_theme']);
@@ -163,6 +166,23 @@ final class ThemeHooksTest extends KernelTestBase {
   }
 
   /**
+   * Tests a horse's statement: its total, a print button and cards.
+   */
+  public function testStatement(): void {
+    $this->createExpense('2026-10-05', 'Hay', '48');
+    $this->createExpense('2026-11-03', 'Hay', '32');
+    $luna = (string) $this->horses['Luna']->id();
+    $this->goTo("/stable/statement/$luna/202611");
+    $html = $this->renderView('stable_statement', [$luna, '202611']);
+
+    $this->assertStringContainsString('stable-view stable-view--summary', $html);
+    $this->assertMatchesRegularExpression('#<div class="page-actions"><p><a href="\#print" class="button" role="button" data-stable-print>Print</a></p>#', $html);
+    $this->assertMatchesRegularExpression('#<div class="stat-card__label">Total</div>\s*<p class="stat-card__value" data-count-up="16"#', $html);
+    $this->assertStringContainsString('<h2>Expenses</h2>', $html);
+    $this->assertStringContainsString("href=\"/stable/statement/$luna/202610\"", $html);
+  }
+
+  /**
    * Tests a list page: actions, live filters and the results in a card.
    */
   public function testExpenses(): void {
@@ -175,7 +195,8 @@ final class ThemeHooksTest extends KernelTestBase {
 
     $this->assertStringContainsString('stable-view stable-view--list', $html);
     $this->assertMatchesRegularExpression('#<div class="page-actions">.*Add an expense#s', $html);
-    $this->assertMatchesRegularExpression('#<div class="stable-results" id="stable-results">\s*<section[^>]* class="card card--flush">#', $html);
+    // The CSV download goes with the results, so live filters update it too.
+    $this->assertMatchesRegularExpression('#<div class="stable-results" id="stable-results">\s*<div class="stable-downloads">.*<a href="/stable/expenses/csv\?[^"]*_format=csv" title="Expenses" class="button" download>\s*Download CSV\s*</a>.*?</div>\s*</div>\s*<section[^>]* class="card card--flush">#s', $html);
     // The filters update the results as you type, and keep them in the URL.
     preg_match('#<form ([^>]*)>#', $html, $form);
     $this->assertNotEmpty($form);
