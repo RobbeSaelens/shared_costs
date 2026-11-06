@@ -1,0 +1,57 @@
+_meta:
+  version: '1.0'
+  entity_type: node
+  uuid: 9b9135cc-672a-483f-8272-a56b7b090162
+  bundle: expense
+  default_langcode: en
+  depends:
+    033da92d-9294-404d-83f9-8fdabc7dc803: node
+    e38d6feb-0fad-4e60-bb78-bd2ac5275274: node
+    e030d6f8-dff9-44d5-952b-8dafa5d421d8: node
+default:
+  revision_uid:
+    -
+      target_id: 0
+  status:
+    -
+      value: true
+  uid:
+    -
+      target_id: 0
+  title:
+    -
+      value: Hay
+  promote:
+    -
+      value: false
+  sticky:
+    -
+      value: false
+  revision_translation_affected:
+    -
+      value: true
+  field_cost_category:
+    -
+      value: feed
+  field_expense_date:
+    -
+      value: '2025-12-17'
+  field_inventory_item:
+    -
+      entity: 033da92d-9294-404d-83f9-8fdabc7dc803
+  field_quantity:
+    -
+      value: '6.00'
+  field_shared_with:
+    -
+      share: null
+      entity: e38d6feb-0fad-4e60-bb78-bd2ac5275274
+    -
+      share: null
+      entity: e030d6f8-dff9-44d5-952b-8dafa5d421d8
+  field_total:
+    -
+      value: '48.00'
+  field_unit_price:
+    -
+      value: '8.00'

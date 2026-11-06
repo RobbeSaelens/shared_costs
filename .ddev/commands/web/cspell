@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+## Description: Spell-check the project with core's cspell setup (as drupal.org CI does)
+## Usage: cspell [files]
+## Example: "ddev cspell" or "ddev cspell src/Hook/SharedCostsHooks.php"
+## ExecRaw: true
+
+set -eu -o pipefail
+
+CORE="$DDEV_DOCROOT/core"
+if [ ! -d "$CORE/node_modules/cspell" ]; then
+  echo "Installing core's JavaScript tooling (once)..."
+  (cd "$CORE" && yarn install --immutable --silent)
+fi
+
+# Core's dictionaries and settings, plus this project's own words.
+CONFIG=$(mktemp --suffix=.json)
+cat > "$CONFIG" <<JSON
+{
+  "import": ["$PWD/$CORE/.cspell.json"],
+  "globRoot": "$PWD",
+  "dictionaryDefinitions": [
+    { "name": "project-words", "path": "$PWD/.cspell-project-words.txt" }
+  ],
+  "dictionaries": ["project-words"],
+  "ignorePaths": ["vendor", "web", ".ddev", "node_modules", "composer.lock", "*.po", "recipes/stal_manager_nl/recipe.yml"]
+}
+JSON
+
+if [ $# -gt 0 ]; then
+  FILES=("$@")
+else
+  FILES=("**/*.{php,yml,md,txt,twig,json,xml,dist}")
+fi
+"$CORE/node_modules/.bin/cspell" --no-progress --config "$CONFIG" "${FILES[@]}"

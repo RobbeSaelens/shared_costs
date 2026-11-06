@@ -1,0 +1,34 @@
+{
+    "name": "drupal/shared_costs",
+    "description": "A field that splits an amount over sharers (equally or by percentage), with cent-exact totals for Views. Includes the Stal Manager recipes.",
+    "type": "drupal-module",
+    "license": "GPL-2.0-or-later",
+    "homepage": "https://github.com/RobbeSaelens/shared_costs",
+    "support": {
+        "issues": "https://github.com/RobbeSaelens/shared_costs/issues",
+        "source": "https://github.com/RobbeSaelens/shared_costs"
+    },
+    "authors": [
+        {
+            "name": "Robbe Saelens",
+            "homepage": "https://robbesaelens.github.io",
+            "role": "Maintainer"
+        }
+    ],
+    "keywords": [
+        "Drupal",
+        "field",
+        "costs",
+        "split",
+        "recipe"
+    ],
+    "require": {
+        "php": ">=8.3",
+        "drupal/core": "^11.4 || ^12"
+    },
+    "require-dev": {
+        "drupal/charts": "^5.2.4",
+        "drush/drush": "^13.6 || ^14"
+    },
+    "minimum-stability": "stable"
+}

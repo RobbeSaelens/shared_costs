@@ -1,0 +1,135 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  schedule:
+    # Weekly, to catch new Drupal releases.
+    - cron: '0 6 * * 1'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Coding standards, static analysis, spelling
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ddev/github-action-setup-ddev@v1
+      - run: ddev poser
+      - run: ddev symlink-project
+      - run: ddev phpcs
+      - run: ddev phpstan
+      - run: ddev cspell
+
+  tests:
+    name: Drupal ${{ matrix.core }}, PHP ${{ matrix.php }}, ${{ matrix.name }}
+    runs-on: ubuntu-latest
+    # Drupal 12 is checked, but doesn't fail the build until it is stable.
+    continue-on-error: ${{ matrix.experimental }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: MariaDB, with coverage
+            core: '~11.4.0'
+            php: '8.3'
+            database: mariadb
+            database_version: '11.8'
+            simpletest_db: mysql://db:db@db/db
+            suites: unit,kernel,functional
+            coverage: true
+            experimental: false
+          - name: PostgreSQL
+            core: '^11'
+            php: '8.5'
+            database: postgres
+            database_version: '16'
+            simpletest_db: pgsql://db:db@db/db
+            suites: unit,kernel,functional
+            coverage: false
+            experimental: false
+          - name: SQLite
+            core: '^11'
+            php: '8.5'
+            database: mariadb
+            database_version: '11.8'
+            simpletest_db: sqlite://localhost//tmp/test.sqlite
+            suites: unit,kernel
+            coverage: false
+            experimental: false
+          - name: MariaDB
+            core: '^12@beta'
+            php: '8.5'
+            database: mariadb
+            database_version: '11.8'
+            simpletest_db: mysql://db:db@db/db
+            suites: unit,kernel,functional
+            coverage: false
+            experimental: true
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure DDEV for this combination
+        # Loaded after config.contrib.yaml, so these settings win.
+        run: |
+          cat > .ddev/config.zz-ci.yaml <<YAML
+          php_version: "${{ matrix.php }}"
+          database:
+            type: ${{ matrix.database }}
+            version: "${{ matrix.database_version }}"
+          web_environment:
+            - DRUPAL_CORE=${{ matrix.core }}
+            - SIMPLETEST_DB=${{ matrix.simpletest_db }}
+          YAML
+      - name: Allow a pre-release of Drupal core
+        if: contains(matrix.core, '@')
+        run: |
+          composer config minimum-stability beta
+          composer config prefer-stable true
+          # Drush 13 doesn't support Drupal 12, and the tests don't need it.
+          composer remove --dev --no-update drush/drush
+      - uses: ddev/github-action-setup-ddev@v1
+      - run: ddev poser
+      - run: ddev symlink-project
+      - name: Enable pg_trgm (required by Drupal 11 on PostgreSQL)
+        if: matrix.database == 'postgres'
+        run: ddev exec -s db psql -U db -d db -c 'CREATE EXTENSION IF NOT EXISTS pg_trgm'
+      - name: Tests
+        if: ${{ !matrix.coverage }}
+        run: ddev phpunit --testsuite ${{ matrix.suites }}
+      - name: Tests, with coverage of src/ by the Unit and Kernel tests (at least 90 %)
+        if: ${{ matrix.coverage }}
+        run: |
+          ddev phpunit --testsuite functional
+          ddev exec php -d pcov.enabled=1 vendor/bin/phpunit --testsuite unit,kernel --coverage-text --coverage-clover /tmp/clover.xml
+          ddev exec php -r '$m = simplexml_load_file("/tmp/clover.xml")->project->metrics; $p = 100 * (int) $m["coveredstatements"] / max(1, (int) $m["statements"]); printf("Line coverage: %.2f %%\n", $p); exit($p < 90 ? 1 : 0);'
+
+  demo:
+    name: Demo site, in English and Dutch
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ddev/github-action-setup-ddev@v1
+      - run: ddev poser
+      - run: ddev symlink-project
+      - run: ddev drush site:install minimal --yes
+      - name: Apply the demo recipe, twice
+        run: |
+          ddev drush recipe /var/www/html/recipes/stal_manager_demo
+          ddev drush recipe /var/www/html/recipes/stal_manager_demo
+      - name: Visitors get the login form, not the costs
+        run: |
+          test "$(ddev exec curl -s -o /dev/null -w '%{http_code}' http://web/stable)" = 403
+          ddev exec curl -s http://web/ | grep -q 'name="name"'
+      - name: Apply the Dutch recipe, and import the translations
+        run: |
+          ddev drush recipe /var/www/html/recipes/stal_manager_nl
+          ddev drush locale:check
+          ddev drush locale:update
+          ddev drush cache:rebuild
+          test "$(ddev drush php:eval 'echo t("Share (%)");')" = 'Aandeel (%)'

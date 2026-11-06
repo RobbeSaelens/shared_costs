@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.horse.field_horse_type
+    - node.type.horse
+  module:
+    - options
+id: node.horse.default
+targetEntityType: node
+bundle: horse
+mode: default
+content:
+  field_horse_type:
+    type: list_default
+    label: inline
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden:
+  links: true

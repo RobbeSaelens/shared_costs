@@ -1,0 +1,214 @@
+# Dutch translation of Shared costs.
+msgid ""
+msgstr ""
+"Project-Id-Version: shared_costs\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: nl\n"
+
+msgid "%label is listed more than once."
+msgstr "%label staat er meer dan één keer in."
+
+msgid "%name: a share must be from 0 to 100 %."
+msgstr "%name: een aandeel moet tussen 0 en 100 % liggen."
+
+msgid "- None -"
+msgstr "- Geen -"
+
+msgid "- Select a field -"
+msgstr "- Kies een veld -"
+
+msgid "@entity sharing costs through @field_name"
+msgstr "@entity die kosten delen via @field_name"
+
+msgid "@field_name (year and month)"
+msgstr "@field_name (jaar en maand)"
+
+msgid "@label sharing @field_name"
+msgstr "@label die @field_name delen"
+
+msgid "About"
+msgstr "Over"
+
+msgid "Add a decimal, float or integer field for the total first, then a <em>Shared costs</em> field. In its settings, pick what can share the costs and which field holds the total."
+msgstr "Voeg eerst een decimaal-, kommagetal- of geheelgetalveld toe voor het totaal, en dan een veld <em>Gedeelde kosten</em>. Kies in de instellingen ervan wat de kosten kan delen en welk veld het totaal bevat."
+
+msgid "Add a decimal, float or integer field to hold the total first."
+msgstr "Voeg eerst een decimaal-, kommagetal- of geheelgetalveld toe voor het totaal."
+
+msgid "Adding the field"
+msgstr "Het veld toevoegen"
+
+msgid "After the amount, for example \" EUR\"."
+msgstr "Na het bedrag, bijvoorbeeld \" EUR\"."
+
+msgid "Amount"
+msgstr "Bedrag"
+
+msgid "amount (@example)"
+msgstr "bedrag (@example)"
+
+msgid "Amount for @label"
+msgstr "Bedrag voor @label"
+
+msgid "Amounts"
+msgstr "Bedragen"
+
+msgid "Amounts like @example"
+msgstr "Bedragen zoals @example"
+
+msgid "Apostrophe"
+msgstr "Apostrof"
+
+msgid "Before the amount, for example \"€ \"."
+msgstr "Voor het bedrag, bijvoorbeeld \"€ \"."
+
+msgid "Can no longer be picked; kept as it was."
+msgstr "Kan niet meer gekozen worden; blijft zoals het was."
+
+msgid "Comma"
+msgstr "Komma"
+
+msgid "Decimal marker"
+msgstr "Decimaalteken"
+
+msgid "Decimal marker of the amounts"
+msgstr "Decimaalteken van de bedragen"
+
+msgid "Decimal point"
+msgstr "Punt"
+
+msgid "equal"
+msgstr "gelijk"
+
+msgid "For example: the costs of an expense shared by the horses in a stable"
+msgstr "Bijvoorbeeld: de kosten van een uitgave, gedeeld door de paarden in een stal"
+
+msgid "Format"
+msgstr "Formaat"
+
+msgid "How to show the month, as a <a href=\"https://www.php.net/manual/en/datetime.format.php\">PHP date format</a>: <em>Y-m</em> for 2026-11, <em>M Y</em> for Nov 2026, <em>F</em> for November."
+msgstr "Hoe de maand getoond wordt, als <a href=\"https://www.php.net/manual/en/datetime.format.php\">PHP-datumformaat</a>: <em>Y-m</em> voor 2026-11, <em>M Y</em> voor nov 2026, <em>F</em> voor november."
+
+msgid "In Views, the amount can be added up per sharer (through the relationship to the sharer), and date fields get a <em>year and month</em> field to add costs up per month."
+msgstr "In Views kan het bedrag per deelnemer opgeteld worden (via de relatie naar de deelnemer), en datumvelden krijgen een veld <em>jaar en maand</em> om kosten per maand op te tellen."
+
+msgid "Newest first"
+msgstr "Nieuwste eerst"
+
+msgid "No"
+msgstr "Nee"
+
+msgid "Oldest first"
+msgstr "Oudste eerst"
+
+msgid "Pick at least one for @name."
+msgstr "Kies er minstens één voor @name."
+
+msgid "Prefix"
+msgstr "Voorvoegsel"
+
+msgid "Reports"
+msgstr "Rapporten"
+
+msgid "Share"
+msgstr "Aandeel"
+
+msgid "share"
+msgstr "aandeel"
+
+msgid "Share (%)"
+msgstr "Aandeel (%)"
+
+msgid "Share of @label"
+msgstr "Aandeel van @label"
+
+msgid "Shared costs"
+msgstr "Gedeelde kosten"
+
+msgid "Sharer"
+msgstr "Deelnemer"
+
+msgid "Sharers only"
+msgstr "Alleen deelnemers"
+
+msgid "Sharers with share and amount"
+msgstr "Deelnemers met aandeel en bedrag"
+
+msgctxt "Validation"
+msgid "Shares of shared costs"
+msgstr "Aandelen in gedeelde kosten"
+
+msgid "Show the amount"
+msgstr "Toon het bedrag"
+
+msgid "Show the share (%)"
+msgstr "Toon het aandeel (%)"
+
+msgid "Sort by month"
+msgstr "Sorteren op maand"
+
+msgid "Sort the results by this month. Sorting by the date itself is not possible when results are grouped by month."
+msgstr "Sorteer de resultaten op deze maand. Sorteren op de datum zelf kan niet als de resultaten per maand gegroepeerd zijn."
+
+msgid "Space"
+msgstr "Spatie"
+
+msgid "Splits an amount of this entity over other entities, equally or by percentage"
+msgstr "Verdeelt een bedrag van deze entiteit over andere entiteiten, gelijk of per percentage"
+
+msgid "Suffix"
+msgstr "Achtervoegsel"
+
+msgid "Table of sharers"
+msgstr "Tabel van deelnemers"
+
+msgid "The <em>Shared costs</em> field splits an amount over other entities: the costs of an expense over the horses in a stable, of a bill over housemates. Each sharer gets an equal part, or a percentage you give it."
+msgstr "Het veld <em>Gedeelde kosten</em> verdeelt een bedrag over andere entiteiten: de kosten van een uitgave over de paarden in een stal, van een rekening over huisgenoten. Elke deelnemer krijgt een gelijk deel, of een percentage dat je opgeeft."
+
+msgid "The @entity whose @field_name includes this @label."
+msgstr "De @entity waarvan @field_name deze @label bevat."
+
+msgid "The number field that holds the amount to split. Each sharer gets its part of it, worked out when the content is saved."
+msgstr "Het getalveld met het bedrag dat verdeeld wordt. Elke deelnemer krijgt er zijn deel van, berekend bij het opslaan."
+
+msgid "The percentage of the total, or empty for an equal part of what the other shares leave."
+msgstr "Het percentage van het totaal, of leeg voor een gelijk deel van wat de andere aandelen overlaten."
+
+msgid "The sharers, to add amounts up per sharer. Appears in: @bundles."
+msgstr "De deelnemers, om bedragen per deelnemer op te tellen. Komt voor in: @bundles."
+
+msgid "The shares add up to @sum %, which is more than 100 %."
+msgstr "De aandelen tellen op tot @sum %, meer dan 100 %."
+
+msgid "The shares add up to @sum %. Make them add up to 100 %, or leave a share empty to give that sharer the rest."
+msgstr "De aandelen tellen op tot @sum %. Laat ze optellen tot 100 %, of laat een aandeel leeg om die deelnemer de rest te geven."
+
+msgid "The year and month of the date, to group by month (for example to add amounts up per month)."
+msgstr "Het jaar en de maand van de datum, om per maand te groeperen (bijvoorbeeld om bedragen per maand op te tellen)."
+
+msgid "There is nothing to share the costs with yet."
+msgstr "Er is nog niets om de kosten mee te delen."
+
+msgid "This sharer's part of the total, worked out when the entity is saved."
+msgstr "Het deel van het totaal voor deze deelnemer, berekend bij het opslaan."
+
+msgid "Thousand marker"
+msgstr "Scheidingsteken voor duizendtallen"
+
+msgid "Tick everything that shares these costs. Leave a share empty for an equal part of what the other shares leave."
+msgstr "Vink aan wat deze kosten deelt. Laat een aandeel leeg voor een gelijk deel van wat de andere aandelen overlaten."
+
+msgid "Total"
+msgstr "Totaal"
+
+msgid "Uses"
+msgstr "Gebruik"
+
+msgid "When the content is saved, every sharer gets its part of the total, in cents that always add up to the total. A sharer without a percentage gets an equal part of what the percentages leave."
+msgstr "Bij het opslaan krijgt elke deelnemer zijn deel van het totaal, in centen die altijd optellen tot het totaal. Een deelnemer zonder percentage krijgt een gelijk deel van wat de percentages overlaten."
+
+msgid "With @shown"
+msgstr "Met @shown"

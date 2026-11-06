@@ -1,0 +1,10 @@
+langcode: en
+status: true
+dependencies: {  }
+name: Horse
+type: horse
+description: 'A horse in the stable: the costs are shared between the horses.'
+help: null
+new_revision: true
+preview_mode: 0
+display_submitted: false

@@ -1,0 +1,8 @@
+shared_costs.split_preview:
+  path: '/shared-costs/split-preview'
+  defaults:
+    _controller: '\Drupal\shared_costs\Controller\SplitPreviewController'
+  methods: [GET]
+  requirements:
+    # Only arithmetic on the numbers in the request: no data, no changes.
+    _access: 'TRUE'

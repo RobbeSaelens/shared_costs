@@ -1,0 +1,19 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+    - shared_costs
+id: node.field_shared_with
+field_name: field_shared_with
+entity_type: node
+type: shared_costs_allocation
+settings:
+  target_type: node
+module: shared_costs
+locked: false
+cardinality: -1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

@@ -1,0 +1,53 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - entity_test
+    - shared_costs
+id: test_shared_costs_per_month
+label: test_shared_costs_per_month
+module: views
+description: 'Totals added up per month of a date field.'
+tag: ''
+base_table: entity_test
+base_field: id
+display:
+  default:
+    id: default
+    display_title: Default
+    display_plugin: default
+    position: 0
+    display_options:
+      group_by: true
+      fields:
+        field_date_year_month:
+          id: field_date_year_month
+          table: entity_test__field_date
+          field: field_date_year_month
+          relationship: none
+          group_type: group
+          plugin_id: shared_costs_year_month
+          format: 'M Y'
+          order: ASC
+        field_total_value:
+          id: field_total_value
+          table: entity_test__field_total
+          field: field_total_value
+          relationship: none
+          group_type: sum
+          plugin_id: numeric
+          set_precision: true
+          precision: 2
+      filters:
+        field_total_value:
+          id: field_total_value
+          table: entity_test__field_total
+          field: field_total_value
+          relationship: none
+          group_type: group
+          operator: 'not empty'
+          plugin_id: numeric
+      style:
+        type: default
+      row:
+        type: fields

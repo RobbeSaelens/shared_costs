@@ -1,0 +1,43 @@
+_meta:
+  version: '1.0'
+  entity_type: node
+  uuid: 2d2a5319-1f05-4cf1-b77b-384d19c47103
+  bundle: expense
+  default_langcode: en
+  depends:
+    e38d6feb-0fad-4e60-bb78-bd2ac5275274: node
+default:
+  revision_uid:
+    -
+      target_id: 0
+  status:
+    -
+      value: true
+  uid:
+    -
+      target_id: 0
+  title:
+    -
+      value: 'Riding lesson'
+  promote:
+    -
+      value: false
+  sticky:
+    -
+      value: false
+  revision_translation_affected:
+    -
+      value: true
+  field_cost_category:
+    -
+      value: lesson
+  field_expense_date:
+    -
+      value: '2026-08-22'
+  field_shared_with:
+    -
+      share: null
+      entity: e38d6feb-0fad-4e60-bb78-bd2ac5275274
+  field_total:
+    -
+      value: '35.00'

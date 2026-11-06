@@ -1,0 +1,16 @@
+# drupal.org's GitLab CI templates, for when the project moves there.
+# https://git.drupalcode.org/project/gitlab_templates
+include:
+  - project: $_GITLAB_TEMPLATES_REPO
+    ref: $_GITLAB_TEMPLATES_REF
+    file:
+      - '/includes/include.drupalci.main.yml'
+      - '/includes/include.drupalci.variables.yml'
+      - '/includes/include.drupalci.workflows.yml'
+
+variables:
+  # Drupal 12 too, and the newest PHP.
+  OPT_IN_TEST_NEXT_MAJOR: 1
+  OPT_IN_TEST_MAX_PHP: 1
+  # Level 8, as in phpstan.neon.dist.
+  _PHPSTAN_LEVEL: 8

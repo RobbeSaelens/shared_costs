@@ -1,0 +1,25 @@
+name: 'Stal Manager'
+description: 'Keeps track of the costs of a stable and splits them over the horses: expenses, the inventory you buy from, a dashboard with charts and an overview per month.'
+type: 'Site'
+install:
+  - shared_costs
+  - node
+  - datetime
+  - options
+  - views
+  - charts
+  - charts_chartjs
+config:
+  # Applying the recipe again (or on a site that changed its config) keeps what
+  # is there, and only adds what is missing.
+  strict: false
+  import:
+    system:
+      - system.menu.main
+    node:
+      - core.entity_view_mode.node.full
+      - core.entity_view_mode.node.teaser
+  actions:
+    charts.settings:
+      simpleConfigUpdate:
+        charts_default_settings.library: chartjs

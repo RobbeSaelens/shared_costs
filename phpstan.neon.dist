@@ -1,0 +1,18 @@
+parameters:
+  level: 8
+  paths:
+    - .
+  # Optional: `ddev phpstan` runs from the module's symlinked copy, where these
+  # don't exist; from the repository root they do.
+  excludePaths:
+    analyseAndScan:
+      - vendor (?)
+      - web (?)
+      - .ddev (?)
+  fileExtensions:
+    - php
+    - module
+    - inc
+    - install
+  treatPhpDocTypesAsCertain: false
+  reportUnmatchedIgnoredErrors: true

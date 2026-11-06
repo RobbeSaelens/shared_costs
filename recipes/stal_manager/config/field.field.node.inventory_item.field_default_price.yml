@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_default_price
+    - node.type.inventory_item
+id: node.inventory_item.field_default_price
+field_name: field_default_price
+entity_type: node
+bundle: inventory_item
+label: Price
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: 0.0
+  max: null
+  prefix: '€ '
+  suffix: ''
+field_type: decimal

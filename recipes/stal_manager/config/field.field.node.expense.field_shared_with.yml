@@ -1,0 +1,30 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.expense.field_total
+    - field.storage.node.field_shared_with
+    - node.type.expense
+    - node.type.horse
+  module:
+    - shared_costs
+id: node.expense.field_shared_with
+field_name: field_shared_with
+entity_type: node
+bundle: expense
+label: 'Shared by'
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:node'
+  handler_settings:
+    target_bundles:
+      horse: horse
+    sort:
+      field: title
+      direction: ASC
+  total_field: field_total
+field_type: shared_costs_allocation

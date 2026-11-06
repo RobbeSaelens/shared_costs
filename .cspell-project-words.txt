@@ -1,0 +1,9 @@
+# Words used in this project that cspell doesn't know (one per line).
+analyse
+chartjs
+ddev
+Robbe
+Saelens
+stal
+xaxis
+yaxis

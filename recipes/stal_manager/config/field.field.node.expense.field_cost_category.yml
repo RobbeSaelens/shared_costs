@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_cost_category
+    - node.type.expense
+  module:
+    - options
+id: node.expense.field_cost_category
+field_name: field_cost_category
+entity_type: node
+bundle: expense
+label: Category
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

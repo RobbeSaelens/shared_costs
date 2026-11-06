@@ -1,0 +1,28 @@
+name: 'Stal Manager demo'
+description: 'Stal Manager on a new site, to try it out: Olivero and Claro, two horses and a year of example costs.'
+type: 'Site'
+recipes:
+  - core/recipes/core_recommended_front_end_theme
+  - core/recipes/core_recommended_admin_theme
+  - stal_manager
+install:
+  - toolbar
+config:
+  strict: false
+  import:
+    node:
+      - views.view.content
+  actions:
+    system.site:
+      simpleConfigUpdate:
+        name: 'Stal Manager'
+        page.front: /stable
+        # The dashboard is for the stable's managers: show the login form.
+        page.403: /user/login
+    node.settings:
+      simpleConfigUpdate:
+        use_admin_theme: true
+    # Costs are private: visitors that aren't logged in see nothing.
+    user.role.anonymous:
+      setProperties:
+        permissions: []

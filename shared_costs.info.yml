@@ -1,0 +1,10 @@
+name: Shared costs
+type: module
+description: 'A field that splits an amount over sharers, equally or by percentage, with cent-exact amounts for Views.'
+package: Field types
+core_version_requirement: ^11.4 || ^12
+dependencies:
+  - drupal:field
+# Dutch (and other) interface translations ship with the module, in
+# translations/<langcode>.po; SharedCostsHooks points locale at them.
+'interface translation project': shared_costs

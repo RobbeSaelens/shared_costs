@@ -1,0 +1,86 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.expense.field_cost_category
+    - field.field.node.expense.field_expense_date
+    - field.field.node.expense.field_inventory_item
+    - field.field.node.expense.field_quantity
+    - field.field.node.expense.field_shared_with
+    - field.field.node.expense.field_total
+    - field.field.node.expense.field_unit_price
+    - node.type.expense
+  module:
+    - datetime
+    - shared_costs
+id: node.expense.default
+targetEntityType: node
+bundle: expense
+mode: default
+content:
+  field_cost_category:
+    type: options_select
+    weight: 2
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_expense_date:
+    type: datetime_default
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_inventory_item:
+    type: options_select
+    weight: 3
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_quantity:
+    type: number
+    weight: 4
+    region: content
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+  field_shared_with:
+    type: shared_costs_allocation_table
+    weight: 7
+    region: content
+    settings:
+      decimal_separator: .
+    third_party_settings: {  }
+  field_total:
+    type: number
+    weight: 6
+    region: content
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+  field_unit_price:
+    type: number
+    weight: 5
+    region: content
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+  status:
+    type: boolean_checkbox
+    weight: 120
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  title:
+    type: string_textfield
+    weight: 1
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+hidden:
+  created: true
+  promote: true
+  sticky: true
+  uid: true

@@ -1,0 +1,21 @@
+# Built by ddev-drupal-contrib (ddev poser / symlink-project)
+/web/
+/vendor/
+/composer.lock
+/composer.contrib.json
+/composer.contrib.lock
+/.ddev/.env.web
+/node_modules/
+
+# Test output
+/coverage/
+/.phpunit.cache/
+
+# Editors and OS
+.idea/
+.vscode/
+.DS_Store
+/.editorconfig
+/.gitattributes
+/recipes/.gitignore
+/recipes/README.txt

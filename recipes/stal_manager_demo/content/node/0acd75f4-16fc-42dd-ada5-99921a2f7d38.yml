@@ -1,0 +1,37 @@
+_meta:
+  version: '1.0'
+  entity_type: node
+  uuid: 0acd75f4-16fc-42dd-ada5-99921a2f7d38
+  bundle: inventory_item
+  default_langcode: en
+default:
+  revision_uid:
+    -
+      target_id: 0
+  status:
+    -
+      value: true
+  uid:
+    -
+      target_id: 0
+  title:
+    -
+      value: Carrots
+  promote:
+    -
+      value: false
+  sticky:
+    -
+      value: false
+  revision_translation_affected:
+    -
+      value: true
+  field_cost_category:
+    -
+      value: feed
+  field_default_price:
+    -
+      value: '4.50'
+  field_unit:
+    -
+      value: bag

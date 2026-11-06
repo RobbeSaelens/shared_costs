@@ -1,0 +1,10 @@
+name: 'Shared costs test'
+type: module
+description: 'Test views for the shared_costs module.'
+package: Testing
+hidden: true
+dependencies:
+  - drupal:datetime
+  - drupal:entity_test
+  - drupal:views
+  - shared_costs:shared_costs

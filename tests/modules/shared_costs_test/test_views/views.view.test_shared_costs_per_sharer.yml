@@ -1,0 +1,63 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - entity_test
+    - shared_costs
+id: test_shared_costs_per_sharer
+label: test_shared_costs_per_sharer
+module: views
+description: 'Costs added up per sharer, through the relationship.'
+tag: ''
+base_table: entity_test
+base_field: id
+display:
+  default:
+    id: default
+    display_title: Default
+    display_plugin: default
+    position: 0
+    display_options:
+      group_by: true
+      relationships:
+        field_shared_with:
+          id: field_shared_with
+          table: entity_test__field_shared_with
+          field: field_shared_with
+          relationship: none
+          group_type: group
+          required: true
+          plugin_id: standard
+      fields:
+        name:
+          id: name
+          table: entity_test
+          field: name
+          relationship: field_shared_with
+          group_type: group
+          plugin_id: field
+          type: string
+          settings:
+            link_to_entity: false
+        field_shared_with_amount:
+          id: field_shared_with_amount
+          table: entity_test__field_shared_with
+          field: field_shared_with_amount
+          relationship: none
+          group_type: sum
+          plugin_id: numeric
+          set_precision: true
+          precision: 2
+      sorts:
+        name:
+          id: name
+          table: entity_test
+          field: name
+          relationship: field_shared_with
+          group_type: group
+          order: ASC
+          plugin_id: standard
+      style:
+        type: default
+      row:
+        type: fields

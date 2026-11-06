@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_horse_type
+    - node.type.horse
+  module:
+    - options
+id: node.horse.field_horse_type
+field_name: field_horse_type
+entity_type: node
+bundle: horse
+label: Type
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

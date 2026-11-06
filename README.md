@@ -1,0 +1,188 @@
+# Shared costs
+
+A Drupal field that splits an amount over other entities, equally or by
+percentage, and stores each part in cents that always add up to the total.
+Views can then add the parts up per sharer and per month.
+
+It comes with **Stal Manager**: three recipes that turn a Drupal site into a
+cost tracker for a horse stable (expenses, inventory, a dashboard with charts
+and a monthly overview), in English or Dutch. Stal Manager started as a
+Next.js app; the recipes rebuild it with configuration only, on top of this one
+small module.
+
+- [Features](#features)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Using the field](#using-the-field)
+- [Views](#views)
+- [The Stal Manager recipes](#the-stal-manager-recipes)
+- [Development](#development)
+- [Known issues](#known-issues)
+
+## Features
+
+- **A field type, _Shared costs_.** Each item refers to a sharer (any content
+  entity: horses, housemates, departments) with an optional percentage. Sharers
+  without a percentage get an equal part of what the percentages leave.
+- **Cent-exact amounts.** When the content is saved, the total (a decimal,
+  float or integer field on the same entity) is split in integer cents with
+  the largest-remainder method: 12.35 over two sharers is 6.18 + 6.17, never
+  6.18 + 6.18. The amounts are stored, so reports never round again.
+- **Validation.** The percentages may not add up to more than 100 %, must add
+  up to exactly 100 % when every sharer has one, and a sharer can't be listed
+  twice.
+- **A table widget** with a checkbox and a percentage per sharer, and a live
+  preview of the amounts while you type, with core's
+  [HTMX](https://www.drupal.org/docs/develop/drupal-apis/htmx) (no custom
+  JavaScript). Sharers that can no longer be picked (an unpublished horse) stay
+  on old content as read-only rows: editing never silently re-splits it.
+- **A formatter**: "Luna · 50 % · € 12.50", with your own separators, prefix
+  and suffix.
+- **Views integration**: relationships to and from the sharers, the amount and
+  share as numbers you can SUM, a _year and month_ field to group by month, and
+  a month argument titled "November 2026" (core's shows "202611").
+- **Default content**: core's `content:export` exports the sharers by UUID, so
+  content with shared costs can ship in recipes.
+- **Dutch** interface translation included.
+
+Custom code is kept small: one field type, widget, formatter and constraint,
+two small Views plugins, hooks as `#[Hook]` methods with autowired services,
+and an event subscriber. Everything else (content types, views, charts,
+permissions, translations) is configuration in the recipes.
+
+## Requirements
+
+- Drupal 11.4 or later, or Drupal 12 (see [Known issues](#known-issues)).
+- PHP 8.3 or later (Drupal 12: PHP 8.5).
+- For the recipes: [Charts](https://www.drupal.org/project/charts) 5.2.4 or
+  later, with its Chart.js submodule.
+
+## Installation
+
+```bash
+composer require drupal/shared_costs
+drush pm:install shared_costs
+```
+
+The module isn't on drupal.org yet: until it is, add this repository to your
+project's `composer.json` first:
+
+```bash
+composer config repositories.shared_costs vcs https://github.com/RobbeSaelens/shared_costs
+```
+
+## Using the field
+
+1. On the entity that holds the costs (say an _Expense_ content type), add a
+   number field for the total.
+2. Add a _Shared costs_ field. In its settings, pick what can share the costs
+   (for example the _Horse_ content type) and which field holds the total.
+3. Optionally set a default value, for example all the horses, so new costs
+   start out shared by all of them.
+
+The amounts are worked out when the entity is saved; without a total they stay
+empty.
+
+## Views
+
+With aggregation on, the field gives you what most cost reports need:
+
+| To show | Use |
+|---|---|
+| Costs per sharer | The relationship to the sharer, its label, and SUM of _amount_ |
+| Costs per month | The date field's _year and month_ field, and SUM of the total's number field |
+| One month, with a list of months | The date field's _year and month_ argument, with a summary |
+| A sharer's costs | The reverse relationship, from the sharer to the costs |
+
+The totals' and amounts' number fields SUM a single column, which works the
+same on MySQL/MariaDB, PostgreSQL and SQLite. The _year and month_ field sorts
+by its own column, because sorting by the date itself is refused under GROUP BY
+by MySQL and PostgreSQL.
+
+## The Stal Manager recipes
+
+Three recipes, in [`recipes/`](recipes):
+
+| Recipe | What it does |
+|---|---|
+| `stal_manager` | Horses, inventory items and expenses (content types and fields), eight cost categories, the views below, and a _Stable manager_ role. Doesn't touch themes or site settings, so it can go on an existing site. |
+| `stal_manager_demo` | `stal_manager` on a new site to try it: Olivero and Claro, the dashboard as front page, the site private (visitors get the login form), and two horses with a year of example costs. |
+| `stal_manager_nl` | `stal_manager` in Dutch: Dutch as the default language, with Dutch labels, categories and number formats (€ 1.234,56). |
+
+The pages, all for the _Stable manager_ role (and the main menu):
+
+- `/stable`: the dashboard. This month's costs, the latest expenses, and charts
+  of the costs per horse and per month this year.
+- `/stable/expenses`: all expenses by month, with who shares them, filtered by
+  category or description.
+- `/stable/overview`: one month's costs per category and per horse, with the
+  months to pick from.
+- `/stable/horses` and `/stable/inventory`.
+
+Horses are never deleted (the role can't): a horse that leaves the stable is
+unpublished, so its share of past costs stays.
+
+To try it on a new site:
+
+```bash
+composer require drupal/shared_costs drupal/charts
+drush site:install minimal
+drush recipe modules/contrib/shared_costs/recipes/stal_manager_demo
+# Optional: in Dutch.
+drush recipe modules/contrib/shared_costs/recipes/stal_manager_nl
+drush locale:check && drush locale:update
+```
+
+Recipes can't import interface translations, so `stal_manager_nl` ends with a
+`locale:update`: it loads this module's `translations/nl.po` and core's Dutch
+translation from localize.drupal.org. The Chart.js library is loaded from a CDN
+by default; see the Charts module to serve it yourself.
+
+Not ported from the Next.js app: working offline (a PWA), and an expense that
+counts in full for every horse (add one expense per horse instead).
+
+## Development
+
+The repository is a [DDEV](https://ddev.com) project with
+[ddev-drupal-contrib](https://github.com/ddev/ddev-drupal-contrib):
+
+```bash
+ddev start
+ddev poser              # Drupal core and the dev dependencies
+ddev symlink-project    # the module into web/modules/custom
+ddev phpcs              # Drupal and DrupalPractice coding standards
+ddev phpstan            # level 8, no baseline
+ddev cspell             # spelling, with core's dictionaries
+ddev phpunit            # Unit, Kernel and Functional tests
+```
+
+The Kernel tests also run on PostgreSQL and SQLite in CI (set `SIMPLETEST_DB`).
+Coverage of `src/` by the Unit and Kernel tests is kept above 90 %:
+
+```bash
+ddev exec php -d pcov.enabled=1 vendor/bin/phpunit --testsuite unit,kernel --coverage-text
+```
+
+The recipe tests apply each recipe twice (it must be idempotent), check the
+dashboard's numbers on costs dated relative to today, check the role, and check
+that the Dutch recipe leaves no English label behind.
+
+## Known issues
+
+- **Default content and default values.** Core's content importer creates the
+  entity (which fills in the field's default value) and then sets the imported
+  items by position, so default sharers beyond the imported ones remain. This
+  affects every multi-value field with a default value; that's why the demo
+  recipe doesn't set one. Set it yourself after importing.
+- **Drupal 12.** On 12.0.0-beta2 (PHP 8.5) the module and its tests pass, and
+  so do the `stal_manager` and `stal_manager_nl` recipes, except that Charts
+  5.2.4 renders its charts empty there. The demo recipe needs Drupal 11 for now:
+  it uses Olivero and the Toolbar, which Drupal 12 no longer has in core.
+- **Charts and config schema.** Charts 5.2.4 has no schema for its views
+  style's `path` and `library_type_options` options; the recipe's views leave
+  them out, so they validate. Saving a chart view in the Views UI adds them
+  again, which only matters for strict schema checks (tests).
+
+## Maintainers
+
+- [Robbe Saelens](https://robbesaelens.github.io)

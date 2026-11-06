@@ -1,0 +1,43 @@
+_meta:
+  version: '1.0'
+  entity_type: node
+  uuid: 10a510c9-f8be-4469-9d05-4ef96d6249e9
+  bundle: expense
+  default_langcode: en
+  depends:
+    e030d6f8-dff9-44d5-952b-8dafa5d421d8: node
+default:
+  revision_uid:
+    -
+      target_id: 0
+  status:
+    -
+      value: true
+  uid:
+    -
+      target_id: 0
+  title:
+    -
+      value: 'Vet check-up'
+  promote:
+    -
+      value: false
+  sticky:
+    -
+      value: false
+  revision_translation_affected:
+    -
+      value: true
+  field_cost_category:
+    -
+      value: vet
+  field_expense_date:
+    -
+      value: '2026-10-19'
+  field_shared_with:
+    -
+      share: null
+      entity: e030d6f8-dff9-44d5-952b-8dafa5d421d8
+  field_total:
+    -
+      value: '124.04'
