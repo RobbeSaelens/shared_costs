@@ -148,7 +148,7 @@ Four recipes, in [`recipes/`](recipes):
 | Recipe | What it does |
 |---|---|
 | `stable_manager` | Horses, inventory items and expenses with their receipts (content types and fields), nine cost categories, the views below, and a _Stable manager_ role. Doesn't touch themes or site settings, so it can go on an existing site. |
-| `stable_manager_demo` | `stable_manager` on a new site to try it: the Stable Manager theme, Gin (in Stable Manager's brown) for forms and admin pages with Admin Toolbar's dropdown menus, the dashboard as front page, the site private (visitors get the login form), and two horses with a year of example costs. |
+| `stable_manager_demo` | `stable_manager` on a new site to try it: the Stable Manager theme, Gin (in Stable Manager's brown, light by default) for forms and admin pages with Admin Toolbar's dropdown menus, the dashboard as front page, the site private (visitors get the login form), and two horses with a year of example costs. |
 | `stable_manager_nl` | `stable_manager` in Dutch: Dutch as the default language, with Dutch labels, categories and number formats (€ 1.234,56). |
 | `stable_manager_api` | `stable_manager` for apps: JSON:API, for stable managers logged in with a normal session. See [JSON:API (for apps)](#jsonapi-for-apps). |
 
@@ -170,6 +170,12 @@ The pages, all for the _Stable manager_ role (and the main menu):
 
 An expense can have a receipt (a photo or PDF). Receipts are private files:
 only people who can see the expense can open them.
+
+Gin is light by default, whatever the system uses. Everyone can choose dark for
+their own account (edit the account, then _Admin theme settings_: _Enable
+overrides_ and _Appearance_): the demo recipe turns on Gin's _Users can override
+Gin settings_ for that. To make the whole site dark, or to follow the system, set
+`enable_darkmode` in `gin.settings` to `'1'` or `'auto'`.
 
 Horses are never deleted (the role can't): a horse that leaves the stable is
 unpublished, so its share of past costs stays.

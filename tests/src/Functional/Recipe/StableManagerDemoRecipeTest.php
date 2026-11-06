@@ -34,6 +34,10 @@ final class StableManagerDemoRecipeTest extends GenericRecipeTestBase {
     $this->assertSame('stable_manager_theme', $this->config('system.theme')->get('default'));
     $this->assertSame('gin', $this->config('system.theme')->get('admin'));
     $this->assertSame('#6f4520', $this->config('gin.settings')->get('accent_color'));
+    // Gin is light by default ('0'; not '1' for dark, nor 'auto' for the
+    // system), and people can pick dark for themselves.
+    $this->assertSame('0', $this->config('gin.settings')->get('enable_darkmode'));
+    $this->assertTrue($this->config('gin.settings')->get('show_user_theme_settings'));
     $modules = $this->config('core.extension')->get('module');
     $this->assertArrayHasKey('admin_toolbar', $modules);
     $this->assertArrayHasKey('admin_toolbar_tools', $modules);
@@ -53,7 +57,8 @@ final class StableManagerDemoRecipeTest extends GenericRecipeTestBase {
     $this->assertGreaterThan(0, (float) $total);
 
     // The front page is the dashboard.
-    $this->drupalLogin($this->createStableManager());
+    $manager = $this->createStableManager();
+    $this->drupalLogin($manager);
     $this->drupalGet('<front>');
     $this->assertSession()->titleEquals('Dashboard | Stable Manager');
     $this->assertSession()->linkExists('Add an expense');
@@ -64,6 +69,16 @@ final class StableManagerDemoRecipeTest extends GenericRecipeTestBase {
     $this->clickLink('Add an expense');
     $this->assertSession()->responseContains('/themes/contrib/gin/');
     $this->assertSession()->fieldExists('title[0][value]');
+    $this->assertSession()->responseContains('"darkmode":"0"');
+
+    // Dark is a choice in one's own account, and it's only theirs.
+    $this->drupalGet($manager->toUrl('edit-form'));
+    $this->submitForm(['enable_user_settings' => TRUE, 'enable_darkmode' => '1'], 'Save');
+    $this->drupalGet('node/add/expense');
+    $this->assertSession()->responseContains('"darkmode":"1"');
+    $this->drupalLogin($this->createStableManager());
+    $this->drupalGet('node/add/expense');
+    $this->assertSession()->responseContains('"darkmode":"0"');
 
     // Admins get the admin menu with its submenus, which open on hover.
     $this->drupalLogin($this->rootUser);

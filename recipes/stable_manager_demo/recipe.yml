@@ -30,13 +30,17 @@ config:
       simpleConfigUpdate:
         default: stable_manager_theme
         admin: gin
-    # Gin in the theme's saddle brown, light or dark like the system.
+    # Gin in the theme's saddle brown, light by default ('0'; '1' is dark and
+    # 'auto' follows the system). Everyone can still choose dark for their own
+    # account: that's what show_user_theme_settings adds, under "Admin theme
+    # settings" when they edit their account.
     gin.settings:
       simpleConfigUpdate:
         preset_accent_color: custom
         accent_color: '#6f4520'
         preset_focus_color: gin
-        enable_darkmode: auto
+        enable_darkmode: '0'
+        show_user_theme_settings: true
         # A bar at the top, so it doesn't sit next to the theme's sidebar.
         classic_toolbar: horizontal
     node.settings:
