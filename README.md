@@ -69,7 +69,7 @@ permissions, translations) is configuration in the recipes.
     for the CSV download;
   - a [private file system](https://www.drupal.org/docs/8/core/modules/file/overview#content-accessing-private-files)
     for receipts: set `$settings['file_private_path']` in `settings.php`.
-- For the demo recipe: [Gin](https://www.drupal.org/project/gin) 5,
+- For the front end and demo recipes: [Gin](https://www.drupal.org/project/gin) 5,
   [Gin Toolbar](https://www.drupal.org/project/gin_toolbar) 3 and
   [Admin Toolbar](https://www.drupal.org/project/admin_toolbar) 3.
 
@@ -143,12 +143,13 @@ by MySQL and PostgreSQL.
 
 ## The Stable Manager recipes
 
-Four recipes, in [`recipes/`](recipes):
+Five recipes, in [`recipes/`](recipes):
 
 | Recipe | What it does |
 |---|---|
 | `stable_manager` | Horses, inventory items and expenses with their receipts (content types and fields), nine cost categories, the views below, and a _Stable manager_ role. Doesn't touch themes or site settings, so it can go on an existing site. |
-| `stable_manager_demo` | `stable_manager` on a new site to try it: the Stable Manager theme, Gin (in Stable Manager's brown, light by default) for forms and admin pages with Admin Toolbar's dropdown menus, the dashboard as front page, the site private (visitors get the login form), and two horses with a year of example costs. |
+| `stable_manager_frontend` | `stable_manager` on a new site, looking like the app: the Stable Manager theme, Gin (in Stable Manager's brown, light by default) for forms and admin pages with Admin Toolbar's dropdown menus, the dashboard as front page, and a private site (visitors get the login form, and may do nothing else). No example content, and it leaves the site's name alone. |
+| `stable_manager_demo` | `stable_manager_frontend` on a new site to try it, named _Stable Manager_, with two horses and a year of example costs. |
 | `stable_manager_nl` | `stable_manager` in Dutch: Dutch as the default language, with Dutch labels, categories and number formats (€ 1.234,56). |
 | `stable_manager_api` | `stable_manager` for apps: JSON:API, for stable managers logged in with a normal session. See [JSON:API (for apps)](#jsonapi-for-apps). |
 
@@ -173,9 +174,9 @@ only people who can see the expense can open them.
 
 Gin is light by default, whatever the system uses. Everyone can choose dark for
 their own account (edit the account, then _Admin theme settings_: _Enable
-overrides_ and _Appearance_): the demo recipe turns on Gin's _Users can override
-Gin settings_ for that. To make the whole site dark, or to follow the system, set
-`enable_darkmode` in `gin.settings` to `'1'` or `'auto'`.
+overrides_ and _Appearance_): the front end recipe turns on Gin's _Users can
+override Gin settings_ for that. To make the whole site dark, or to follow the
+system, set `enable_darkmode` in `gin.settings` to `'1'` or `'auto'`.
 
 Horses are never deleted (the role can't): a horse that leaves the stable is
 unpublished, so its share of past costs stays.
@@ -189,6 +190,7 @@ composer require drupal/shared_costs drupal/charts \
 drush site:install minimal
 # Receipts are private files: in settings.php, set a folder outside the web
 # root, such as $settings['file_private_path'] = '../private';
+# The demo, with example costs (for your own site: see below).
 drush recipe modules/contrib/shared_costs/recipes/stable_manager_demo
 # Optional: in Dutch.
 drush recipe modules/contrib/shared_costs/recipes/stable_manager_nl
@@ -196,6 +198,16 @@ drush locale:check && drush locale:update
 # Optional: the JSON:API for apps.
 drush recipe modules/contrib/shared_costs/recipes/stable_manager_api
 ```
+
+For a site of your own, apply `stable_manager_frontend` instead of
+`stable_manager_demo`: the same theme, admin and front page, without the
+example content, and with the site's name still yours (set it in _Basic site
+settings_, or `drush config:set system.site name 'My stable'`). It's meant for
+a new site, and the app is private by design: it sets the default and admin
+themes, makes the dashboard the front page, shows visitors the login form when
+they ask for what is private (`page.403` is `/user/login`), and empties the
+permissions of visitors that aren't logged in. A page that has to be public
+needs its permission back afterwards.
 
 Recipes can't import interface translations, so `stable_manager_nl` ends with a
 `locale:update`: it loads this module's `translations/nl.po` and core's Dutch
@@ -383,7 +395,7 @@ A Starterkit-generated theme, without a base theme. See its
 - single-directory components and OOP hooks.
 
 Drupal finds it in this repository (it scans module folders for themes too).
-The demo recipe installs it and imports its blocks.
+The front end recipe (so the demo too) installs it and imports its blocks.
 
 ## Development
 
@@ -450,10 +462,11 @@ screenshots that differ are kept as the `visual-differences` artifact.
   Prepopulate and Views Data Export (CI tries them on Drupal 12 anyway), and
   Charts 5.2.4 renders its charts empty there (its preprocess function isn't
   found on Drupal 12; it needs core's `initial preprocess`, reported as
-  [#3635886](https://www.drupal.org/project/charts/issues/3635886)). The demo recipe
-  needs Drupal 11 for now: it uses contrib Gin, which extends Claro, and the
-  Toolbar. Drupal 12 has Gin in core instead (Default Admin), and no Claro or
-  Toolbar.
+  [#3635886](https://www.drupal.org/project/charts/issues/3635886)). The front
+  end recipe, and so the demo, needs Drupal 11 for now: it uses contrib Gin,
+  which extends Claro, and the Toolbar. Drupal 12 has Gin in core instead
+  (Default Admin), and no Claro or Toolbar. CI's Drupal 12 job leaves contrib
+  Gin out, so the front end and demo tests fail there (the job may fail).
 - **Charts and config schema.** Charts 5.2.4 has no schema for its views
   style's `path` and `library_type_options` options; the recipe's views leave
   them out, so they validate. Saving a chart view in the Views UI adds them

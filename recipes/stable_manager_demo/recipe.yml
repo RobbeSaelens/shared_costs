@@ -1,56 +1,13 @@
 name: 'Stable Manager demo'
-description: 'Stable Manager on a new site, to try it out: the Stable Manager theme, Gin for the admin pages, two horses and a year of example costs.'
+description: 'Stable Manager on a new site, to try it out: the front end (the Stable Manager theme, Gin for the admin pages), two horses and a year of example costs.'
 type: 'Site'
 recipes:
-  - stable_manager
-install:
-  - block
-  - toolbar
-  - gin_toolbar
-  - gin
-  # Admin menus open on hover, with quick links (flush caches...).
-  - admin_toolbar
-  - admin_toolbar_tools
-  - stable_manager_theme
+  - stable_manager_frontend
 config:
   strict: false
-  import:
-    node:
-      - views.view.content
-    # The theme's blocks: branding, menus, title, tabs and content.
-    stable_manager_theme: '*'
   actions:
+    # What belongs to this site and not to a look: its name. The theme, the
+    # front page and the private site come from stable_manager_frontend.
     system.site:
       simpleConfigUpdate:
         name: 'Stable Manager'
-        page.front: /stable
-        # The dashboard is for the stable's managers: show the login form.
-        page.403: /user/login
-    system.theme:
-      simpleConfigUpdate:
-        default: stable_manager_theme
-        admin: gin
-    # Gin in the theme's saddle brown, light by default ('0'; '1' is dark and
-    # 'auto' follows the system). Everyone can still choose dark for their own
-    # account: that's what show_user_theme_settings adds, under "Admin theme
-    # settings" when they edit their account.
-    gin.settings:
-      simpleConfigUpdate:
-        preset_accent_color: custom
-        accent_color: '#6f4520'
-        preset_focus_color: gin
-        enable_darkmode: '0'
-        show_user_theme_settings: true
-        # A bar at the top, so it doesn't sit next to the theme's sidebar.
-        classic_toolbar: horizontal
-    node.settings:
-      simpleConfigUpdate:
-        use_admin_theme: true
-    # Stable managers add and edit expenses in Gin, like the admin pages.
-    user.role.stable_manager:
-      grantPermissions:
-        - 'view the administration theme'
-    # Costs are private: visitors that aren't logged in see nothing.
-    user.role.anonymous:
-      setProperties:
-        permissions: []

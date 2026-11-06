@@ -95,8 +95,9 @@ jobs:
           composer config minimum-stability beta
           composer config prefer-stable true
           # Drush 13, contrib Gin and Admin Toolbar don't support Drupal 12 (it
-          # has Gin in core). Only the demo recipe's tests need Gin and Admin
-          # Toolbar.
+          # has Gin in core). Only the front end recipe's tests (and the demo's,
+          # which applies it) need Gin and Admin Toolbar: the kernel test skips,
+          # and the functional tests fail, on Drupal 12.
           composer remove --dev --no-update drush/drush drupal/gin drupal/gin_toolbar drupal/admin_toolbar
           # Prepopulate and Views Data Export (with CSV Serialization) don't
           # declare Drupal 12 support yet: try them anyway, with the lenient

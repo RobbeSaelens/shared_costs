@@ -26,27 +26,15 @@ final class StableManagerDemoRecipeTest extends GenericRecipeTestBase {
   }
 
   /**
-   * Tests the demo site: private, with its example content shared to the cent.
+   * Tests the demo site: its name, and its example content shared to the cent.
+   *
+   * The theme, Gin and the private site come from the front end recipe, which
+   * StableManagerFrontendRecipeTest tests.
    */
   public function testDemo(): void {
     $this->doApply();
     $this->assertSame('Stable Manager', $this->config('system.site')->get('name'));
     $this->assertSame('stable_manager_theme', $this->config('system.theme')->get('default'));
-    $this->assertSame('gin', $this->config('system.theme')->get('admin'));
-    $this->assertSame('#6f4520', $this->config('gin.settings')->get('accent_color'));
-    // Gin is light by default ('0'; not '1' for dark, nor 'auto' for the
-    // system), and people can pick dark for themselves.
-    $this->assertSame('0', $this->config('gin.settings')->get('enable_darkmode'));
-    $this->assertTrue($this->config('gin.settings')->get('show_user_theme_settings'));
-    $modules = $this->config('core.extension')->get('module');
-    $this->assertArrayHasKey('admin_toolbar', $modules);
-    $this->assertArrayHasKey('admin_toolbar_tools', $modules);
-
-    // Visitors get the login form, and nothing of the costs.
-    $this->drupalGet('<front>');
-    $this->assertSession()->statusCodeEquals(403);
-    $this->assertSession()->fieldExists('name');
-    $this->assertSame([], $this->config('user.role.anonymous')->get('permissions'));
 
     // The example content: every expense is shared to the cent.
     $counts = $this->query('SELECT [type], COUNT(*) FROM {node_field_data} GROUP BY [type] ORDER BY [type]')->fetchAllKeyed();
@@ -56,37 +44,12 @@ final class StableManagerDemoRecipeTest extends GenericRecipeTestBase {
     $this->assertSame(round((float) $total, 2), round((float) $shared, 2));
     $this->assertGreaterThan(0, (float) $total);
 
-    // The front page is the dashboard.
-    $manager = $this->createStableManager();
-    $this->drupalLogin($manager);
+    // The front page is the dashboard, of the site called Stable Manager.
+    $this->drupalLogin($this->createStableManager());
     $this->drupalGet('<front>');
     $this->assertSession()->titleEquals('Dashboard | Stable Manager');
-    $this->assertSession()->linkExists('Add an expense');
-    // In the theme, with its blocks: the branding and the main navigation.
     $this->assertSession()->elementTextEquals('css', '.site-branding__name', 'Stable Manager');
-    $this->assertSession()->elementTextEquals('css', '#app-nav a[aria-current="page"]', 'Dashboard');
-    // Adding an expense happens in Gin.
-    $this->clickLink('Add an expense');
-    $this->assertSession()->responseContains('/themes/contrib/gin/');
-    $this->assertSession()->fieldExists('title[0][value]');
-    $this->assertSession()->responseContains('"darkmode":"0"');
-
-    // Dark is a choice in one's own account, and it's only theirs.
-    $this->drupalGet($manager->toUrl('edit-form'));
-    $this->submitForm(['enable_user_settings' => TRUE, 'enable_darkmode' => '1'], 'Save');
-    $this->drupalGet('node/add/expense');
-    $this->assertSession()->responseContains('"darkmode":"1"');
-    $this->drupalLogin($this->createStableManager());
-    $this->drupalGet('node/add/expense');
-    $this->assertSession()->responseContains('"darkmode":"0"');
-
-    // Admins get the admin menu with its submenus, which open on hover.
-    $this->drupalLogin($this->rootUser);
-    // Not admin/content: on PHP 8.5, core's content view triggers a
-    // deprecation (a NULL langcode in ContentEntityBase::hasTranslation()).
-    $this->drupalGet('admin/structure');
-    $this->assertSession()->responseContains('/modules/contrib/admin_toolbar/');
-    $this->assertSession()->elementExists('css', '#toolbar-item-administration-tray li.menu-item--expanded.menu-item__system-admin_structure > ul.toolbar-menu a[href$="/admin/structure/block"]');
+    $this->assertSession()->linkExists('Add an expense');
   }
 
   /**

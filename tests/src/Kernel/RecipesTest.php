@@ -6,6 +6,7 @@ declare(strict_types=1);
 namespace Drupal\Tests\shared_costs\Kernel;
 
 use Drupal\Component\Serialization\Yaml;
+use Drupal\block\Entity\Block;
 use Drupal\Core\Config\Schema\ArrayElement;
 use Drupal\Core\Recipe\Recipe;
 use Drupal\Core\Recipe\RecipeRunner;
@@ -13,6 +14,7 @@ use Drupal\Core\TypedData\TypedDataInterface;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\user\Entity\Role;
 use Drupal\user\RoleInterface;
+use Drupal\views\Entity\View;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 
@@ -61,6 +63,44 @@ final class RecipesTest extends KernelTestBase {
     $before = \Drupal::service('config.storage')->readMultiple($names);
     $this->applyRecipe('stable_manager');
     $this->assertSame($before, \Drupal::service('config.storage')->readMultiple($names));
+  }
+
+  /**
+   * Tests the front end recipe: the theme, Gin and a private site.
+   *
+   * What the site looks like to people is tested over HTTP, in
+   * StableManagerFrontendRecipeTest.
+   */
+  public function testFrontend(): void {
+    // Drupal 12 has Gin in core, and not as the contrib theme that the recipe
+    // installs (see the README's known issues).
+    if (!\Drupal::service('extension.list.theme')->exists('gin')) {
+      $this->markTestSkipped('The recipe needs the contrib Gin theme.');
+    }
+    $this->applyRecipe('stable_manager_frontend');
+    $theme = $this->config('system.theme');
+    $this->assertSame('stable_manager_theme', $theme->get('default'));
+    $this->assertSame('gin', $theme->get('admin'));
+    $site = $this->config('system.site');
+    $this->assertSame('/stable', $site->get('page.front'));
+    $this->assertSame('/user/login', $site->get('page.403'));
+    $gin = $this->config('gin.settings');
+    $this->assertSame('0', $gin->get('enable_darkmode'));
+    $this->assertTrue($gin->get('show_user_theme_settings'));
+    $this->assertSame('horizontal', $gin->get('classic_toolbar'));
+    $this->assertTrue($this->config('node.settings')->get('use_admin_theme'));
+    $this->assertContains('view the administration theme', $this->config('user.role.stable_manager')->get('permissions'));
+    $this->assertSame([], $this->config('user.role.anonymous')->get('permissions'));
+
+    // The theme's blocks, and the content view that the admin pages use.
+    $blocks = array_filter(Block::loadMultiple(), static fn (Block $block): bool => $block->getTheme() === 'stable_manager_theme');
+    $this->assertNotEmpty($blocks);
+    $this->assertNotNull(View::load('content'));
+
+    // Applying it again changes nothing, and doesn't fail.
+    $before = $this->allConfig();
+    $this->applyRecipe('stable_manager_frontend');
+    $this->assertSame($before, $this->allConfig());
   }
 
   /**
@@ -125,6 +165,19 @@ final class RecipesTest extends KernelTestBase {
    */
   private function applyRecipe(string $name): void {
     RecipeRunner::processRecipe(Recipe::createFromDirectory($this->recipePath($name)));
+  }
+
+  /**
+   * Returns all the site's active config, by name.
+   *
+   * @return array<string, mixed>
+   *   The config's data.
+   */
+  private function allConfig(): array {
+    $storage = \Drupal::service('config.storage');
+    $config = $storage->readMultiple($storage->listAll());
+    ksort($config);
+    return $config;
   }
 
   /**
