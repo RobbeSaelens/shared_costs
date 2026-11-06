@@ -94,6 +94,13 @@ config:
       setProperties:
         langcode: nl
         label: Prijs
+    field.field.node.inventory_item.field_quick_add:
+      setProperties:
+        langcode: nl
+        label: 'Snel toevoegen'
+        description: 'Toon het in de app als knop die het met één tik als uitgave toevoegt.'
+        settings.on_label: Ja
+        settings.off_label: Nee
     field.field.node.inventory_item.field_unit:
       setProperties:
         langcode: nl
@@ -103,6 +110,7 @@ config:
         langcode: nl
         settings.allowed_values.vet: Dierenarts
         settings.allowed_values.lesson: Les
+        settings.allowed_values.transport: Transport
         settings.allowed_values.farrier: Hoefsmid
         settings.allowed_values.feed: Voeding
         settings.allowed_values.bedding: Bodembedekking
@@ -217,6 +225,8 @@ config:
         display.default.display_options.fields.field_default_price.settings.thousand_separator: .
         display.default.display_options.fields.field_default_price.settings.decimal_separator: ','
         display.default.display_options.fields.field_unit.label: Eenheid
+        display.default.display_options.fields.field_quick_add.label: 'Snel toevoegen'
+        display.default.display_options.fields.field_quick_add.settings.format_custom_true: Ja
         display.default.display_options.fields.edit_node.text: Bewerken
         display.default.display_options.empty.area_text_custom.content: '<p>Nog niets in de inventaris.</p>'
         display.default.display_options.header.area_text_custom_1.content: '<p><a href="[site:base-path]/node/add/inventory_item" class="button button--primary">Artikel toevoegen</a></p>'

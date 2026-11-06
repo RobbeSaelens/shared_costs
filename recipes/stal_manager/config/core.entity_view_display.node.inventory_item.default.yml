@@ -4,6 +4,7 @@ dependencies:
   config:
     - field.field.node.inventory_item.field_cost_category
     - field.field.node.inventory_item.field_default_price
+    - field.field.node.inventory_item.field_quick_add
     - field.field.node.inventory_item.field_unit
     - node.type.inventory_item
   module:
@@ -30,6 +31,16 @@ content:
       prefix_suffix: true
     third_party_settings: {  }
     weight: 1
+    region: content
+  field_quick_add:
+    type: boolean
+    label: inline
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
+    weight: 3
     region: content
   field_unit:
     type: string

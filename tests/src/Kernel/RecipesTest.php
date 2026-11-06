@@ -11,6 +11,8 @@ use Drupal\Core\Recipe\Recipe;
 use Drupal\Core\Recipe\RecipeRunner;
 use Drupal\Core\TypedData\TypedDataInterface;
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\user\Entity\Role;
+use Drupal\user\RoleInterface;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 
@@ -27,7 +29,7 @@ final class RecipesTest extends KernelTestBase {
   /**
    * Strings that are the same in English and Dutch.
    */
-  private const SAME_IN_DUTCH = ['Dashboard', 'Status'];
+  private const SAME_IN_DUTCH = ['Dashboard', 'Status', 'Transport'];
 
   /**
    * {@inheritdoc}
@@ -58,6 +60,30 @@ final class RecipesTest extends KernelTestBase {
     // Applying it again changes nothing, and doesn't fail.
     $before = \Drupal::service('config.storage')->readMultiple($names);
     $this->applyRecipe('stal_manager');
+    $this->assertSame($before, \Drupal::service('config.storage')->readMultiple($names));
+  }
+
+  /**
+   * Tests the API recipe: JSON:API that can write, for stable managers only.
+   *
+   * What the API does is tested over HTTP, in StalManagerApiRecipeTest.
+   */
+  public function testApi(): void {
+    // On a site where visitors see published content, as most sites start.
+    $this->applyRecipe('stal_manager');
+    Role::load(RoleInterface::ANONYMOUS_ID)?->grantPermission('access content')->save();
+    $this->applyRecipe('stal_manager_api');
+    $this->assertTrue(\Drupal::moduleHandler()->moduleExists('jsonapi'));
+    $this->assertFalse($this->config('jsonapi.settings')->get('read_only'));
+    $role = $this->config('user.role.stable_manager');
+    $this->assertContains('administer node published status', $role->get('permissions'));
+    $this->assertContains('delete any inventory_item content', $role->get('permissions'));
+    $this->assertSame([], $this->config('user.role.anonymous')->get('permissions'));
+
+    // Applying it again changes nothing, and doesn't fail.
+    $names = ['jsonapi.settings', 'user.role.anonymous', 'user.role.stable_manager'];
+    $before = \Drupal::service('config.storage')->readMultiple($names);
+    $this->applyRecipe('stal_manager_api');
     $this->assertSame($before, \Drupal::service('config.storage')->readMultiple($names));
   }
 

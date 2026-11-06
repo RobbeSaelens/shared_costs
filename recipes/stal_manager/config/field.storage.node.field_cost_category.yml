@@ -17,6 +17,9 @@ settings:
       value: lesson
       label: Lesson
     -
+      value: transport
+      label: Transport
+    -
       value: farrier
       label: Farrier
     -

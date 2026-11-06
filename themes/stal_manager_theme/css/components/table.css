@@ -116,9 +116,11 @@
 }
 
 /* Phones: the expenses show their date, description and total; the rest is
-   on the expense's own page. */
+   on the expense's own page. The inventory leaves out which items the app
+   shows as buttons (quick add). */
 @media (max-width: 40rem) {
-  .stable-expenses :is(.views-field-field-cost-category, .views-field-field-shared-with, .views-field-edit-node) {
+  .stable-expenses :is(.views-field-field-cost-category, .views-field-field-shared-with, .views-field-edit-node),
+  .stable-inventory .views-field-field-quick-add {
     display: none;
   }
 

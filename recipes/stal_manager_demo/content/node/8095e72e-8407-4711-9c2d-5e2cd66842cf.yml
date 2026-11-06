@@ -32,6 +32,9 @@ default:
   field_default_price:
     -
       value: '6.50'
+  field_quick_add:
+    -
+      value: true
   field_unit:
     -
       value: bale
