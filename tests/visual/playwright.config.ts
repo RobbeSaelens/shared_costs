@@ -1,7 +1,7 @@
 import { defineConfig } from '@playwright/test';
 
 /**
- * Visual regression tests of the Stal Manager demo site.
+ * Visual regression tests of the Stable Manager demo site.
  *
  * They run in Playwright's Linux image (see run.sh), locally and in CI, so
  * fonts and rendering are the same everywhere. The approved screenshots are

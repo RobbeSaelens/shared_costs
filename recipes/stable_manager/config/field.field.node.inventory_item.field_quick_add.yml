@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_quick_add
+    - node.type.inventory_item
+id: node.inventory_item.field_quick_add
+field_name: field_quick_add
+entity_type: node
+bundle: inventory_item
+label: 'Quick add'
+description: 'In the app, show it as a button that adds it as an expense with one tap.'
+required: false
+translatable: true
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'Yes'
+  off_label: 'No'
+field_type: boolean

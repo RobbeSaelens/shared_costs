@@ -1,0 +1,37 @@
+name: 'Stable Manager'
+type: theme
+'base theme': false
+description: 'Front-end theme for Stable Manager: a warm, app-like interface with HTMX navigation, view transitions and dark mode.'
+core_version_requirement: ^11.4 || ^12
+generator: 'starterkit_theme:11.4.11'
+logo: logo.svg
+regions:
+  header: Header
+  primary_menu: 'Primary menu'
+  secondary_menu: 'Secondary menu'
+  highlighted: Highlighted
+  content: Content
+  page_top: 'Page top'
+  page_bottom: 'Page bottom'
+libraries:
+  - core/normalize
+  - stable_manager_theme/base
+  - stable_manager_theme/messages
+  - stable_manager_theme/app
+libraries-extend:
+  user/drupal.user:
+    - stable_manager_theme/user
+  core/drupal.dropbutton:
+    - stable_manager_theme/dropbutton
+  core/drupal.dialog:
+    - stable_manager_theme/dialog
+  file/drupal.file:
+    - stable_manager_theme/file
+  core/drupal.item-list:
+    - stable_manager_theme/item-list
+  core/drupal.progress:
+    - stable_manager_theme/progress
+  core/drupal.tablesort:
+    - stable_manager_theme/drupal.tablesort
+  charts_chartjs/charts_chartjs:
+    - stable_manager_theme/charts

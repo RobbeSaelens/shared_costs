@@ -11,12 +11,12 @@ use Drupal\Core\Url;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\node\Entity\Node;
 use Drupal\node\NodeInterface;
-use Drupal\stal_manager_theme\Hook\ChartsHooks;
-use Drupal\stal_manager_theme\Hook\NavigationHooks;
-use Drupal\stal_manager_theme\Hook\PageHooks;
-use Drupal\stal_manager_theme\Hook\StalManagerThemeHooks;
-use Drupal\stal_manager_theme\Hook\ViewsHooks;
-use Drupal\stal_manager_theme\Htmx\AppNavigation;
+use Drupal\stable_manager_theme\Hook\ChartsHooks;
+use Drupal\stable_manager_theme\Hook\NavigationHooks;
+use Drupal\stable_manager_theme\Hook\PageHooks;
+use Drupal\stable_manager_theme\Hook\StableManagerThemeHooks;
+use Drupal\stable_manager_theme\Hook\ViewsHooks;
+use Drupal\stable_manager_theme\Htmx\AppNavigation;
 use Drupal\Tests\user\Traits\UserCreationTrait;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
@@ -24,13 +24,13 @@ use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Tests the Stal Manager theme's hooks: HTMX navigation, cards, stat cards.
+ * Tests the Stable Manager theme's hooks: HTMX navigation, cards, stat cards.
  */
 #[CoversClass(ChartsHooks::class)]
 #[CoversClass(NavigationHooks::class)]
 #[CoversClass(PageHooks::class)]
 #[CoversClass(ViewsHooks::class)]
-#[CoversClass(StalManagerThemeHooks::class)]
+#[CoversClass(StableManagerThemeHooks::class)]
 #[CoversClass(AppNavigation::class)]
 #[Group('shared_costs')]
 #[RunTestsInSeparateProcesses]
@@ -60,10 +60,10 @@ final class ThemeHooksTest extends KernelTestBase {
     $this->installConfig(['system', 'user']);
     $this->installEntitySchema('user');
     $this->installEntitySchema('path_alias');
-    RecipeRunner::processRecipe(Recipe::createFromDirectory(dirname(__DIR__, 3) . '/recipes/stal_manager'));
+    RecipeRunner::processRecipe(Recipe::createFromDirectory(dirname(__DIR__, 3) . '/recipes/stable_manager'));
     \Drupal::service('module_installer')->install(['block']);
-    \Drupal::service('theme_installer')->install(['stal_manager_theme']);
-    $this->config('system.theme')->set('default', 'stal_manager_theme')->save();
+    \Drupal::service('theme_installer')->install(['stable_manager_theme']);
+    $this->config('system.theme')->set('default', 'stable_manager_theme')->save();
     $this->setUpCurrentUser([], ['access content', 'create expense content']);
     foreach (['Bella' => 'livery', 'Luna' => 'own'] as $name => $type) {
       $this->horses[$name] = Node::create(['type' => 'horse', 'title' => $name, 'field_horse_type' => $type]);
@@ -140,10 +140,10 @@ final class ThemeHooksTest extends KernelTestBase {
     $html = $this->renderView('stable_dashboard');
 
     $this->assertStringContainsString('stable-view stable-view--summary', $html);
-    $this->assertMatchesRegularExpression('#<section data-component-id="stal_manager_theme:stat-card" class="stat-card">\s*<div class="stat-card__label"><h2>Costs this month</h2>#', $html);
+    $this->assertMatchesRegularExpression('#<section data-component-id="stable_manager_theme:stat-card" class="stat-card">\s*<div class="stat-card__label"><h2>Costs this month</h2>#', $html);
     $this->assertMatchesRegularExpression('#<p class="stat-card__value" data-count-up="1234\.5" data-decimals="2" data-decimal-mark="\." data-thousands-mark="," data-prefix="€ " data-suffix="">.*€ 1,234\.50#s', $html);
     // The latest expenses and the two charts are cards; the table is flush.
-    $this->assertSame(3, substr_count($html, 'data-component-id="stal_manager_theme:card"'));
+    $this->assertSame(3, substr_count($html, 'data-component-id="stable_manager_theme:card"'));
     $this->assertStringContainsString('card card--flush', $html);
     $this->assertStringContainsString('<h2>Recently added</h2>', $html);
     $this->assertStringContainsString('<h2>Costs per horse this year</h2>', $html);
@@ -228,11 +228,11 @@ final class ThemeHooksTest extends KernelTestBase {
     $hooks->preprocessHtml($variables);
     $head = array_column($variables['#attached']['html_head'], 1);
     $this->assertSame([
-      'stal_manager_theme_preferences',
-      'stal_manager_theme_color_light',
-      'stal_manager_theme_color_dark',
+      'stable_manager_theme_preferences',
+      'stable_manager_theme_color_light',
+      'stable_manager_theme_color_dark',
     ], $head);
-    $this->assertStringContainsString("localStorage.getItem('stal-manager-theme')", (string) $variables['#attached']['html_head'][0][0]['#value']);
+    $this->assertStringContainsString("localStorage.getItem('stable-manager-theme')", (string) $variables['#attached']['html_head'][0][0]['#value']);
     $this->assertSame(['is-authenticated'], $variables['attributes']['class']);
 
     $variables = [];
@@ -268,7 +268,7 @@ final class ThemeHooksTest extends KernelTestBase {
    * Tests the Starterkit hook: image previews only for those who may see them.
    */
   public function testImageWidget(): void {
-    $hooks = new StalManagerThemeHooks();
+    $hooks = new StableManagerThemeHooks();
     $variables = ['data' => ['preview' => ['#access' => FALSE], 'file' => []]];
     $hooks->preprocessImageWidget($variables);
     $this->assertSame(['file' => []], $variables['data']);
