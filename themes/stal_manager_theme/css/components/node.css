@@ -1,0 +1,45 @@
+/**
+ * @file
+ * Visual styles for nodes.
+ */
+
+.node--unpublished {
+  background-color: #fff4f4;
+}
+
+/* An expense: its fields as a list of label and value, in a card. */
+.node--view-mode-full {
+  max-width: 44rem;
+  padding: var(--space-6);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-card);
+  box-shadow: var(--shadow-sm);
+}
+
+.node--view-mode-full .field--label-inline {
+  display: grid;
+  grid-template-columns: minmax(8rem, 1fr) 2fr;
+  padding-block: var(--space-3);
+  border-block-end: 1px solid var(--color-border);
+  gap: var(--space-4);
+}
+
+.node--view-mode-full .field--label-inline:last-child {
+  border-block-end: 0;
+}
+
+.node--view-mode-full .field__label {
+  color: var(--color-muted-foreground);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+}
+
+.node--view-mode-full .field__label::after {
+  content: none;
+}
+
+.node--view-mode-full .field__items {
+  display: grid;
+  gap: var(--space-1);
+}

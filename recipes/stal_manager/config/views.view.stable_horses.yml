@@ -423,7 +423,7 @@ display:
           admin_label: ''
           plugin_id: text_custom
           empty: true
-          content: '<p><a href="[site:base-path]node/add/horse" class="button button--primary">Add a horse</a></p>'
+          content: '<p><a href="[site:base-path]/node/add/horse" class="button button--primary">Add a horse</a></p>'
           tokenize: false
       footer: {  }
       display_extenders: {  }

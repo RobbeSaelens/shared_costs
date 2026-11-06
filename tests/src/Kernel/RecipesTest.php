@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 // cspell:ignore dierenarts
-
 namespace Drupal\Tests\shared_costs\Kernel;
 
 use Drupal\Component\Serialization\Yaml;

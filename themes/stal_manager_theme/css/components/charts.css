@@ -1,0 +1,20 @@
+/**
+ * @file
+ * Charts in cards, and their table of numbers.
+ */
+
+.card .charts-chartjs,
+.card canvas {
+  max-width: 100%;
+}
+
+.card .charts-accordion-trigger {
+  min-height: 2rem;
+  margin-block-start: var(--space-4);
+  padding: 0 var(--space-3);
+  font-size: var(--font-size-xs);
+}
+
+.card .charts-accessible-table {
+  margin-block-start: var(--space-4);
+}

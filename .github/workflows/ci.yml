@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   checks:
-    name: Coding standards, static analysis, spelling
+    name: Coding standards, static analysis, spelling, CSS and JavaScript
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -25,7 +25,10 @@ jobs:
       - run: ddev symlink-project
       - run: ddev phpcs
       - run: ddev phpstan
+      # Also installs core's JavaScript tools, for the linters below.
       - run: ddev cspell
+      - run: ddev stylelint
+      - run: ddev eslint
 
   tests:
     name: Drupal ${{ matrix.core }}, PHP ${{ matrix.php }}, ${{ matrix.name }}
@@ -102,11 +105,17 @@ jobs:
       - name: Tests
         if: ${{ !matrix.coverage }}
         run: ddev phpunit --testsuite ${{ matrix.suites }}
+      - name: Core's JavaScript tools (axe, for the accessibility test)
+        if: ${{ matrix.coverage }}
+        run: ddev exec "cd web/core && yarn install --immutable --silent"
+      - name: Tests in Chrome (HTMX, the theme, accessibility)
+        if: ${{ matrix.coverage }}
+        run: ddev phpunit --testsuite functional-javascript
       - name: Tests, with coverage of src/ by the Unit and Kernel tests (at least 90 %)
         if: ${{ matrix.coverage }}
         run: |
           ddev phpunit --testsuite functional
-          ddev exec php -d pcov.enabled=1 vendor/bin/phpunit --testsuite unit,kernel --coverage-text --coverage-clover coverage/clover.xml
+          ddev exec php -d pcov.enabled=1 -d pcov.directory=. vendor/bin/phpunit --testsuite unit,kernel --coverage-text --coverage-clover coverage/clover.xml
           php -r '$m = simplexml_load_file("coverage/clover.xml")->project->metrics; $p = 100 * (int) $m["coveredstatements"] / max(1, (int) $m["statements"]); printf("Line coverage: %.2f %%\n", $p); exit($p < 90 ? 1 : 0);'
 
   demo:

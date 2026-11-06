@@ -8,7 +8,9 @@ It comes with **Stal Manager**: three recipes that turn a Drupal site into a
 cost tracker for a horse stable (expenses, inventory, a dashboard with charts
 and a monthly overview), in English or Dutch. Stal Manager started as a
 Next.js app; the recipes rebuild it with configuration only, on top of this one
-small module.
+small module. Its front-end theme, in [`themes/stal_manager_theme`](themes/stal_manager_theme),
+makes it an app: HTMX navigation, live filters, view transitions and dark
+mode. Forms and admin pages use Gin.
 
 - [Features](#features)
 - [Requirements](#requirements)
@@ -16,6 +18,7 @@ small module.
 - [Using the field](#using-the-field)
 - [Views](#views)
 - [The Stal Manager recipes](#the-stal-manager-recipes)
+- [The Stal Manager theme](#the-stal-manager-theme)
 - [Development](#development)
 - [Known issues](#known-issues)
 
@@ -56,6 +59,8 @@ permissions, translations) is configuration in the recipes.
 - PHP 8.3 or later (Drupal 12: PHP 8.5).
 - For the recipes: [Charts](https://www.drupal.org/project/charts) 5.2.4 or
   later, with its Chart.js submodule.
+- For the demo recipe: [Gin](https://www.drupal.org/project/gin) 5 and
+  [Gin Toolbar](https://www.drupal.org/project/gin_toolbar) 3.
 
 ## Installation
 
@@ -68,7 +73,8 @@ The module isn't on drupal.org yet: until it is, add this repository to your
 project's `composer.json` first:
 
 ```bash
-composer config repositories.shared_costs vcs https://github.com/RobbeSaelens/shared_costs
+composer config repositories.shared_costs \
+  vcs https://github.com/RobbeSaelens/shared_costs
 ```
 
 ## Using the field
@@ -106,7 +112,7 @@ Three recipes, in [`recipes/`](recipes):
 | Recipe | What it does |
 |---|---|
 | `stal_manager` | Horses, inventory items and expenses (content types and fields), eight cost categories, the views below, and a _Stable manager_ role. Doesn't touch themes or site settings, so it can go on an existing site. |
-| `stal_manager_demo` | `stal_manager` on a new site to try it: Olivero and Claro, the dashboard as front page, the site private (visitors get the login form), and two horses with a year of example costs. |
+| `stal_manager_demo` | `stal_manager` on a new site to try it: the Stal Manager theme, Gin (in Stal Manager's brown) for forms and admin pages, the dashboard as front page, the site private (visitors get the login form), and two horses with a year of example costs. |
 | `stal_manager_nl` | `stal_manager` in Dutch: Dutch as the default language, with Dutch labels, categories and number formats (€ 1.234,56). |
 
 The pages, all for the _Stable manager_ role (and the main menu):
@@ -125,7 +131,7 @@ unpublished, so its share of past costs stays.
 To try it on a new site:
 
 ```bash
-composer require drupal/shared_costs drupal/charts
+composer require drupal/shared_costs drupal/charts drupal/gin drupal/gin_toolbar
 drush site:install minimal
 drush recipe modules/contrib/shared_costs/recipes/stal_manager_demo
 # Optional: in Dutch.
@@ -141,6 +147,21 @@ by default; see the Charts module to serve it yourself.
 Not ported from the Next.js app: working offline (a PWA), and an expense that
 counts in full for every horse (add one expense per horse instead).
 
+## The Stal Manager theme
+
+A Starterkit-generated theme, without a base theme. See its
+[README](themes/stal_manager_theme/README.md):
+
+- an app shell with a collapsible sidebar, and a tab bar on phones;
+- HTMX navigation and live filters with core's HTMX;
+- cards and a stat card that counts up;
+- charts in its colors, and dark mode;
+- view transitions, which respect reduced motion;
+- single-directory components and OOP hooks.
+
+Drupal finds it in this repository (it scans module folders for themes too).
+The demo recipe installs it and imports its blocks.
+
 ## Development
 
 The repository is a [DDEV](https://ddev.com) project with
@@ -153,14 +174,24 @@ ddev symlink-project    # the module into web/modules/custom
 ddev phpcs              # Drupal and DrupalPractice coding standards
 ddev phpstan            # level 8, no baseline
 ddev cspell             # spelling, with core's dictionaries
+ddev stylelint          # the theme's CSS, with core's config
+ddev eslint             # the theme's JavaScript, with core's config
 ddev phpunit            # Unit, Kernel and Functional tests
+ddev phpunit --testsuite functional-javascript   # in Chrome (Selenium)
 ```
 
+The JavaScript tests run in the Selenium container of
+[ddev-selenium-standalone-chrome](https://github.com/ddev/ddev-selenium-standalone-chrome).
+Their accessibility check uses axe-core from core's JavaScript tools: run
+`yarn install` in `web/core` once (`ddev cspell` and the linters do that too).
+
 The Kernel tests also run on PostgreSQL and SQLite in CI (set `SIMPLETEST_DB`).
-Coverage of `src/` by the Unit and Kernel tests is kept above 90 %:
+Coverage of `src/` and the theme's `src/` by the Unit and Kernel tests is kept
+above 90 %:
 
 ```bash
-ddev exec php -d pcov.enabled=1 vendor/bin/phpunit --testsuite unit,kernel --coverage-text
+ddev exec php -d pcov.enabled=1 -d pcov.directory=. vendor/bin/phpunit \
+  --testsuite unit,kernel --coverage-text
 ```
 
 The recipe tests apply each recipe twice (it must be idempotent), check the
@@ -177,7 +208,8 @@ that the Dutch recipe leaves no English label behind.
 - **Drupal 12.** On 12.0.0-beta2 (PHP 8.5) the module and its tests pass, and
   so do the `stal_manager` and `stal_manager_nl` recipes, except that Charts
   5.2.4 renders its charts empty there. The demo recipe needs Drupal 11 for now:
-  it uses Olivero and the Toolbar, which Drupal 12 no longer has in core.
+  it uses contrib Gin, which extends Claro, and the Toolbar. Drupal 12 has Gin
+  in core instead (Default Admin), and no Claro or Toolbar.
 - **Charts and config schema.** Charts 5.2.4 has no schema for its views
   style's `path` and `library_type_options` options; the recipe's views leave
   them out, so they validate. Saving a chart view in the Views UI adds them

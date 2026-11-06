@@ -82,7 +82,10 @@ final class StalManagerRecipeTest extends GenericRecipeTestBase {
 
     // Horses and inventory.
     $this->drupalGet('stable/horses');
-    $this->assertSame([['Bella', 'Livery horse', 'In the stable', 'Edit'], ['Luna', 'Own horse', 'In the stable', 'Edit']], $this->tableRows('.stable-horses'));
+    $this->assertSame([
+      ['Bella', 'Livery horse', 'In the stable', 'Edit'],
+      ['Luna', 'Own horse', 'In the stable', 'Edit'],
+    ], $this->tableRows('.stable-horses'));
     $this->drupalGet('stable/inventory');
     $this->assertSession()->pageTextContains('Nothing in the inventory yet.');
   }

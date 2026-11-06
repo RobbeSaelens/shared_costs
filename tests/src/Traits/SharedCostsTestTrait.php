@@ -67,7 +67,7 @@ trait SharedCostsTestTrait {
    * Adds a date field (field_date) to entity_test.
    *
    * @param string $datetime_type
-   *   'date' for a date-only field, 'datetime' for date and time.
+   *   The type: 'date' for a date-only field, 'datetime' for date and time.
    */
   protected function createDateField(string $datetime_type = 'date'): void {
     FieldStorageConfig::create([

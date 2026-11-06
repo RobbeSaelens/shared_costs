@@ -1,0 +1,58 @@
+/**
+ * @file
+ * Form controls on the front end: filters and the login form.
+ */
+
+.form-item label,
+.form-item .label {
+  display: block;
+  margin-block-end: var(--space-1);
+  color: var(--color-foreground);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+.form-text,
+.form-email,
+.form-search,
+.form-number,
+.form-date,
+.form-select,
+.form-textarea,
+input[type="password"] {
+  box-sizing: border-box;
+  min-height: 2.5rem;
+  padding: var(--space-2) var(--space-3);
+  transition:
+    border-color var(--duration-fast) ease,
+    box-shadow var(--duration-fast) ease;
+  color: var(--color-foreground);
+  border: 1px solid var(--color-input);
+  border-radius: var(--radius);
+  background: var(--color-card);
+  font: inherit;
+  font-size: var(--font-size-sm);
+}
+
+.form-select {
+  padding-inline-end: var(--space-8);
+}
+
+:is(.form-text, .form-email, .form-search, .form-number, .form-date, .form-select, .form-textarea, input[type="password"]):focus {
+  border-color: var(--color-primary);
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-primary) 22%, transparent);
+}
+
+.description {
+  margin-block-start: var(--space-1);
+  color: var(--color-muted-foreground);
+  font-size: var(--font-size-xs);
+}
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  margin-block-start: var(--space-4);
+  gap: var(--space-2);
+}

@@ -1,0 +1,20 @@
+{% set attributes = attributes.addClass('stat-card') %}
+{% set value_attributes = create_attribute({'class': ['stat-card__value']}) %}
+{% if amount is not null %}
+  {%
+    set value_attributes = value_attributes
+      .setAttribute('data-count-up', amount)
+      .setAttribute('data-decimals', decimals ?? 2)
+      .setAttribute('data-decimal-mark', decimal_mark ?? '.')
+      .setAttribute('data-thousands-mark', thousands_mark ?? ',')
+      .setAttribute('data-prefix', prefix ?? '')
+      .setAttribute('data-suffix', suffix ?? '')
+  %}
+{% endif %}
+<section{{ attributes }}>
+  <div class="stat-card__label">{% block label %}{% endblock %}</div>
+  <p{{ value_attributes }}>{% block value %}{% endblock %}</p>
+  {% if block('details') is not empty %}
+    <div class="stat-card__details">{% block details %}{% endblock %}</div>
+  {% endif %}
+</section>

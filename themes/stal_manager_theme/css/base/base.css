@@ -1,0 +1,171 @@
+/**
+ * @file
+ * Base styles: the page, type, links, focus and buttons.
+ */
+
+*,
+::before,
+::after {
+  box-sizing: border-box;
+}
+
+html {
+  color: var(--color-foreground);
+  background: var(--color-background);
+  font-family: var(--font-sans);
+  font-size: 100%;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  scroll-padding-top: var(--space-8);
+}
+
+body {
+  min-height: 100dvh;
+  margin: 0;
+  background: var(--color-background);
+  font-feature-settings: "cv11", "ss01";
+}
+
+h1,
+h2,
+h3 {
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+  line-height: 1.2;
+  margin-block: 0 var(--space-3);
+}
+
+p {
+  margin-block: 0 var(--space-3);
+  text-wrap: pretty;
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: color-mix(in oklch, var(--color-accent) 60%, transparent);
+}
+
+.skip-link:focus {
+  position: fixed;
+  z-index: 100;
+  padding: var(--space-2) var(--space-4);
+  color: var(--color-primary-foreground);
+  border-radius: var(--radius-sm);
+  background: var(--color-primary);
+  inset-block-start: var(--space-3);
+  inset-inline-start: var(--space-3);
+}
+
+/* The page title, and the actions above a page's content. */
+.page-title {
+  margin-block-end: var(--space-6);
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+}
+
+.page-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  margin-block-end: var(--space-6);
+  gap: var(--space-2);
+}
+
+/* Next to the page title, where there is room for both. */
+@media (min-width: 48rem) {
+  .page-actions {
+    position: absolute;
+    inset-block-start: 0.15rem;
+    inset-inline-end: 0;
+    margin: 0;
+  }
+
+  .page-title {
+    padding-inline-end: 14rem;
+  }
+}
+
+.page-actions p {
+  margin: 0;
+}
+
+/* Buttons. */
+.button,
+.app-add,
+.form-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.5rem;
+  padding: 0 var(--space-4);
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) ease,
+    box-shadow var(--duration-fast) ease,
+    scale var(--duration-fast) var(--ease-out);
+  text-decoration: none;
+  color: var(--color-foreground);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-card);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  gap: var(--space-2);
+}
+
+.button:hover,
+.form-submit:hover {
+  background: var(--color-secondary);
+}
+
+.button:active,
+.app-add:active,
+.form-submit:active {
+  scale: 0.97;
+}
+
+.button--primary,
+.app-add,
+.form-submit.button--primary {
+  color: var(--color-primary-foreground);
+  border-color: transparent;
+  background: var(--color-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.button--primary:hover,
+.app-add:hover,
+.form-submit.button--primary:hover {
+  background: color-mix(in oklch, var(--color-primary) 88%, var(--color-foreground));
+  box-shadow: var(--shadow-md);
+}
+
+.button--danger {
+  color: var(--color-destructive);
+}
+
+/* Numbers line up in columns. */
+.views-field-field-total,
+.views-field-field-total-value,
+.views-field-field-shared-with-amount,
+.views-field-field-default-price,
+.views-field-nid,
+.stat-card__value {
+  font-variant-numeric: tabular-nums;
+}

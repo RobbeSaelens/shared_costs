@@ -40,7 +40,7 @@ display:
           entity_type: node
           entity_field: field_expense_date
           plugin_id: field
-          label: Month
+          label: ''
           exclude: true
           alter:
             alter_text: false
@@ -759,7 +759,7 @@ display:
           admin_label: ''
           plugin_id: text_custom
           empty: true
-          content: '<p><a href="[site:base-path]node/add/expense" class="button button--primary">Add an expense</a></p>'
+          content: '<p><a href="[site:base-path]/node/add/expense" class="button button--primary">Add an expense</a></p>'
           tokenize: false
       footer: {  }
       display_extenders: {  }

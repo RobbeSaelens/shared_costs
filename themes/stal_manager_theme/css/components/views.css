@@ -1,0 +1,171 @@
+/**
+ * @file
+ * The Stal Manager views: a grid of cards, filters, months and empty states.
+ */
+
+/* The dashboard and the overview: the stat card first, then cards. */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  gap: var(--space-5);
+}
+
+/* Attachments join the grid as cards. */
+.card-grid > .views-element-container,
+.card-grid > .attachment {
+  display: contents;
+}
+
+.stable-view--summary .card:has(canvas) {
+  grid-column: span 1;
+}
+
+@media (min-width: 72rem) {
+  .view-stable-dashboard .card-grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+
+  .view-stable-dashboard .stat-card {
+    grid-column: span 4;
+  }
+
+  .view-stable-dashboard .card {
+    grid-column: span 8;
+  }
+
+  .view-stable-dashboard .card:has(canvas) {
+    grid-column: span 6;
+  }
+
+  .view-stable-overview .card-grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+
+  .view-stable-overview .stat-card,
+  .view-stable-overview .view-display-id-attachment_3 {
+    grid-column: span 4;
+  }
+
+  .view-stable-overview .view-display-id-attachment_2 {
+    grid-row: span 2;
+    grid-column: span 8;
+  }
+
+  .view-stable-overview .view-display-id-attachment_4 {
+    grid-column: 1 / -1;
+  }
+}
+
+/* The list of months: pills. */
+.views-summary {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  gap: var(--space-2);
+}
+
+.views-summary a {
+  display: block;
+  padding: var(--space-1) var(--space-3);
+  transition:
+    background-color var(--duration-fast) ease,
+    border-color var(--duration-fast) ease;
+  text-decoration: none;
+  color: var(--color-foreground);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-sm);
+}
+
+.views-summary a:hover {
+  border-color: var(--color-primary);
+}
+
+.views-summary a.is-active {
+  color: var(--color-primary-foreground);
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+}
+
+/* Filters. */
+.view-filters {
+  margin-block-end: var(--space-5);
+}
+
+.stable-filters .form--inline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-3) var(--space-4);
+}
+
+.stable-filters .form-item {
+  margin: 0;
+}
+
+/* With JavaScript, filters apply as you type: no need for the button. */
+.js .stable-filters .form-actions {
+  position: absolute;
+  overflow: hidden;
+  clip-path: inset(50%);
+  width: 1px;
+  height: 1px;
+}
+
+/* Results being reloaded fade a little. */
+.stable-results {
+  transition: opacity var(--duration-base) ease;
+}
+
+.stable-filters.htmx-request ~ .stable-results,
+.view-filters:has(.htmx-request) + .stable-results {
+  opacity: 0.55;
+}
+
+/* Empty states. */
+.view-empty {
+  padding: var(--space-8) var(--space-6);
+  text-align: center;
+  color: var(--color-muted-foreground);
+}
+
+.view-empty p {
+  margin: 0;
+}
+
+/* The pager. */
+.pager {
+  padding: var(--space-4) var(--space-6);
+}
+
+.pager__items {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  gap: var(--space-1);
+}
+
+.pager__item a {
+  display: grid;
+  place-items: center;
+  min-width: 2.25rem;
+  height: 2.25rem;
+  padding: 0 var(--space-2);
+  text-decoration: none;
+  color: var(--color-foreground);
+  border-radius: var(--radius-sm);
+}
+
+.pager__item a:hover {
+  background: var(--color-secondary);
+}
+
+.pager__item.is-active a {
+  color: var(--color-primary-foreground);
+  background: var(--color-primary);
+}

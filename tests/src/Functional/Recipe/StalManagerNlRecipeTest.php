@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 // cspell:ignore aandeel deze gelijk hooi kosten maand toevoegen uitgave voeding
-
 namespace Drupal\Tests\shared_costs\Functional\Recipe;
 
 use Drupal\Tests\system\Functional\Recipe\GenericRecipeTestBase;
@@ -27,7 +26,7 @@ final class StalManagerNlRecipeTest extends GenericRecipeTestBase {
   }
 
   /**
-   * Tests the site in Dutch, after importing the translations as the README says.
+   * Tests the site in Dutch, with the translations imported as in the README.
    */
   public function testDutch(): void {
     $this->doApply();

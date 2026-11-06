@@ -1,0 +1,55 @@
+{#
+/**
+ * @file
+ * Theme override to display a single page: the Stal Manager app shell.
+ *
+ * A sidebar (a tab bar on small screens) with the site's branding, the main
+ * navigation and the account links, next to the main content. HTMX swaps
+ * #main-content (and #app-nav and #app-toasts, for the active link and new
+ * messages) when you move around.
+ *
+ * Available variables:
+ * - add_expense: A link to add an expense, for those who may.
+ * - page.header: The site branding.
+ * - page.primary_menu: The main navigation.
+ * - page.secondary_menu: The account links.
+ * - page.highlighted: Status messages.
+ * - page.content: The page title, tabs, actions and main content.
+ *
+ * @see template_preprocess_page()
+ * @see \Drupal\stal_manager_theme\Hook\PageHooks::preprocessPage()
+ */
+#}
+<div class="app">
+  <aside class="app-sidebar">
+    <div class="app-sidebar__top">
+      {{ page.header }}
+      <button type="button" class="app-sidebar__collapse" data-sidebar-toggle aria-expanded="true">
+        {{ include('stal_manager_theme:icon', {name: 'sidebar'}, with_context = false) }}
+        <span class="visually-hidden">{{ 'Collapse the sidebar'|t }}</span>
+      </button>
+    </div>
+
+    {{ add_expense }}
+
+    <div id="app-nav" class="app-nav">
+      {{ page.primary_menu }}
+    </div>
+
+    <div class="app-sidebar__bottom">
+      {{ include('stal_manager_theme:theme-toggle', {}, with_context = false) }}
+      {{ page.secondary_menu }}
+    </div>
+  </aside>
+
+  <main id="main-content" class="app-main" tabindex="-1">
+    <div class="app-main__inner">
+      {{ page.content }}
+    </div>
+  </main>
+
+  {# Messages float above the page, so swapping the page doesn't move them. #}
+  <div id="app-toasts" class="app-toasts">
+    {{ page.highlighted }}
+  </div>
+</div>

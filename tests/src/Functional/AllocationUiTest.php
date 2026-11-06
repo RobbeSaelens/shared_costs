@@ -137,12 +137,14 @@ final class AllocationUiTest extends BrowserTestBase {
    */
   public function testSplitPreviewRoute(): void {
     $this->drupalLogout();
-    $this->drupalGet('shared-costs/split-preview', ['query' => [
-      'field' => 'field_shared_with',
-      'total' => 'field_total',
-      'field_shared_with' => [5 => ['selected' => '1', 'share' => '']],
-      'field_total' => [['value' => '9.99']],
-    ]]);
+    $this->drupalGet('shared-costs/split-preview', [
+      'query' => [
+        'field' => 'field_shared_with',
+        'total' => 'field_total',
+        'field_shared_with' => [5 => ['selected' => '1', 'share' => '']],
+        'field_total' => [['value' => '9.99']],
+      ],
+    ]);
     $this->assertSession()->statusCodeEquals(200);
     $this->assertSession()->responseContains('<output id="shared-costs-field-shared-with-5" hx-swap-oob="true">9.99</output>');
   }

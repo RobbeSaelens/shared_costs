@@ -31,7 +31,9 @@ final class StalManagerDemoRecipeTest extends GenericRecipeTestBase {
   public function testDemo(): void {
     $this->doApply();
     $this->assertSame('Stal Manager', $this->config('system.site')->get('name'));
-    $this->assertSame('olivero', $this->config('system.theme')->get('default'));
+    $this->assertSame('stal_manager_theme', $this->config('system.theme')->get('default'));
+    $this->assertSame('gin', $this->config('system.theme')->get('admin'));
+    $this->assertSame('#6f4520', $this->config('gin.settings')->get('accent_color'));
 
     // Visitors get the login form, and nothing of the costs.
     $this->drupalGet('<front>');
@@ -52,6 +54,13 @@ final class StalManagerDemoRecipeTest extends GenericRecipeTestBase {
     $this->drupalGet('<front>');
     $this->assertSession()->titleEquals('Dashboard | Stal Manager');
     $this->assertSession()->linkExists('Add an expense');
+    // In the theme, with its blocks: the branding and the main navigation.
+    $this->assertSession()->elementTextEquals('css', '.site-branding__name', 'Stal Manager');
+    $this->assertSession()->elementTextEquals('css', '#app-nav a[aria-current="page"]', 'Dashboard');
+    // Adding an expense happens in Gin.
+    $this->clickLink('Add an expense');
+    $this->assertSession()->responseContains('/themes/contrib/gin/');
+    $this->assertSession()->fieldExists('title[0][value]');
   }
 
   /**

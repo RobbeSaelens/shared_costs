@@ -27,11 +27,11 @@ content:
     weight: 1
     region: content
   field_expense_date:
-    type: datetime_default
+    type: datetime_custom
     label: inline
     settings:
       timezone_override: ''
-      format_type: html_date
+      date_format: 'j F Y'
     third_party_settings: {  }
     weight: 0
     region: content

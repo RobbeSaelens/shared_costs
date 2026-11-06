@@ -1,0 +1,53 @@
+.stat-card {
+  position: relative;
+  display: grid;
+  overflow: hidden;
+  align-content: space-between;
+  min-height: 10rem;
+  padding: var(--space-6);
+  color: var(--color-primary-foreground);
+  border-radius: var(--radius-lg);
+  background: radial-gradient(circle at 100% 0%, color-mix(in oklch, var(--color-accent) 55%, transparent), transparent 60%), linear-gradient(135deg, var(--color-primary), color-mix(in oklch, var(--color-primary) 70%, black));
+  box-shadow: var(--shadow-md);
+  gap: var(--space-4);
+}
+
+.stat-card::after {
+  position: absolute;
+  inset-block-end: -2.5rem;
+  inset-inline-end: -1.5rem;
+  width: 9rem;
+  height: 9rem;
+  content: "";
+  opacity: 0.12;
+  border: 1.1rem solid currentColor;
+  border-block-start: 0;
+  border-radius: 0 0 50% 50%;
+  rotate: -14deg;
+}
+
+.stat-card__label :is(h2, h3, p) {
+  margin: 0;
+  letter-spacing: 0.02em;
+  opacity: 0.85;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+}
+
+.stat-card__value {
+  margin: 0;
+  letter-spacing: -0.03em;
+  font-size: clamp(2rem, 1.4rem + 2.4vw, 2.9rem);
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-card__value :is(p, div, span) {
+  margin: 0;
+}
+
+.stat-card__details {
+  opacity: 0.85;
+  font-size: var(--font-size-sm);
+}

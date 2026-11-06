@@ -127,7 +127,8 @@ final class AllocationTableWidget extends OptionsWidgetBase {
     $amounts = $this->amounts($items, $current);
     $locked = array_diff_key($current, $options);
     foreach ($options as $id => $label) {
-      $element[$id] = $this->row((string) $id, (string) $label, isset($current[$id]), $current[$id] ?? NULL, $amounts[$id] ?? '', FALSE);
+      // An equal part is a NULL share: ticked all the same.
+      $element[$id] = $this->row((string) $id, (string) $label, array_key_exists($id, $current), $current[$id] ?? NULL, $amounts[$id] ?? '', FALSE);
     }
     // Sharers the costs were split with, that can't be picked any more.
     foreach ($locked as $id => $share) {

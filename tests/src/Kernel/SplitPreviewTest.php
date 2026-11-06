@@ -52,42 +52,53 @@ final class SplitPreviewTest extends KernelTestBase {
    */
   public static function providerPreview(): array {
     $total = static fn (string $value): array => ['field_total' => [['value' => $value]]];
+    // The rows by sharer ID: a share ('' for an equal part), or NULL for a
+    // row that isn't ticked.
+    $row = static fn (?string $share): array => $share === NULL
+      ? ['share' => '']
+      : ['selected' => '1', 'share' => $share];
+    $rows = static fn (array $shares): array => ['field_shared_with' => array_map($row, $shares)];
+    // The expected text of each row's output, by sharer ID.
+    $amounts = static fn (array $expected): array => array_combine(
+      array_map(static fn (int $id): string => "shared-costs-field-shared-with-$id", array_keys($expected)),
+      $expected,
+    );
     return [
       'equal halves' => [
-        ['field_shared_with' => [1 => ['selected' => '1', 'share' => ''], 2 => ['selected' => '1', 'share' => '']]] + $total('12.35'),
-        ['shared-costs-field-shared-with-1' => '6.18', 'shared-costs-field-shared-with-2' => '6.17'],
+        $rows([1 => '', 2 => '']) + $total('12.35'),
+        $amounts([1 => '6.18', 2 => '6.17']),
       ],
       'percentages, with a decimal comma' => [
-        ['field_shared_with' => [1 => ['selected' => '1', 'share' => '70'], 2 => ['selected' => '1', 'share' => '30']], 'decimal' => ','] + $total('140,00'),
-        ['shared-costs-field-shared-with-1' => '98,00', 'shared-costs-field-shared-with-2' => '42,00'],
+        $rows([1 => '70', 2 => '30']) + ['decimal' => ','] + $total('140,00'),
+        $amounts([1 => '98,00', 2 => '42,00']),
       ],
       'a row that is not ticked gets nothing' => [
-        ['field_shared_with' => [1 => ['selected' => '1', 'share' => ''], 2 => ['share' => '']]] + $total('10'),
-        ['shared-costs-field-shared-with-1' => '10.00', 'shared-costs-field-shared-with-2' => ''],
+        $rows([1 => '', 2 => NULL]) + $total('10'),
+        $amounts([1 => '10.00', 2 => '']),
       ],
       'a read-only row comes along in "locked"' => [
-        ['field_shared_with' => [1 => ['selected' => '1', 'share' => '']], 'locked' => '{"7":"40"}'] + $total('10'),
-        ['shared-costs-field-shared-with-1' => '6.00', 'shared-costs-field-shared-with-7' => '4.00'],
+        $rows([1 => '']) + ['locked' => '{"7":"40"}'] + $total('10'),
+        $amounts([1 => '6.00', 7 => '4.00']),
       ],
       'shares that do not add up: nothing yet' => [
-        ['field_shared_with' => [1 => ['selected' => '1', 'share' => '50'], 2 => ['selected' => '1', 'share' => '30']]] + $total('140'),
-        ['shared-costs-field-shared-with-1' => '', 'shared-costs-field-shared-with-2' => ''],
+        $rows([1 => '50', 2 => '30']) + $total('140'),
+        $amounts([1 => '', 2 => '']),
       ],
       'more than 100 %: nothing yet' => [
-        ['field_shared_with' => [1 => ['selected' => '1', 'share' => '120'], 2 => ['selected' => '1', 'share' => '']]] + $total('140'),
-        ['shared-costs-field-shared-with-1' => '', 'shared-costs-field-shared-with-2' => ''],
+        $rows([1 => '120', 2 => '']) + $total('140'),
+        $amounts([1 => '', 2 => '']),
       ],
       'a share that is not a number is open' => [
-        ['field_shared_with' => [1 => ['selected' => '1', 'share' => 'half'], 2 => ['selected' => '1', 'share' => '25']]] + $total('8'),
-        ['shared-costs-field-shared-with-1' => '6.00', 'shared-costs-field-shared-with-2' => '2.00'],
+        $rows([1 => 'half', 2 => '25']) + $total('8'),
+        $amounts([1 => '6.00', 2 => '2.00']),
       ],
       'no total yet' => [
-        ['field_shared_with' => [1 => ['selected' => '1', 'share' => '']]] + $total(''),
-        ['shared-costs-field-shared-with-1' => ''],
+        $rows([1 => '']) + $total(''),
+        $amounts([1 => '']),
       ],
       'nothing ticked' => [
-        ['field_shared_with' => [1 => ['share' => '']]] + $total('10'),
-        ['shared-costs-field-shared-with-1' => ''],
+        $rows([1 => NULL]) + $total('10'),
+        $amounts([1 => '']),
       ],
     ];
   }
@@ -96,7 +107,10 @@ final class SplitPreviewTest extends KernelTestBase {
    * Tests that field names are checked before they are used.
    */
   public function testInvalidFieldName(): void {
-    $request = Request::create('/shared-costs/split-preview', 'GET', ['field' => 'field"><script>', 'total' => 'field_total']);
+    $request = Request::create('/shared-costs/split-preview', 'GET', [
+      'field' => 'field"><script>',
+      'total' => 'field_total',
+    ]);
     $this->assertSame(400, (new SplitPreviewController())($request)->getStatusCode());
   }
 

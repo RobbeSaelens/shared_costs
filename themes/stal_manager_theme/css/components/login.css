@@ -1,0 +1,90 @@
+/**
+ * @file
+ * Visitors who aren't logged in: the login form, centered, without the app.
+ */
+
+/* Also when this browser remembers a collapsed sidebar. */
+.is-anonymous .app,
+:root[data-sidebar] .is-anonymous .app {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.is-anonymous .app-nav,
+.is-anonymous .app-sidebar__collapse,
+.is-anonymous .app-sidebar__bottom .menu {
+  display: none;
+}
+
+.is-anonymous .app-sidebar {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline: 0;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  height: auto;
+  border: 0;
+  background: transparent;
+}
+
+.is-anonymous .app-sidebar__bottom {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.is-anonymous .app-main {
+  display: grid;
+  place-items: center;
+  min-height: 100dvh;
+  background: radial-gradient(circle at 15% 10%, color-mix(in oklch, var(--color-accent) 35%, transparent), transparent 45%), radial-gradient(circle at 85% 90%, color-mix(in oklch, var(--color-primary) 18%, transparent), transparent 45%);
+  padding-block: 6rem;
+}
+
+.is-anonymous .app-main__inner {
+  width: min(100%, 26rem);
+  padding: var(--space-8);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-card);
+  box-shadow: var(--shadow-lg);
+}
+
+.is-anonymous .page-title {
+  padding: 0;
+  text-align: center;
+  font-size: var(--font-size-xl);
+}
+
+.is-anonymous .tabs {
+  display: flex;
+  justify-content: center;
+}
+
+.is-anonymous form .form-item {
+  margin-block-end: var(--space-4);
+}
+
+.is-anonymous :is(.form-text, .form-email, input[type="password"]) {
+  width: 100%;
+}
+
+.is-anonymous .form-actions .form-submit {
+  width: 100%;
+  color: var(--color-primary-foreground);
+  border-color: transparent;
+  background: var(--color-primary);
+}
+
+@media (max-width: 47.99rem) {
+  .is-anonymous .app-sidebar__top {
+    padding-inline-end: var(--space-4);
+    border: 0;
+    background: transparent;
+    backdrop-filter: none;
+  }
+
+  .is-anonymous .app-add {
+    display: none;
+  }
+}

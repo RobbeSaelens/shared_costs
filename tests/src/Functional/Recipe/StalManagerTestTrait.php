@@ -50,7 +50,10 @@ trait StalManagerTestTrait {
       'field_expense_date' => $date,
       'field_cost_category' => $category,
       'field_total' => $total,
-      'field_shared_with' => array_map(static fn (array $sharer): array => ['target_id' => $sharer[0]->id(), 'share' => $sharer[1] ?? NULL], $sharers),
+      'field_shared_with' => array_map(static fn (array $sharer): array => [
+        'target_id' => $sharer[0]->id(),
+        'share' => $sharer[1] ?? NULL,
+      ], $sharers),
     ]);
     $expense->save();
     return $expense;

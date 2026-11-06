@@ -1,0 +1,17 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: Icon
+status: stable
+description: 'A line icon from the theme''s inline sprite. Decorative, unless it has a label.'
+props:
+  type: object
+  required:
+    - name
+  properties:
+    name:
+      type: string
+      title: Name
+      enum: [dashboard, receipt, chart, horseshoe, box, plus, sun, moon, sidebar, user, logout, close, dot]
+    label:
+      type: string
+      title: Label
+      description: 'For an icon without text next to it: what it means.'
