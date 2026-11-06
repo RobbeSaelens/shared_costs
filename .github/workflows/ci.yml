@@ -106,8 +106,8 @@ jobs:
         if: ${{ matrix.coverage }}
         run: |
           ddev phpunit --testsuite functional
-          ddev exec php -d pcov.enabled=1 vendor/bin/phpunit --testsuite unit,kernel --coverage-text --coverage-clover /tmp/clover.xml
-          ddev exec php -r '$m = simplexml_load_file("/tmp/clover.xml")->project->metrics; $p = 100 * (int) $m["coveredstatements"] / max(1, (int) $m["statements"]); printf("Line coverage: %.2f %%\n", $p); exit($p < 90 ? 1 : 0);'
+          ddev exec php -d pcov.enabled=1 vendor/bin/phpunit --testsuite unit,kernel --coverage-text --coverage-clover coverage/clover.xml
+          php -r '$m = simplexml_load_file("coverage/clover.xml")->project->metrics; $p = 100 * (int) $m["coveredstatements"] / max(1, (int) $m["statements"]); printf("Line coverage: %.2f %%\n", $p); exit($p < 90 ? 1 : 0);'
 
   demo:
     name: Demo site, in English and Dutch
