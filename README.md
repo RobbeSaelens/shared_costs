@@ -65,6 +65,9 @@ permissions, translations) is configuration in the recipes.
     Chart.js submodule;
   - [Prepopulate](https://www.drupal.org/project/prepopulate) 2.5, for "Add as
     expense" on the inventory;
+  - [Field Group](https://www.drupal.org/project/field_group) 4, for the cards
+    on the forms (the expense form has Expense and Amount, with the quantity,
+    price and total in a row);
   - [Views Data Export](https://www.drupal.org/project/views_data_export) 1.10,
     for the CSV download;
   - a [private file system](https://www.drupal.org/docs/8/core/modules/file/overview#content-accessing-private-files)
@@ -112,6 +115,61 @@ drush theme:uninstall stal_manager_theme
 Browsers forget the light or dark choice and the collapsed sidebar once: the
 theme keeps them under new names. Recipes are applied once, so nothing else
 changes on a site that applied them.
+
+## Upgrading from 2.1
+
+2.2 groups the fields of the horse, inventory item and expense forms into
+cards (Field Group), the logo no longer tilts when you hover over it, and the
+recipes need one more module. A site that applied the recipes before gets the
+cards like this (the displays are deleted so that the recipe can add them again:
+see [Updating a site](#updating-a-site), and note that it drops changes the site
+made to these three form displays):
+
+```bash
+composer require drupal/field_group
+composer update drupal/shared_costs
+drush pm:install field_group
+drush config:delete core.entity_form_display.node.expense.default
+drush config:delete core.entity_form_display.node.horse.default
+drush config:delete core.entity_form_display.node.inventory_item.default
+# stable_manager_nl includes stable_manager: use it on a site in Dutch.
+drush recipe modules/contrib/shared_costs/recipes/stable_manager
+drush cache:rebuild
+```
+
+## Updating a site
+
+`composer update drupal/shared_costs` updates the module's code and its theme,
+and nothing else. A recipe is applied once, and applying it again (they are
+idempotent) **keeps the configuration the site has** and only adds what is
+missing (`strict: false`). So a release that changes a recipe's configuration
+doesn't change a site that applied the recipe before, until you do this:
+
+1. **The modules a release needs.** The modules of
+   [Requirements](#requirements) are `require-dev` of this module, which a site
+   never installs. Run `composer require` for each module the release adds on
+   the site, or the recipe fails on the module that's missing. The upgrade
+   section of the release says which.
+2. **New configuration** (a field, a view, a role) arrives when you apply the
+   recipes again, in the order of [the recipes](#the-stable-manager-recipes):
+   `stable_manager` (or `stable_manager_nl`, which includes it) first, then the
+   others.
+3. **Changed configuration** (a form display, a view that exists) doesn't
+   arrive, whatever the recipe says. Either delete that configuration with
+   `drush config:delete` and apply the recipe again, which drops what the site
+   changed in it, or copy the change by hand from
+   [`recipes/stable_manager/config`](recipes/stable_manager/config). Look at
+   `git log -p -- recipes` between the two releases to see what changed.
+4. **A site that keeps its configuration in Git** (`config/sync`) exports it
+   afterwards and reviews the diff before committing. A configuration entity
+   that was deleted and added again has a new UUID: put the old `uuid:` back,
+   or the next `config:import` on another copy of the site deletes and adds the
+   entity.
+
+The module is installed from this repository's tags, and `composer.lock` pins
+the exact commit: a change that isn't committed, pushed and tagged here never
+reaches a site, however long you have been working on it. See
+[Releasing](#releasing).
 
 ## Using the field
 
@@ -185,7 +243,7 @@ To try it on a new site:
 
 ```bash
 composer require drupal/shared_costs drupal/charts \
-  drupal/prepopulate drupal/views_data_export \
+  drupal/prepopulate drupal/field_group drupal/views_data_export \
   drupal/gin drupal/gin_toolbar drupal/admin_toolbar
 drush site:install minimal
 # Receipts are private files: in settings.php, set a folder outside the web
@@ -520,6 +578,44 @@ The pages name their month, so they don't change with today's date; the
 dashboard's numbers and charts (this month, this year) are masked. In CI, the
 screenshots that differ are kept as the `visual-differences` artifact.
 
+### Releasing
+
+Work happens on `develop`. A release is `develop` merged into `main` and
+tagged `vX.Y.Z` (an annotated tag, like the earlier ones). Sites install the
+module from the tags of this repository, so **nothing reaches a site before it
+is committed, pushed and tagged**; and a site's `web/modules/contrib/shared_costs`
+is only a copy that Composer made (it's in the site's `.gitignore`): change the
+module here, never there, because the next `composer update` throws a change
+there away.
+
+Before you start something here, and again before you say "done", run
+`git status` and `git log origin/develop..HEAD`: work that sits uncommitted in
+this checkout is easy to forget, and the sites don't have it.
+
+To release:
+
+```bash
+git status                          # nothing left over
+ddev phpcs && ddev phpstan && ddev cspell && ddev stylelint && ddev eslint
+ddev phpunit                        # CI runs the same, and more
+git switch main && git merge --ff-only develop
+git tag -a vX.Y.Z -m "Shared Costs X.Y.Z"
+git push origin main develop vX.Y.Z
+git switch develop
+```
+
+The number: a patch for fixes that need nothing from a site (`2.1.1`), a minor
+for a new feature or recipe change (`2.2.0`), a major for a rename or anything
+that breaks a site (`3.0.0`: see [Upgrading from 1.0](#upgrading-from-10)).
+When a release changes what a recipe installs or configures, write an
+_Upgrading from X.Y_ section for it, like the ones above: the modules to
+`composer require`, and how an existing site gets the changed configuration
+(see [Updating a site](#updating-a-site)).
+
+Then, on each site that uses it, `composer update drupal/shared_costs` and do
+what the upgrade section says. The `composer.json` of a site requires a range
+(`^2.1`), so a minor release is picked up without editing it.
+
 ## Known issues
 
 - **Default content and default values.** Core's content importer creates the
@@ -530,7 +626,8 @@ screenshots that differ are kept as the `visual-differences` artifact.
   [#3635887](https://www.drupal.org/project/drupal/issues/3635887).
 - **Drupal 12.** On 12.0.0-beta2 (PHP 8.5) the module and its tests pass.
   The recipes need contrib modules that don't declare Drupal 12 support yet:
-  Prepopulate and Views Data Export (CI tries them on Drupal 12 anyway), and
+  Prepopulate, Field Group and Views Data Export (CI tries them on Drupal 12
+  anyway), and
   Charts 5.2.4 renders its charts empty there (its preprocess function isn't
   found on Drupal 12; it needs core's `initial preprocess`, reported as
   [#3635886](https://www.drupal.org/project/charts/issues/3635886)). The front
