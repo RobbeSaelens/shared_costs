@@ -13,12 +13,94 @@ dependencies:
     - node.type.expense
   module:
     - datetime
+    - field_group
     - file
     - shared_costs
 id: node.expense.default
 targetEntityType: node
 bundle: expense
 mode: default
+third_party_settings:
+  field_group:
+    group_expense:
+      children:
+        - title
+        - group_expense_row
+      label: Expense
+      region: content
+      parent_name: ''
+      weight: 0
+      format_type: details
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        label_as_html: false
+        open: true
+        description: ''
+        required_fields: false
+    group_expense_row:
+      children:
+        - field_expense_date
+        - field_cost_category
+      label: 'Date and category'
+      region: content
+      parent_name: group_expense
+      weight: 1
+      format_type: html_element
+      format_settings:
+        classes: form--inline
+        show_empty_fields: false
+        id: ''
+        label_as_html: false
+        element: div
+        show_label: false
+        label_element: h3
+        label_element_classes: ''
+        attributes: ''
+        effect: none
+        speed: fast
+        required_fields: false
+    group_amount:
+      children:
+        - field_inventory_item
+        - group_amount_row
+      label: Amount
+      region: content
+      parent_name: ''
+      weight: 3
+      format_type: details
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        label_as_html: false
+        open: true
+        description: ''
+        required_fields: false
+    group_amount_row:
+      children:
+        - field_quantity
+        - field_unit_price
+        - field_total
+      label: 'Quantity, price and total'
+      region: content
+      parent_name: group_amount
+      weight: 4
+      format_type: html_element
+      format_settings:
+        classes: form--inline
+        show_empty_fields: false
+        id: ''
+        label_as_html: false
+        element: div
+        show_label: false
+        label_element: h3
+        label_element_classes: ''
+        attributes: ''
+        effect: none
+        speed: fast
+        required_fields: false
 content:
   field_cost_category:
     type: options_select
@@ -28,7 +110,7 @@ content:
     third_party_settings: {  }
   field_expense_date:
     type: datetime_default
-    weight: 0
+    weight: 1
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -82,7 +164,7 @@ content:
     third_party_settings: {  }
   title:
     type: string_textfield
-    weight: 1
+    weight: 0
     region: content
     settings:
       size: 60

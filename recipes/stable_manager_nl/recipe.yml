@@ -32,7 +32,21 @@ config:
     core.entity_form_display.node.expense.default:
       setProperties:
         langcode: nl
+        third_party_settings.field_group.group_expense.label: Uitgave
+        third_party_settings.field_group.group_expense_row.label: 'Datum en categorie'
+        third_party_settings.field_group.group_amount.label: Bedrag
+        third_party_settings.field_group.group_amount_row.label: 'Aantal, prijs en totaal'
         content.field_shared_with.settings.decimal_separator: ','
+    core.entity_form_display.node.horse.default:
+      setProperties:
+        langcode: nl
+        third_party_settings.field_group.group_horse.label: Paard
+    core.entity_form_display.node.inventory_item.default:
+      setProperties:
+        langcode: nl
+        third_party_settings.field_group.group_item.label: Artikel
+        third_party_settings.field_group.group_price.label: Prijs
+        third_party_settings.field_group.group_price_row.label: 'Prijs en eenheid'
     core.entity_view_display.node.expense.default:
       setProperties:
         langcode: nl

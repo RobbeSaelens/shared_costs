@@ -6,6 +6,8 @@ install:
   - node
   - datetime
   - options
+  # Groups the fields of the forms into cards.
+  - field_group
   - views
   - charts
   - charts_chartjs

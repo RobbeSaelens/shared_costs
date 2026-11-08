@@ -4,10 +4,31 @@ dependencies:
   config:
     - field.field.node.horse.field_horse_type
     - node.type.horse
+  module:
+    - field_group
 id: node.horse.default
 targetEntityType: node
 bundle: horse
 mode: default
+third_party_settings:
+  field_group:
+    group_horse:
+      children:
+        - title
+        - field_horse_type
+      label: Horse
+      region: content
+      parent_name: ''
+      weight: 0
+      format_type: details
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        label_as_html: false
+        open: true
+        description: ''
+        required_fields: false
 content:
   field_horse_type:
     type: options_buttons

@@ -58,6 +58,9 @@ final class StableManagerNlRecipeTest extends GenericRecipeTestBase {
     // The module's own strings, from its translations/nl.po.
     $this->drupalGet('node/add/expense');
     $this->assertSession()->pageTextContains('Aandeel (%)');
+    // The cards of the form too.
+    $this->assertSession()->elementTextContains('css', '[data-drupal-selector="edit-group-expense"] > summary', 'Uitgave');
+    $this->assertSession()->elementTextContains('css', '[data-drupal-selector="edit-group-amount"] > summary', 'Bedrag');
     $this->assertSession()->elementAttributeContains('css', "[name='field_shared_with[{$luna->id()}][share]']", 'placeholder', 'gelijk');
   }
 

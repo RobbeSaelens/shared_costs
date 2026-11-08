@@ -7,10 +7,69 @@ dependencies:
     - field.field.node.inventory_item.field_quick_add
     - field.field.node.inventory_item.field_unit
     - node.type.inventory_item
+  module:
+    - field_group
 id: node.inventory_item.default
 targetEntityType: node
 bundle: inventory_item
 mode: default
+third_party_settings:
+  field_group:
+    group_item:
+      children:
+        - title
+        - field_cost_category
+      label: Item
+      region: content
+      parent_name: ''
+      weight: 0
+      format_type: details
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        label_as_html: false
+        open: true
+        description: ''
+        required_fields: false
+    group_price:
+      children:
+        - group_price_row
+      label: Price
+      region: content
+      parent_name: ''
+      weight: 2
+      format_type: details
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        label_as_html: false
+        open: true
+        description: ''
+        required_fields: false
+    group_price_row:
+      children:
+        - field_default_price
+        - field_unit
+      label: 'Price and unit'
+      region: content
+      parent_name: group_price
+      weight: 0
+      format_type: html_element
+      format_settings:
+        classes: form--inline
+        show_empty_fields: false
+        id: ''
+        label_as_html: false
+        element: div
+        show_label: false
+        label_element: h3
+        label_element_classes: ''
+        attributes: ''
+        effect: none
+        speed: fast
+        required_fields: false
 content:
   field_cost_category:
     type: options_select
@@ -37,7 +96,7 @@ content:
     weight: 3
     region: content
     settings:
-      size: 60
+      size: 20
       placeholder: ''
     third_party_settings: {  }
   status:

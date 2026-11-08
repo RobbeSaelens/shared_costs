@@ -160,6 +160,16 @@ final class StableManagerRecipeTest extends GenericRecipeTestBase {
     // From the inventory: the expense form, filled in with the item.
     $this->drupalGet('stable/inventory');
     $this->clickLink('Add as expense');
+    // The fields are grouped into cards, with the amounts in a row.
+    $assert = $this->assertSession();
+    $assert->elementTextContains('css', '[data-drupal-selector="edit-group-expense"] > summary', 'Expense');
+    $assert->elementExists('css', '[data-drupal-selector="edit-group-expense"] [name="title[0][value]"]');
+    $assert->elementExists('css', '[data-drupal-selector="edit-group-expense"] [name="field_cost_category"]');
+    $assert->elementTextContains('css', '[data-drupal-selector="edit-group-amount"] > summary', 'Amount');
+    $assert->elementExists('css', '[data-drupal-selector="edit-group-amount"] [name="field_inventory_item"]');
+    foreach (['field_quantity', 'field_unit_price', 'field_total'] as $field) {
+      $assert->elementExists('css', "[data-drupal-selector='edit-group-amount-row'].form--inline [name='{$field}[0][value]']");
+    }
     $this->assertSession()->fieldValueEquals('title[0][value]', 'Straw');
     $this->assertSession()->fieldValueEquals('field_inventory_item', (string) $straw->id());
     $this->assertSession()->fieldValueEquals('field_cost_category', 'bedding');
