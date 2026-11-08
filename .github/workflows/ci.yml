@@ -19,7 +19,7 @@ jobs:
     name: Coding standards, static analysis, spelling, CSS and JavaScript
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ddev/github-action-setup-ddev@v1
       - run: ddev poser
       - run: ddev symlink-project
@@ -76,7 +76,7 @@ jobs:
             coverage: false
             experimental: true
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Configure DDEV for this combination
         # Loaded after config.contrib.yaml, so these settings win.
         run: |
@@ -139,7 +139,7 @@ jobs:
     name: Demo site, in English and Dutch
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ddev/github-action-setup-ddev@v1
       - run: ddev poser
       - run: ddev symlink-project
