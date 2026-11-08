@@ -88,11 +88,6 @@
   flex: none;
   width: 2.25rem;
   height: 2.25rem;
-  transition: rotate var(--duration-slow) var(--ease-out);
-}
-
-.site-branding:hover .site-branding__logo {
-  rotate: -12deg;
 }
 
 .site-branding__name {
