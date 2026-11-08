@@ -140,10 +140,16 @@ drush cache:rebuild
 ## Updating a site
 
 `composer update drupal/shared_costs` updates the module's code and its theme,
-and nothing else. A recipe is applied once, and applying it again (they are
-idempotent) **keeps the configuration the site has** and only adds what is
-missing (`strict: false`). So a release that changes a recipe's configuration
-doesn't change a site that applied the recipe before, until you do this:
+and nothing else. Drupal keeps its services, hooks and templates in caches, so
+**rebuild the caches right after every update** (`drush cache:rebuild`, or
+`drush deploy`): until you do, a class whose constructor changed fails every
+page with a 500 (`ArgumentCountError`), as the theme's page hooks did when
+they gained the icons' path and URL generator.
+
+A recipe is applied once, and applying it again (they are idempotent) **keeps
+the configuration the site has** and only adds what is missing
+(`strict: false`). So a release that changes a recipe's configuration doesn't
+change a site that applied the recipe before, until you do this:
 
 1. **The modules a release needs.** The modules of
    [Requirements](#requirements) are `require-dev` of this module, which a site
@@ -578,15 +584,38 @@ The pages name their month, so they don't change with today's date; the
 dashboard's numbers and charts (this month, this year) are masked. In CI, the
 screenshots that differ are kept as the `visual-differences` artifact.
 
+### Before you commit
+
+CI runs the checks below on every push, and a failed pipeline costs a round
+trip and a noisy follow-up commit. Nearly every failure (a README line one
+character too long, a word cspell doesn't know) shows up in seconds on your
+own machine, so run all of them before you commit:
+
+```bash
+ddev phpcs && ddev phpstan && ddev cspell && ddev stylelint && ddev eslint
+ddev phpunit --testsuite unit,kernel,functional
+```
+
+- They cover every file, **documentation included**. `ddev phpcs` keeps
+  `README.md` and other text files to 80 characters a line, and `ddev cspell`
+  spell-checks them (a word that is fine goes in `.cspell-project-words.txt`).
+- Run them **after your last edit**, not before it: a change to a README, a
+  recipe or a comment counts too, and a run before that edit proves nothing.
+- CI also runs the tests in Chrome (`ddev phpunit --testsuite
+  functional-javascript`), checks that the Unit and Kernel tests cover at least
+  90 % of `src/`, and, on a demo site, applies the demo recipe twice and
+  compares the screenshots. Run those too when a change touches the theme, a
+  form or a recipe.
+
 ### Releasing
 
 Work happens on `develop`. A release is `develop` merged into `main` and
 tagged `vX.Y.Z` (an annotated tag, like the earlier ones). Sites install the
 module from the tags of this repository, so **nothing reaches a site before it
-is committed, pushed and tagged**; and a site's `web/modules/contrib/shared_costs`
-is only a copy that Composer made (it's in the site's `.gitignore`): change the
-module here, never there, because the next `composer update` throws a change
-there away.
+is committed, pushed and tagged**; and a site's
+`web/modules/contrib/shared_costs` is only a copy that Composer made (it's in
+the site's `.gitignore`): change the module here, never there, because the next
+`composer update` throws a change there away.
 
 Before you start something here, and again before you say "done", run
 `git status` and `git log origin/develop..HEAD`: work that sits uncommitted in
