@@ -26,7 +26,7 @@ final class NavigationHooks {
     'view.stable_dashboard.page_1' => 'dashboard',
     'view.stable_expenses.page_1' => 'receipt',
     'view.stable_overview.page_1' => 'chart',
-    'view.stable_horses.page_1' => 'horseshoe',
+    'view.stable_horses.page_1' => 'horse',
     'view.stable_inventory.page_1' => 'box',
     'user.page' => 'user',
     'user.logout' => 'logout',

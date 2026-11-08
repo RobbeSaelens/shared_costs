@@ -89,7 +89,7 @@ final class ThemeHooksTest extends KernelTestBase {
       $this->assertStringContainsString(sprintf('%s="%s"', $name, $value), $html);
     }
 
-    foreach (['dashboard', 'receipt', 'chart', 'horseshoe', 'box'] as $icon) {
+    foreach (['dashboard', 'receipt', 'chart', 'horse', 'box'] as $icon) {
       $this->assertStringContainsString('<use href="#icon-' . $icon . '">', $html);
     }
     // The overview of another month: its link is the current page anyway.
@@ -229,9 +229,18 @@ final class ThemeHooksTest extends KernelTestBase {
     $head = array_column($variables['#attached']['html_head'], 1);
     $this->assertSame([
       'stable_manager_theme_preferences',
+      'stable_manager_theme_icon',
+      'stable_manager_theme_apple_touch_icon',
       'stable_manager_theme_color_light',
       'stable_manager_theme_color_dark',
     ], $head);
+    // The logo is the favicon, and there is a touch icon for iOS.
+    $icon = $variables['#attached']['html_head'][1][0]['#attributes'];
+    $this->assertSame(['icon', 'image/svg+xml', 'any'], [$icon['rel'], $icon['type'], $icon['sizes']]);
+    $this->assertStringEndsWith('/themes/stable_manager_theme/logo.svg', $icon['href']);
+    $touch = $variables['#attached']['html_head'][2][0]['#attributes'];
+    $this->assertSame('apple-touch-icon', $touch['rel']);
+    $this->assertStringEndsWith('/themes/stable_manager_theme/apple-touch-icon.png', $touch['href']);
     $this->assertStringContainsString("localStorage.getItem('stable-manager-theme')", (string) $variables['#attached']['html_head'][0][0]['#value']);
     $this->assertSame(['is-authenticated'], $variables['attributes']['class']);
 

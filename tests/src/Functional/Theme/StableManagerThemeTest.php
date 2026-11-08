@@ -107,6 +107,21 @@ final class StableManagerThemeTest extends BrowserTestBase {
     $assert->elementExists('css', 'meta[name="theme-color"][media="(prefers-color-scheme: light)"]');
     $assert->elementExists('css', 'meta[name="theme-color"][media="(prefers-color-scheme: dark)"]');
     $assert->elementExists('css', 'body.is-authenticated');
+
+    // The logo is the favicon (core links the .ico of the theme's folder, for
+    // browsers without SVG icons), and the touch icon is there for iOS. All
+    // of them are served.
+    foreach ([
+      'link[rel="icon"][type="image/svg+xml"][href$="/stable_manager_theme/logo.svg"]',
+      'link[rel="icon"][href$="/stable_manager_theme/favicon.ico"]',
+      'link[rel="apple-touch-icon"][href$="/stable_manager_theme/apple-touch-icon.png"]',
+    ] as $selector) {
+      $href = $assert->elementExists('css', $selector)->getAttribute('href');
+      $this->assertIsString($href);
+      $this->drupalGet($this->getAbsoluteUrl($href));
+      $assert->statusCodeEquals(200);
+      $this->drupalGet('stable');
+    }
   }
 
   /**

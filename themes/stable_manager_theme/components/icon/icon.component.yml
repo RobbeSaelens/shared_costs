@@ -10,7 +10,7 @@ props:
     name:
       type: string
       title: Name
-      enum: [dashboard, receipt, chart, horseshoe, box, plus, sun, moon, sidebar, user, logout, close, dot]
+      enum: [dashboard, receipt, chart, horse, box, plus, sun, moon, sidebar, user, logout, close, dot]
     label:
       type: string
       title: Label

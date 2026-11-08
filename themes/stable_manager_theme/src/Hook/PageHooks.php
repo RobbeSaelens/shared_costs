@@ -7,6 +7,8 @@ namespace Drupal\stable_manager_theme\Hook;
 use Drupal\Core\Access\AccessResultInterface;
 use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Extension\ExtensionPathResolver;
+use Drupal\Core\File\FileUrlGeneratorInterface;
 use Drupal\Core\Hook\Attribute\Hook;
 use Drupal\Core\Render\Markup;
 use Drupal\Core\Session\AccountInterface;
@@ -49,10 +51,16 @@ JS;
    *   The entity type manager, to find the expense content type.
    * @param \Drupal\Core\Session\AccountInterface $currentUser
    *   The current user.
+   * @param \Drupal\Core\Extension\ExtensionPathResolver $extensionPathResolver
+   *   Finds the theme's folder, for its icons.
+   * @param \Drupal\Core\File\FileUrlGeneratorInterface $fileUrlGenerator
+   *   Makes the URLs of the icons.
    */
   public function __construct(
     private readonly EntityTypeManagerInterface $entityTypeManager,
     private readonly AccountInterface $currentUser,
+    private readonly ExtensionPathResolver $extensionPathResolver,
+    private readonly FileUrlGeneratorInterface $fileUrlGenerator,
   ) {}
 
   /**
@@ -67,6 +75,25 @@ JS;
       ['#tag' => 'script', '#value' => Markup::create(self::PREFERENCES_SCRIPT)],
       'stable_manager_theme_preferences',
     ];
+    // The logo is the favicon: the SVG for browsers that can use it (core links
+    // the favicon.ico in the theme's folder, for the others), and a full-bleed
+    // PNG for the home screen of an iPhone or iPad.
+    $path = $this->extensionPathResolver->getPath('theme', 'stable_manager_theme');
+    $icons = [
+      'stable_manager_theme_icon' => [
+        'rel' => 'icon',
+        'href' => $this->fileUrlGenerator->generateString($path . '/logo.svg'),
+        'type' => 'image/svg+xml',
+        'sizes' => 'any',
+      ],
+      'stable_manager_theme_apple_touch_icon' => [
+        'rel' => 'apple-touch-icon',
+        'href' => $this->fileUrlGenerator->generateString($path . '/apple-touch-icon.png'),
+      ],
+    ];
+    foreach ($icons as $key => $attributes) {
+      $variables['#attached']['html_head'][] = [['#tag' => 'link', '#attributes' => $attributes], $key];
+    }
     foreach (['light' => '#f7f2ea', 'dark' => '#231a12'] as $scheme => $color) {
       $variables['#attached']['html_head'][] = [
         [
