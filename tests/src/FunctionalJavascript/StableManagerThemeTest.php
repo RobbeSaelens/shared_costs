@@ -99,9 +99,8 @@ final class StableManagerThemeTest extends WebDriverTestBase {
     $this->assertSession()->waitForElement('css', 'h1.page-title:not(:empty)');
     $this->waitFor(sprintf("document.querySelector('h1.page-title').textContent.trim() === %s", json_encode($last->format('F Y'))));
     $this->assertStringEndsWith('/stable/overview/' . $last->format('Ym'), $this->getUrl());
-    // The stat card counts up to the month's total.
-    $this->assertSession()->elementAttributeContains('css', '.stat-card__value', 'data-count-up', '12.35');
-    $this->waitFor("document.querySelector('.stat-card__value').textContent.trim() === '€ 12.35'");
+    // The stat card shows the month's total.
+    $this->assertSession()->elementTextEquals('css', '.stat-card__value', '€ 12.35');
     $this->assertPageNotReloaded();
 
     // Back: HTMX restores the previous page.
@@ -181,14 +180,14 @@ final class StableManagerThemeTest extends WebDriverTestBase {
   }
 
   /**
-   * Tests the stat card: it counts up to this month's costs.
+   * Tests the stat card: this month's costs, right away, as they are.
+   *
+   * An amount is read, not watched: it doesn't count up (see AGENTS.md).
    */
-  public function testCountUp(): void {
+  public function testStatCardValue(): void {
     $this->drupalGet('stable');
-    $this->assertSession()->elementAttributeContains('css', '.stat-card__value', 'data-count-up', '130');
-    // While it counts, screen readers get the final value; after, the text.
-    $this->waitFor("!document.querySelector('.stat-card__value').hasAttribute('aria-label')");
     $this->assertSession()->elementTextEquals('css', '.stat-card__value', '€ 130.00');
+    $this->assertSession()->elementNotExists('css', '.stat-card__value[data-count-up], .stat-card__value[aria-label]');
   }
 
   /**

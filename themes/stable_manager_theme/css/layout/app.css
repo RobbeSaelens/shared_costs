@@ -9,7 +9,8 @@
   grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
   /* Below Drupal's toolbars (for admins). */
   min-height: calc(100dvh - var(--drupal-displace-offset-top, 0px));
-  transition: grid-template-columns var(--duration-slow) var(--ease-out);
+  /* It moves the whole layout, so it is quick: a rare action, but not a show. */
+  transition: grid-template-columns var(--duration-base) var(--ease-out);
 }
 
 :root[data-sidebar="collapsed"] .app {
@@ -19,7 +20,7 @@
 /* The sidebar. */
 .app-sidebar {
   position: sticky;
-  z-index: 10;
+  z-index: var(--z-sidebar);
   display: flex;
   overflow: hidden auto;
   flex-direction: column;
@@ -58,9 +59,11 @@
   background: transparent;
 }
 
-.app-sidebar__collapse:hover {
-  color: var(--color-foreground);
-  background: var(--color-sidebar-hover);
+@media (hover: hover) and (pointer: fine) {
+  .app-sidebar__collapse:hover {
+    color: var(--color-foreground);
+    background: var(--color-sidebar-hover);
+  }
 }
 
 .app-sidebar__bottom {
@@ -133,9 +136,18 @@
   gap: var(--space-3);
 }
 
-.app-sidebar .menu a:hover,
-.theme-toggle:hover {
-  color: var(--color-foreground);
+/* Hover only where there is a pointer that hovers: a tap would leave it on. */
+@media (hover: hover) and (pointer: fine) {
+  .app-sidebar .menu a:hover,
+  .theme-toggle:hover {
+    color: var(--color-foreground);
+    background: var(--color-sidebar-hover);
+  }
+}
+
+/* Pressed: right away, on touch too. */
+.app-sidebar .menu a:active,
+.theme-toggle:active {
   background: var(--color-sidebar-hover);
 }
 
@@ -213,7 +225,7 @@
 /* Shown while HTMX loads a page into this one. */
 .app-progress {
   position: fixed;
-  z-index: 100;
+  z-index: var(--z-top);
   height: 3px;
   transform-origin: left;
   pointer-events: none;
@@ -256,7 +268,7 @@
 
   .app-sidebar__top {
     position: sticky;
-    z-index: 20;
+    z-index: var(--z-bar);
     inset-block-start: 0;
     flex-direction: row;
     padding: var(--space-3) var(--space-4);
@@ -272,7 +284,7 @@
 
   .app-sidebar__bottom {
     position: fixed;
-    z-index: 21;
+    z-index: var(--z-floating);
     inset-block-start: var(--space-3);
     inset-inline-end: var(--space-3);
     display: flex;
@@ -308,7 +320,7 @@
     --icon-size: 1.6rem;
 
     position: fixed;
-    z-index: 21;
+    z-index: var(--z-floating);
     inset-block-end: calc(var(--tabbar-height) + var(--space-4) + env(safe-area-inset-bottom));
     inset-inline-end: var(--space-4);
     justify-content: center;
@@ -329,7 +341,7 @@
 
   .app-nav {
     position: fixed;
-    z-index: 20;
+    z-index: var(--z-bar);
     inset-block-end: 0;
     inset-inline: 0;
     padding-block-end: env(safe-area-inset-bottom);

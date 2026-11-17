@@ -7,8 +7,10 @@
   border: 1px solid #ccc;
   background-color: white;
 }
-.js .dropbutton-widget:hover {
-  border-color: #b8b8b8;
+@media (hover: hover) and (pointer: fine) {
+  .js .dropbutton-widget:hover {
+    border-color: #b8b8b8;
+  }
 }
 .dropbutton .dropbutton-action > * {
   padding: 0.1em 0.5em;

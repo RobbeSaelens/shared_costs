@@ -27,7 +27,7 @@ export default defineConfig({
   use: {
     baseURL: process.env.BASE_URL ?? 'http://shared-costs.ddev.site',
     storageState: '.auth/manager.json',
-    // The theme skips its count-up and entrance animations.
+    // The theme skips its page transitions and toast animations.
     reducedMotion: 'reduce',
     locale: 'en-GB',
     timezoneId: 'Europe/Brussels',

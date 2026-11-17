@@ -1,12 +1,19 @@
 /**
  * @file
- * Motion: cards rising into place, page swaps as view transitions, toasts.
+ * Motion: a short cross-fade between pages, and toasts.
+ *
+ * After Emil Kowalski's rules (see AGENTS.md). Moving between pages and
+ * filtering happen tens of times a day, so they are quick and quiet: no
+ * cascade of cards, no rows fading in one by one, and nothing at all when
+ * results change as you type. Numbers and charts don't move either: they are
+ * read, not watched. Toasts may take a little longer.
  *
  * Everything here is off for people who ask for reduced motion.
  */
 
 @media (prefers-reduced-motion: no-preference) {
-  /* The content rises in; the sidebar stays put. */
+  /* A page swap: the old page fades out, the new one fades in, a little up.
+     The sidebar stays put. */
   .app-main {
     view-transition-name: main;
   }
@@ -16,11 +23,11 @@
   }
 
   ::view-transition-old(main) {
-    animation: fade-out 160ms var(--ease-in-out) both;
+    animation: fade-out var(--duration-fast) var(--ease-out) both;
   }
 
   ::view-transition-new(main) {
-    animation: rise-in var(--duration-slow) var(--ease-out) both;
+    animation: rise-in var(--duration-base) var(--ease-out) both;
   }
 
   ::view-transition-group(sidebar) {
@@ -38,74 +45,14 @@
     animation: fade-in var(--duration-base) ease both;
   }
 
-  /* Cards, the stat card and the page's first parts rise in one by one. */
-  .page-title,
-  .page-actions,
-  .view-filters,
-  .tabs,
-  .card-grid > *,
-  .card-grid > .views-element-container > *,
-  .stable-results > .card,
-  .node--view-mode-full {
-    animation: rise-in var(--duration-slow) var(--ease-out) both;
-    animation-delay: calc(var(--stagger, 0) * 70ms);
-  }
-
-  .page-actions {
-    --stagger: 1;
-  }
-
-  .view-filters,
-  .tabs {
-    --stagger: 1;
-  }
-
-  .stable-results > .card,
-  .node--view-mode-full {
-    --stagger: 2;
-  }
-
-  .card-grid > :nth-child(1) {
-    --stagger: 1;
-  }
-
-  .card-grid > :nth-child(2),
-  .card-grid > .views-element-container:nth-child(2) > * {
-    --stagger: 2;
-  }
-
-  .card-grid > :nth-child(3),
-  .card-grid > .views-element-container:nth-child(3) > * {
-    --stagger: 3;
-  }
-
-  .card-grid > :nth-child(4),
-  .card-grid > .views-element-container:nth-child(4) > * {
-    --stagger: 4;
-  }
-
-  .card-grid > :nth-child(n + 5),
-  .card-grid > .views-element-container:nth-child(n + 5) > * {
-    --stagger: 5;
-  }
-
-  /* Rows of a table fade in after their card. */
-  .card tbody tr {
-    animation: fade-in var(--duration-slow) ease both;
-    animation-delay: calc(var(--stagger, 0) * 70ms + 160ms);
-  }
-
-  .card:hover {
-    translate: 0 -2px;
-  }
-
-  /* Toasts slide in, and out when they're closed. */
+  /* Toasts come up from below and go back down, the way they came: entering
+     a little slower than leaving. */
   .messages {
-    animation: toast-in var(--duration-slow) var(--ease-out) both;
+    animation: toast-in var(--duration-slow) ease both;
   }
 
   .messages.is-leaving {
-    animation: toast-out 260ms var(--ease-in-out) both;
+    animation: toast-out var(--duration-base) var(--ease-out) both;
   }
 }
 
@@ -123,7 +70,7 @@
 @keyframes rise-in {
   from {
     opacity: 0;
-    translate: 0 12px;
+    translate: 0 4px;
   }
 
   to {
@@ -144,17 +91,19 @@
   }
 }
 
+/* Never from nothing: a toast starts nearly its own size. */
 @keyframes toast-in {
   from {
     opacity: 0;
     translate: 0 16px;
-    scale: 0.96;
+    scale: 0.97;
   }
 }
 
 @keyframes toast-out {
   to {
     opacity: 0;
-    translate: 24px 0;
+    translate: 0 8px;
+    scale: 0.97;
   }
 }

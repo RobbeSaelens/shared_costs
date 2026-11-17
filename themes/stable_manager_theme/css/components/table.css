@@ -58,8 +58,10 @@
   transition: background-color var(--duration-fast) ease;
 }
 
-.card tbody tr:hover {
-  background: color-mix(in oklch, var(--color-secondary) 70%, transparent);
+@media (hover: hover) and (pointer: fine) {
+  .card tbody tr:hover {
+    background: color-mix(in oklch, var(--color-secondary) 70%, transparent);
+  }
 }
 
 /* Amounts align on the right. */
@@ -80,9 +82,11 @@
   font-weight: 500;
 }
 
-.card td a:hover {
-  text-decoration: underline;
-  color: var(--color-primary);
+@media (hover: hover) and (pointer: fine) {
+  .card td a:hover {
+    text-decoration: underline;
+    color: var(--color-primary);
+  }
 }
 
 /* Row actions, at the end of the row: edit, add as expense, statement. */
@@ -102,12 +106,44 @@
   font-weight: 600;
 }
 
+/* The expenses come as a table per month. The same column widths line the
+   months up. (A fixed layout takes the widths from each table's first row,
+   its column names: so those stay, for every month.) */
+.card table.stable-expenses {
+  table-layout: fixed;
+}
+
+.card .stable-expenses :is(th, td).views-field-field-expense-date {
+  width: 9rem;
+}
+
+.card .stable-expenses :is(th, td).views-field-field-cost-category {
+  width: 9rem;
+}
+
+.card .stable-expenses :is(th, td).views-field-field-shared-with {
+  width: 11rem;
+}
+
+.card .stable-expenses :is(th, td).views-field-field-total {
+  width: 8rem;
+}
+
+.card .stable-expenses :is(th, td).views-field-edit-node {
+  width: 4.5rem;
+}
+
 /* Who shares an expense: a compact list. */
 .card td.views-field-field-shared-with ul {
   margin: 0;
   padding: 0;
   list-style: none;
   color: var(--color-muted-foreground);
+}
+
+/* In line with the column's name, not indented like a list in text. */
+.card td.views-field-field-shared-with li {
+  margin: 0;
 }
 
 /* Narrow screens: tables scroll inside their card. */
@@ -126,5 +162,13 @@
 
   .card td.views-field-field-expense-date {
     white-space: nowrap;
+  }
+
+  .card .stable-expenses :is(th, td).views-field-field-expense-date {
+    width: 7.75rem;
+  }
+
+  .card .stable-expenses :is(th, td).views-field-field-total {
+    width: 6.5rem;
   }
 }

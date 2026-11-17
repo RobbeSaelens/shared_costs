@@ -153,8 +153,10 @@
   font-size: var(--font-size-sm);
 }
 
-.views-summary a:hover {
-  border-color: var(--color-primary);
+@media (hover: hover) and (pointer: fine) {
+  .views-summary a:hover {
+    border-color: var(--color-primary);
+  }
 }
 
 .views-summary a.is-active {
@@ -235,8 +237,10 @@
   border-radius: var(--radius-sm);
 }
 
-.pager__item a:hover {
-  background: var(--color-secondary);
+@media (hover: hover) and (pointer: fine) {
+  .pager__item a:hover {
+    background: var(--color-secondary);
+  }
 }
 
 .pager__item.is-active a {

@@ -91,7 +91,8 @@ final class ViewsHooks {
       ->trigger('submit, input delay:350ms')
       ->select($results)
       ->target($results)
-      ->swap('outerHTML', 'transition:true')
+      // No view transition: the results change as you type.
+      ->swap('outerHTML')
       ->pushUrl(TRUE)
       ->sync('this:replace')
       ->indicator(AppNavigation::PROGRESS);
@@ -104,8 +105,8 @@ final class ViewsHooks {
    * Finds the number of a summary page: its first amount of money.
    *
    * @return array<string, mixed>|null
-   *   The label, the formatted value, and what the stat card needs to count
-   *   up to it; NULL without one.
+   *   The label and the formatted value; NULL without one. The value is shown
+   *   as it is: an amount is read, so it doesn't count up (see AGENTS.md).
    */
   private function stat(ViewExecutable $view): ?array {
     if (!isset($view->result[0])) {
@@ -115,16 +116,9 @@ final class ViewsHooks {
       if (!$field instanceof NumericField || empty($field->options['prefix'])) {
         continue;
       }
-      $value = $field->getValue($view->result[0]);
       return [
         'label' => $field->label(),
         'value' => $view->style_plugin->getField(0, (string) $id),
-        'amount' => is_numeric($value) ? (float) $value : 0.0,
-        'decimals' => !empty($field->options['set_precision']) ? (int) $field->options['precision'] : 2,
-        'decimal_mark' => (string) $field->options['decimal'],
-        'thousands_mark' => (string) $field->options['separator'],
-        'prefix' => (string) $field->options['prefix'],
-        'suffix' => (string) $field->options['suffix'],
       ];
     }
     return NULL;

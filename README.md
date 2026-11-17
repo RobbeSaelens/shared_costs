@@ -524,10 +524,17 @@ A Starterkit-generated theme, without a base theme. See its
 
 - an app shell with a collapsible sidebar, and a tab bar on phones;
 - HTMX navigation and live filters with core's HTMX;
-- cards and a stat card that counts up;
+- cards and a stat card;
 - charts in its colors, and dark mode;
-- view transitions, which respect reduced motion;
+- quiet motion: a short cross-fade between pages and toasts, nothing on
+  numbers, charts or results that change as you type, and none at all with
+  reduced motion;
+- built for phones too: hover only where a pointer hovers, an `:active` state
+  on every control, 16px fields on touch screens;
 - single-directory components and OOP hooks.
+
+Changes to how it looks, moves or fits follow the skills and rules in
+[AGENTS.md](AGENTS.md) (_Frontend changes_).
 
 Drupal finds it in this repository (it scans module folders for themes too).
 The front end recipe (so the demo too) installs it and imports its blocks.

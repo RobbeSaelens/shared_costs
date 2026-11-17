@@ -24,8 +24,8 @@ Generated from core's Starterkit, so it doesn't depend on a base theme.
   results, so it always downloads what the filters show.
 - **Cards.** The Stable Manager views (`stable_*`) get a layout:
   - On the dashboard, the overview and a horse's statement, the main number
-    (this month's costs, the month's total, the horse's total) is a stat card
-    that counts up to its value, next to a grid of cards.
+    (this month's costs, the month's total, the horse's total) is a stat card,
+    shown as it is, next to a grid of cards.
   - On the other pages, the actions come first, then the results in a card.
 - **Charts** in the theme's colors: a Chart.js plugin restyles the Charts
   module's charts, and redraws them when the theme changes.
@@ -39,9 +39,9 @@ Generated from core's Starterkit, so it doesn't depend on a base theme.
 
 ## How it is built
 
-- **Single-directory components** in `components/`: `card`, `stat-card`
-  (count-up), `icon` (from an inline sprite of line icons drawn for this
-  theme) and `theme-toggle`.
+- **Single-directory components** in `components/`: `card`, `stat-card`,
+  `icon` (from an inline sprite of line icons drawn for this theme) and
+  `theme-toggle`.
 - **OOP hooks** in `src/Hook/`, autowired: the page, the navigation (HTMX
   attributes from core's `Htmx` builder, icons, the current page) and the
   views (layouts, the stat card, the live filters).
@@ -61,6 +61,6 @@ In the module's tests:
   - HTMX navigation and history;
   - live filters;
   - the theme toggle and the charts' colors;
-  - the sidebar, the count-up and the messages;
+  - the sidebar, the stat card and the messages;
   - printing a statement;
   - an axe scan of every page in light and dark (WCAG 2.1 A and AA).

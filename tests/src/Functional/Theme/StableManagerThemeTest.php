@@ -131,7 +131,6 @@ final class StableManagerThemeTest extends BrowserTestBase {
     $this->drupalLogin($this->createStableManager());
     $this->drupalGet('stable');
     $assert = $this->assertSession();
-    $assert->elementAttributeContains('css', '.stat-card .stat-card__value', 'data-count-up', '130');
     $assert->elementTextEquals('css', '.stat-card .stat-card__value', '€ 130.00');
     $assert->elementTextEquals('css', '.stat-card__label', 'Costs this month');
     $this->assertCount(3, $this->getSession()->getPage()->findAll('css', '.card-grid .card'));

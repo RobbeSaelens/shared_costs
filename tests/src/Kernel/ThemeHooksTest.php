@@ -141,7 +141,9 @@ final class ThemeHooksTest extends KernelTestBase {
 
     $this->assertStringContainsString('stable-view stable-view--summary', $html);
     $this->assertMatchesRegularExpression('#<section data-component-id="stable_manager_theme:stat-card" class="stat-card">\s*<div class="stat-card__label"><h2>Costs this month</h2>#', $html);
-    $this->assertMatchesRegularExpression('#<p class="stat-card__value" data-count-up="1234\.5" data-decimals="2" data-decimal-mark="\." data-thousands-mark="," data-prefix="€ " data-suffix="">.*€ 1,234\.50#s', $html);
+    // The amount as it is: nothing counts up (an amount is read, not watched).
+    $this->assertMatchesRegularExpression('#<p class="stat-card__value">.*€ 1,234\.50#s', $html);
+    $this->assertStringNotContainsString('data-count-up', $html);
     // The latest expenses and the two charts are cards; the table is flush.
     $this->assertSame(3, substr_count($html, 'data-component-id="stable_manager_theme:card"'));
     $this->assertStringContainsString('card card--flush', $html);
@@ -160,7 +162,7 @@ final class ThemeHooksTest extends KernelTestBase {
     $this->goTo('/stable/overview/202611');
     $html = $this->renderView('stable_overview', ['202611']);
 
-    $this->assertMatchesRegularExpression('#<div class="stat-card__label">Total</div>\s*<p class="stat-card__value" data-count-up="32"#', $html);
+    $this->assertMatchesRegularExpression('#<div class="stat-card__label">Total</div>\s*<p class="stat-card__value">.*€ 32\.00#s', $html);
     $this->assertMatchesRegularExpression('#<ul data-hx-boost="true"[^>]* class="views-summary">#', $html);
     $this->assertStringContainsString('href="/stable/overview/202610"', $html);
   }
@@ -177,7 +179,7 @@ final class ThemeHooksTest extends KernelTestBase {
 
     $this->assertStringContainsString('stable-view stable-view--summary', $html);
     $this->assertMatchesRegularExpression('#<div class="page-actions"><p><a href="\#print" class="button" role="button" data-stable-print>Print</a></p>#', $html);
-    $this->assertMatchesRegularExpression('#<div class="stat-card__label">Total</div>\s*<p class="stat-card__value" data-count-up="16"#', $html);
+    $this->assertMatchesRegularExpression('#<div class="stat-card__label">Total</div>\s*<p class="stat-card__value">.*€ 16\.00#s', $html);
     $this->assertStringContainsString('<h2>Expenses</h2>', $html);
     $this->assertStringContainsString("href=\"/stable/statement/$luna/202610\"", $html);
   }
@@ -205,7 +207,8 @@ final class ThemeHooksTest extends KernelTestBase {
       'data-hx-trigger="submit, input delay:350ms"',
       'data-hx-select="#stable-results"',
       'data-hx-target="#stable-results"',
-      'data-hx-swap="outerHTML transition:true ignoreTitle:true"',
+      // No view transition: the results change as you type.
+      'data-hx-swap="outerHTML ignoreTitle:true"',
       'data-hx-push-url="true"',
       'data-hx-sync="this:replace"',
       'data-hx-indicator="#app-progress"',

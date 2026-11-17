@@ -32,8 +32,10 @@
   font-weight: 500;
 }
 
-.tabs a:hover {
-  color: var(--color-foreground);
+@media (hover: hover) and (pointer: fine) {
+  .tabs a:hover {
+    color: var(--color-foreground);
+  }
 }
 
 .tabs .is-active > a,

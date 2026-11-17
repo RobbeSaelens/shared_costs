@@ -11,3 +11,5 @@ darkmode
 unboost
 unboosts
 bedrag
+Kowalski
+emilkowalski

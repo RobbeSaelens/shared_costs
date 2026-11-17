@@ -38,6 +38,14 @@ input[type="password"] {
   padding-inline-end: var(--space-8);
 }
 
+/* A phone zooms into a field whose text is under 16px, and doesn't zoom back
+   out: on touch screens the fields take the base size. */
+@media (pointer: coarse) {
+  :is(.form-text, .form-email, .form-search, .form-number, .form-date, .form-select, .form-textarea, input[type="password"]) {
+    font-size: var(--font-size-base);
+  }
+}
+
 :is(.form-text, .form-email, .form-search, .form-number, .form-date, .form-select, .form-textarea, input[type="password"]):focus {
   border-color: var(--color-primary);
   outline: none;

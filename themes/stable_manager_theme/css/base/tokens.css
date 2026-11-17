@@ -64,18 +64,29 @@
   --shadow-md: 0 1px 2px light-dark(oklch(30% 0.04 55 / 0.06), oklch(0% 0 0 / 0.3)), 0 8px 24px -8px light-dark(oklch(30% 0.05 55 / 0.18), oklch(0% 0 0 / 0.45));
   --shadow-lg: 0 24px 48px -16px light-dark(oklch(30% 0.05 55 / 0.28), oklch(0% 0 0 / 0.55));
 
-  /* Motion. */
+  /* Motion, after Emil Kowalski's rules (see AGENTS.md): what responds to a
+     person stays under 300ms and starts fast (ease-out); only toasts, dialogs
+     and drawers take longer. The curves are his strong ones: the built-in
+     ease-out is too weak to feel quick. */
   --duration-fast: 120ms;
   --duration-base: 220ms;
-  --duration-slow: 480ms;
-  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --duration-slow: 400ms;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
 
   /* The app shell. */
   --sidebar-width: 16rem;
   --sidebar-rail: 4.75rem;
   --tabbar-height: 4.25rem;
   --content-width: 82rem;
+
+  /* Stacking, from low to high. Drupal's own dialogs keep theirs (1000 and
+     up), above all of these. */
+  --z-sidebar: 10;
+  --z-bar: 20;
+  --z-floating: 21;
+  --z-toasts: 50;
+  --z-top: 100;
 
   color-scheme: light dark;
 }

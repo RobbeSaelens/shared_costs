@@ -74,12 +74,6 @@
       {% embed 'stable_manager_theme:stat-card' with {
         label: stable.stat.label ?: header.area_text_custom,
         value: stable.stat.value,
-        amount: stable.stat.amount,
-        decimals: stable.stat.decimals,
-        decimal_mark: stable.stat.decimal_mark,
-        thousands_mark: stable.stat.thousands_mark,
-        prefix: stable.stat.prefix,
-        suffix: stable.stat.suffix,
       } only %}
         {% block label %}{{ label }}{% endblock %}
         {% block value %}{{ value }}{% endblock %}

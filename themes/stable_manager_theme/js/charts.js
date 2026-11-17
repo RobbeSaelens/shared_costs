@@ -83,11 +83,9 @@
       cornerRadius: 8,
       displayColors: false,
     });
-    chart.options.animation = window.matchMedia(
-      '(prefers-reduced-motion: reduce)',
-    ).matches
-      ? false
-      : { duration: 900, easing: 'easeOutQuart' };
+    // The charts show costs to read, not to watch: no bars growing in on
+    // every visit (see AGENTS.md).
+    chart.options.animation = false;
   }
 
   /**

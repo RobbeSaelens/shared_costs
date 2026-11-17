@@ -18,6 +18,12 @@ html {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   scroll-padding-top: var(--space-8);
+  /* Phones: no grey flash on a tap (every control has its own :active), and
+     no bigger text when the phone turns sideways. */
+  -webkit-tap-highlight-color: transparent;
+  /* stylelint-disable-next-line property-no-vendor-prefix -- Safari has no other. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
@@ -47,8 +53,10 @@ a {
   text-underline-offset: 0.2em;
 }
 
-a:hover {
-  text-decoration-thickness: 2px;
+@media (hover: hover) and (pointer: fine) {
+  a:hover {
+    text-decoration-thickness: 2px;
+  }
 }
 
 :focus-visible {
@@ -71,7 +79,7 @@ body > .visually-hidden:not(:focus) {
 
 .skip-link:focus {
   position: fixed;
-  z-index: 100;
+  z-index: var(--z-top);
   padding: var(--space-2) var(--space-4);
   color: var(--color-primary-foreground);
   border-radius: var(--radius-sm);
@@ -113,6 +121,15 @@ body > .visually-hidden:not(:focus) {
   margin: 0;
 }
 
+/* Controls answer a tap at once (no wait for a double tap), and a long press
+   doesn't select their label. Text that is content stays selectable. */
+:is(button, .button, .form-submit, .app-add, .app-nav a, .app-sidebar__bottom a) {
+  touch-action: manipulation;
+  /* stylelint-disable-next-line property-no-vendor-prefix -- Safari needs it. */
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 /* Buttons. */
 .button,
 .app-add,
@@ -138,9 +155,11 @@ body > .visually-hidden:not(:focus) {
   gap: var(--space-2);
 }
 
-.button:hover,
-.form-submit:hover {
-  background: var(--color-secondary);
+@media (hover: hover) and (pointer: fine) {
+  .button:hover,
+  .form-submit:hover {
+    background: var(--color-secondary);
+  }
 }
 
 .button:active,
@@ -158,11 +177,13 @@ body > .visually-hidden:not(:focus) {
   box-shadow: var(--shadow-sm);
 }
 
-.button--primary:hover,
-.app-add:hover,
-.form-submit.button--primary:hover {
-  background: color-mix(in oklch, var(--color-primary) 88%, var(--color-foreground));
-  box-shadow: var(--shadow-md);
+@media (hover: hover) and (pointer: fine) {
+  .button--primary:hover,
+  .app-add:hover,
+  .form-submit.button--primary:hover {
+    background: color-mix(in oklch, var(--color-primary) 88%, var(--color-foreground));
+    box-shadow: var(--shadow-md);
+  }
 }
 
 .button--danger {
