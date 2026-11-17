@@ -137,6 +137,24 @@ drush recipe modules/contrib/shared_costs/recipes/stable_manager
 drush cache:rebuild
 ```
 
+## Upgrading from 2.3
+
+2.4 changes only the Stable Manager theme: quieter motion (a short cross-fade
+between pages, no cards rising in one by one, no charts growing in, and the
+stat card shows its amount instead of counting up to it), hover effects only
+where a pointer can hover, a pressed state on every control, and 16px fields
+on touch screens. The recipes and their configuration don't change, so a site
+needs nothing but the new code:
+
+```bash
+composer update drupal/shared_costs
+drush cache:rebuild
+```
+
+The `stat-card` component no longer has the props it counted up with
+(`amount`, `decimals`, `decimal_mark`, `thousands_mark`, `prefix` and
+`suffix`): a template of your own that passes them can leave them out.
+
 ## Updating a site
 
 `composer update drupal/shared_costs` updates the module's code and its theme,
