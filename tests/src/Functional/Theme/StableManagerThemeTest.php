@@ -183,6 +183,8 @@ final class StableManagerThemeTest extends BrowserTestBase {
    * Tests the page for visitors: the login form, without the app.
    */
   public function testAnonymous(): void {
+    // As the front end recipe has it: visitors get the login form.
+    $this->config('system.site')->set('page.403', '/user/login')->save();
     $this->drupalGet('stable');
     $assert = $this->assertSession();
     $assert->statusCodeEquals(403);
@@ -193,6 +195,9 @@ final class StableManagerThemeTest extends BrowserTestBase {
     $this->drupalGet('user/login');
     $assert->elementExists('css', 'body.is-anonymous form#user-login-form');
     $assert->elementExists('css', 'a.site-branding img.site-branding__logo');
+    // The login page keeps its tabs, though the page above (the login form as
+    // the 403 page) rendered the same route's tabs first, without them.
+    $assert->elementExists('css', '.tabs a[href$="/user/password"]');
   }
 
 }

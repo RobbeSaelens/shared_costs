@@ -654,6 +654,13 @@ what the upgrade section says. The `composer.json` of a site requires a range
 
 ## Known issues
 
+- **No tabs on the login form as a 403 page.** A visitor who opens a private
+  page gets the login form (the front end recipe's `page.403`), but without the
+  _Log in_ and _Reset your password_ tabs: core renders that page in a
+  subrequest where the tabs come out empty. The login page itself
+  (`/user/login`) has them. Core caches the tabs by route only, so the empty
+  ones used to replace the login page's own as well; the module keeps the two
+  apart (`LocalTasksHooks`).
 - **Default content and default values.** Core's content importer creates the
   entity (which fills in the field's default value) and then sets the imported
   items by position, so default sharers beyond the imported ones remain. This
